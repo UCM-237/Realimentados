@@ -4,8 +4,8 @@
 \usepackage{subfigure}
 \usepackage{amsmath,amsthm}
 \usepackage{tikz}
-\usetikzlibrary{shapes.geometric}
-\usetikzlibrary{shapes.multipart}
+\usetikzlibrary{babel}
+\usetikzlibrary{shapes, arrows}
 \textwidth= 15cm
 \evensidemargin=0cm
 \usepackage[spanish]{babel}
@@ -25,6 +25,17 @@
 %\SetWatermarkText{Borrador,juan.jimenez@fis.ucm.es}
 %\SetWatermarkScale{2}
 
+% Atajos para el tikz
+\tikzstyle{block} = [draw, rectangle, minimum width=6em]
+\tikzstyle{sum} = [draw, fill=blue!20, circle, node distance=1cm]
+\tikzstyle{input} = [coordinate]
+\tikzstyle{output} = [coordinate]
+\tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
+
+% Entornos para los "teoremas"
+\newtheorem{definition}{Definition}
+\newtheorem{algo}{Algorithm}
+\newtheorem{theorem}{Theorem}
 
 \graphicspath{{./figuras/}}
 \makeindex

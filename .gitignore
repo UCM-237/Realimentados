@@ -14,7 +14,7 @@
 *.log
 *.aux
 *.pdf
-!./pdf/realimentados.pdf
+!pdf/realimentados.pdf
 *~
 *.swp
 *.swo
