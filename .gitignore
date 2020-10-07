@@ -14,7 +14,7 @@
 *.log
 *.aux
 *.pdf
-!lcc_manual.pdf
+!./pdf/realimentados.pdf
 *~
 *.swp
 *.swo
