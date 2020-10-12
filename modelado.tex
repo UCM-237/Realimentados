@@ -22,7 +22,7 @@ Se trata de un oscilador, propuesto por primera vez por Balthasar Van der Pol, c
 
 Donde el elemento no lineal NL, presenta una relación entre voltaje e intensidad caracterizada por la función $h(v)$.
 
-El voltaje $v$ en los tres componentes del circuito debe ser igual, además
+El voltaje $v$ en los tres componentes del circuito debe ser igual; además,
 \begin{align}
 v = L \frac{di_L}{dt}\\
 i_C = C\frac{dv}{dt}
@@ -50,10 +50,10 @@ y sustituyendo en \ref{eq:vdp2},
 \ddot{v} +m\frac{1}{C}(v^2-1)\dot{v}+\frac{1}{LC}v = 0
 \end{equation}
 
-Podemos representarla finalmente en variables de estado, tomando $x_1=v$ y $\dot{v}=x_2$,
+Podemos representarla finalmente en variables de estado, tomando $x_1=v$ y $x_2=\dot{v}$,
 \begin{align}
-\dot{x_1} &= x_2\\
-\dot{x_2} &= -\frac{1}{LC}x_1 - m\frac{1}{C}(x_1^2-1)x_2 \label{eq:vdpst2}
+\dot{x}_1 &= x_2\\
+\dot{x}_2 &= -\frac{1}{LC}x_1 - m\frac{1}{C}(x_1^2-1)x_2 \label{eq:vdpst2}
 \end{align}
 Podemos ahora hacer un primer análisis cualitativo. El primer término a la derecha del igual en  la ecuación \ref{eq:vdpst2} representa una fuerza recuperadora proporcional al desplazamiento, el segundo término, crecerá con la velocidad para $x_1 < 1$, alejando así al sistema del origen  y representará un término disipativo para $x_1 > 1$ acercándolo por tanto de nuevo al origen. Es por tanto esperable, que se alcance
 algún tipo de situación de equilibrio. Más adelante definiremos esta situación rigurosamente como un ciclo límite. 
