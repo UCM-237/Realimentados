@@ -1,6 +1,78 @@
 \chapter{Modelado de sistemas dinámicos}
 Warning: Section in progress
+
+\section{State-space systems}
+We will focus on systems that can be described by quantifiable characteristics or states, e.g., temperature, velocity or voltage. These states might change over time. One might interact with a system via a quantifiable input, and one might measure some information from the states of the system via a quantifiable output.
+
+Let us define $x(t)\in\mathbb{R}^n$, $y(t)\in\mathbb{R}^m$ and $u(t)\in\mathbb{R}^k$ as the stacked (signal) vector of states, the output, and the input of a system $\Sigma$ respectively. In particular, we will describe them as continuous signals over time, e.g., $x :[0,\infty) \to \mathbb{R}^n$. 
+
+The system $\Sigma$ is a model that predicts the value of the states and the output over time. This prediction incorporates the impact of the input on the states and the output. We utilize differential equations as a tool to predict the evolution of the states of the system $\Sigma$ over time as follows
+\begin{equation}
+	\Sigma := \begin{cases}
+		\dot x(t) =& f(x(t),u(t)) \\ y(t) =& g(x(t),u(t))
+	\end{cases}, 
+\label{eq: sigma}
+\end{equation}
+where $\dot x := \frac{\mathrm{d}}{\mathrm{dt}}(x(t))$ is the short notation for total derivative with respect to time, and $f: \mathbb{R}^n \times \mathbb{R}^k \to \mathbb{R}^n$ and $g: \mathbb{R}^n \times \mathbb{R}^k \to \mathbb{R}^m$ are functions.
+
+We can represent the system $\Sigma$ as a block with input/output ports as in figure \ref{fig: sigma}.
+
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}[auto, node distance=2cm,>=latex']
+	\node [input, name=input] {};
+	\node [block, right of=input] (system) {$\Sigma$};
+	\node [output, right of=system] (output) {};
+	\draw [draw,->] (input) -- node {$u(t)$} (system);
+	\draw [->] (system) -- node [name=y] {$y(t)$}(output);
+\end{tikzpicture}
+	\caption{Input/output block diagram of system $\Sigma$.}
+	\label{fig: sigma}
+\end{figure}
+
 \section{Ejemplos}
+\subsection{Inverted pendulum}
+
+We are going to derive $f$ and $g$ for the inverted pendulum.
+
+First, we derive the equations of motion of the mass in the inverted pendulum system in figure \ref{fig: invpen} as a first step to figure out the system's functions $f$ and $g$. Consider that we can interact with the system with a torque $T$ applied on the base, the mass is under a friction force proportional to its speed, and we can only measure the angle $\theta$ from the system.
+
+\begin{figure}[!h]
+\centering
+	\includegraphics[scale=0.1]{./invpen.png}
+	\caption{Inverted pendulum}
+	\label{fig: invpen}
+\end{figure}
+
+We choose the angle $\theta$ with respect to the vertical to derive the dynamics of the inverted pendulum. Define $m, l, g,$ and $I\in\mathbb{R}$ as the mass, pendulum's lenght, gravity acceleration and inertia moment respectively. In particular, we have that $I = ml^2$, and we will exploit that $I \ddot\theta = \text{sum of torques}$. We have to consider three torques; namely: 1. Torque $T$ applied by us; 2. Torque $-b\dot\theta$ applied by the friction; 3. Torque $mgl \sin\theta$ applied by the gravitational forces, i.e., $mg$ is the force on the mass, times $\sin\theta$ since the force only applies perpendicular to the bar, and times $l$ to compute the resultant torque. Therefore the dynamics of the inverted pendulum are given by
+\begin{equation}
+\ddot\theta = \frac{1}{ml^2}\left(mgl\sin{\theta}-b\dot\theta + T\right).
+	\label{eq: dyn}
+\end{equation}
+
+It looks reasonable to choose $\theta$ as one of our states to construct $x(t)$. In fact, since we have derived a second-order system, we will need $\dot\theta$ as a second state since we have the differential equation for its derivative $\ddot\theta$. Thus, let us define the state vector
+\begin{equation}
+x := \begin{bmatrix}\theta \\ \dot\theta \end{bmatrix},
+\end{equation}
+and since the torque $T$ is how we interact with the system, we choose the input $u(t) = T(t)$.
+
+Now we are ready to construct the functions $f$ and $g$ in (\ref{eq: sigma}) for the inverted pendulum. In particular, we know that $f$ and $g$ only accepts as inputs/arguments the state space vector $x$ and the input $u$. On the left side of (\ref{eq: sigma}) we have the time derivative of $x(t)$, therefore
+\begin{equation}
+	\frac{\mathrm{d}}{\mathrm{dt}}\left(\begin{bmatrix}\theta \\ \dot\theta \end{bmatrix}\right) = f(x(t), u(t)) = \begin{bmatrix}f_1(x(t), u(t)) \\ f_2(x(t), u(t))\end{bmatrix}, \label{eq: fn}
+\end{equation}
+where $f_1 = \dot\theta$. Note that for the first row in (\ref{eq: fn}), on the left we have $\frac{\mathrm{d}}{\mathrm{dt}}\theta$, and on the right $f_1 = \dot\theta$ because $\dot\theta$ is actually a state, roughly speaking we can say that $\dot\theta(t) \in x(t)$. Unfortunatelly, we cannot say that $f_2 = \ddot\theta(t)$ because (roughly speaking) $\ddot\theta(t) \notin x(t)$. Nevertheless, we have that $f_2$ is given by the differential equation (\ref{eq: dyn}). Then, let me write explicitly $f$ as follows
+\begin{equation}
+	\frac{\mathrm{d}}{\mathrm{dt}}\left(\begin{bmatrix}\theta \\ \dot\theta \end{bmatrix}\right) =  f(x(t), u(t)) = \begin{bmatrix} \dot\theta \\ \frac{1}{ml^2}\left(mgl\sin{\theta}-b\dot\theta + T\right) \end{bmatrix}, \label{eq: f}
+\end{equation}
+
+The calculation of $g$ is more straightforward. We have established that we can only measure the angle, therefore $y(t) = \theta(t)$, i.e., 
+\begin{equation}
+g(x(t),u(t)) =  \theta(t).
+	\label{eq: g}
+\end{equation}
+
+A Python simulation of this dynamics can be found at \url{https://github.com/noether/aut_course}.
+
 \subsection{El oscilador de Van der Pol}
 Se trata de un oscilador, propuesto por primera vez por Balthasar Van der Pol, cuando trabajaba en Philips, para explicar las oscilaciones observadas en tubos de vacío. Podemos obtener la ecuación del oscilador, empleando el circuito de la figura \ref{fig:vdp}
 \begin{figure}
@@ -114,4 +186,29 @@ En resumen, podemos describir el sistema mediante tres ecuaciones de estado $x_1
 \end{align}
 
 Si consideramos $V=cte$, la única entrada al sistema sería el ángulo de giro de las ruedas $u(t) = \phi(t)$, controlando su valor, podemos hacer girar al vehículo en la dirección deseada. 
+
+\section{Simulations / Numerical solutions}
+We can still calculate numerical solutions (also known as simulations) for $\Sigma$ given a starting point $x(0)$. The \emph{Euler integration} is an easy numerical method that can give us some information about $\Sigma$. The following algorithm is what you can use in your Python/Matlab simulations
+\begin{algo}
+	\begin{enumerate}
+		\item Set step time $\Delta T$
+		\item Set $x = x(0)$
+		\item Set $y = g(x,u)$
+		\item Log $x$ and $y$, so you can plot them later
+		\item Set $t = 0$
+		\item Set final time $T^*$
+		\item While $t \leq T^*$ then:
+			\begin{enumerate}
+				\item Set $x_{\text{new}} = x_{\text{old}} + f(x_{\text{old}},u)\Delta T$
+				\item Set $y_{\text{new}} = g(x_{\text{new}},u)$
+				\item Draw $x$
+				\item Log $x$ and $y$, so you can plot them later
+				\item Set $t = t + \Delta t$
+			\end{enumerate}
+		\item Plot the log for the elements of $x$ and $y$ over time $t$
+	\end{enumerate}
+\end{algo}
+This algorithm performs okei when $\Delta T$ is sufficiently small. How small? It always depends on the system $\Sigma$, in particular, of $f$. Check \url{https://en.wikipedia.org/wiki/Euler_method} for more details, and of course, for more accurate methods. There are always compromises, typically good accuracy entails more computational cost per iteration.
+
+For now, in the simulation we will leave $u = 0$, i.e., no control action over the system $\Sigma$. Once we know how to design $u$, we will calculate $u$ before the step 7.a in Algorithm 1.
  
