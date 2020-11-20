@@ -15,6 +15,7 @@
 *.aux
 *.pdf
 *.idx
+*.gz
 !pdf/realimentados.pdf
 *~
 *.swp

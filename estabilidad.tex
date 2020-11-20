@@ -1,1 +1,63 @@
 \chapter{Comportamiento dinámico y estabilidad}
+
+El concepto de estabilidad y su análisis constituye unos de los aspectos claves para el estudio de los sistemas dinámicos. La estabilidad de un sistema esta estrechamente relacionada con su comportamiento dinámico y puede definirse de diversas maneras. En este capítulo nos centraremos en el análisis de los llamados puntos de equilibrio de un sistema y los estudiaremos de acuerdo con el concepto de estabilidad de Lyapunov. Además, incidiremos en otros aspectos de la estabilidad de los sistemas tales como la existencia de ciclos límite o el movimiento nominal. Empecemos pues por el estudio de los puntos de equlibrio.
+\section{Puntos de equilibrio} 
+\begin{definition}[Punto de equlibrio] Dados un sistema dinámico general definido por las ecuaciones,
+\begin{align}
+\mathbf{\dot{x}} = \mathbf{f}(\mathbf{x},\mathbf{u})\\
+\mathbf{y} = \mathbf{g}(\mathbf{x},\mathbf{u})
+\end{align}
+donde $\mathbf{x} \in \mathbb{R}^n$, $\mathbf{u} \in \mathbb{R}^m$ e $\mathbf{y} \in \mathbb{R}^l$. Se definen como puntos de equilibrio o puntos estacionarios los valores del vector de estados $\mathbf{x_e}$ y del vector de entradas $\mathbf{u_e}$ para los cuales el estado y, consecuentemente, la salida del sistema permanecen constantes,
+
+\begin{align}
+\mathbf{\dot{x}_e} \equiv 0 = \mathbf{f}(\mathbf{x_e},\mathbf{u_e})\\
+\mathbf{y_e} = \mathbf{g}(\mathbf{x_e},\mathbf{u_e})
+\end{align}
+\end{definition}
+
+Si el vector de estados no cambia, su derivada será cero. Por tanto, mientras no se altere el valor de la entrada, el sistema permanecerá en el mismo estado y el valor del vector de salidas permanecerá tambien constante
+
+Podemos, a partir de esta definición, obtener algunas propiedades importantes de los puntos de equilibrio:
+\begin{enumerate}
+\item Una vez que un sistema alcanza un punto de equilibrio, permance en él indifinidamente. (Todas las derivadas temporales de las componentes del vector de estado son cero.
+\item Desde el punto de vista del control de sistemas, los puntos de equilibrio juegan un papel importante ya que representan condiciones de operación constante.
+\item Un sistema dinámico puede tener uno o más puntos de equilibrio, o no tener ninguno. 
+\end{enumerate}
+
+\paragraph{Sistemas autónomos.} Para simplificar el estudio de la estabilidad, podemos empezar por considerar el casos de sistemas que tienen entrada nula $\mathbf{u} = \mathbf{0}, \ \forall t$. en los que la entrada es una función directa de los estados del sistema. Hablaremos entonces de un \emph{sistema autónomo}; la salida evoluciona a partir de un estado inicial $\mathbf{x_0}\equiv \mathbf{x(t_0)}$,
+
+\begin{align}
+\mathbf{\dot{x}} = \mathbf{f}(\mathbf{x})\\
+\mathbf{y} = \mathbf{g}(\mathbf{x})
+\end{align}
+
+\paragraph{Sistemas realimentados.} Del mismo modo, podemos considerar sistemas en los que la entrada es una función directa del valor de los estados; $\textbf{u}= \textbf{c(x)}$. Hablaremos entonces de un \emph{sistema realimentado}. A efectos de análisis de la estabilidad del sistema, no hay diferencia entre un sistema realimentado y un sistema autónomo,
+\begin{align}
+\mathbf{\dot{x}} = \mathbf{f}(\mathbf{x},\mathbf{c(x)}) = \bar{f}(\mathbf{x})\\
+\mathbf{y} = \mathbf{g}(\mathbf{x},\mathbf{c(x)}) = \bar{\mathbf{g}}(\mathbf{x})
+\end{align}
+El nombre de sistema realimentado, proviene de considerar que se están \emph{realimentando} los estados en la entrada del sistema. El concepto de realimentación constituye uno de los pilares de los sistemas de control. La figura \ref{fig:rea}, muestra esquemáticamente este concepto.
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\draw(0,0) node(p)[rectangle, minimum height=10mm, minimum width=10mm,align=center, very thick, draw = blue!50!black!50]{$\mathbf{f}(\mathbf{x}(t),\mathbf{u}(t))$}
+
+(0,-1.5) node(c)[rectangle, minimum height=10mm, minimum width=10mm,align=center ,very thick,draw = red!60!black!40]{$\mathbf{k}(\mathbf{x}(t))$};
+
+\draw[line width = 1pt](p)--(2,0)node[midway,above]{$\mathbf{x}(t)$};
+\draw[line width = 1pt](2,0)--(2,-1.5);
+\draw[line width = 1pt, -latex](2,-1.5)--(c);
+\draw[line width = 1pt](c)--(-2,-1.5);
+\draw[line width = 1pt](-2,-1.5)--(-2,0);
+\draw[line width = 1pt, -latex](-2,0)--(p)node[midway,above]{$\mathbf{u}(t)$};
+
+\end{tikzpicture}
+
+\caption{Esquema general de un sistema realimentado}\label{fig:rea}
+\end{figure}
+
+Tanto para un sistema autónomo como para uno realimentado los puntos de equilibrio deberán satisfacer la condición de que las derivadas temporales de los estados sean todas nulas,
+\begin{equation}
+\mathbf{0} = \mathbf{f(x_e})
+\end{equation}
