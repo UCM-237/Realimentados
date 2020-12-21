@@ -569,13 +569,14 @@ The following theorem is the combination of the Definition \ref{def: con} and Th
 	The (constant) pair $(A,B)$ is controllable if and only if the rank of $\mathcal{C}$ is $n$.
 \end{theorem}
 
-The next two theorems are proven starting from (18).
+The following theorem is an easy check numerically.
 \begin{theorem}
 	\label{thm: atbt}
-	The (constant) pair $(A,B)$ is controllable if and only if there is no eigenvector of $A^T$ in the kernel of $B^T$.
+	The (constant) pair $(A,B)$ is not controllable if there is an eigenvector of $A^T$ in the kernel of $B^T$.
 \end{theorem}
+Note that Theorem \ref{thm: atbt} is not conclusive if there is no an eigenvector of $A^T$ in the kernel of $B^T$.
 
-This theorem is about how to (easily) check the condition in Theorem 4.
+The following theorem is an alternative to testing the controllability matrix.
 \begin{theorem}
 	The (constant) pair $(A,B)$ is controllable if and only if the rank of $\begin{bmatrix}A-\lambda I & B\end{bmatrix}$ is $n$.
 \end{theorem}
