@@ -572,11 +572,9 @@ The following theorem is the combination of the Definition \ref{def: con} and Th
 The following theorem is an easy check numerically.
 \begin{theorem}
 	\label{thm: atbt}
-	The (constant) pair $(A,B)$ is not controllable if there is an eigenvector of $A^T$ in the kernel of $B^T$.
+	The (constant) pair $(A,B)$ is controllable if and only if there is no eigenvector of $A^T$ in the kernel of $B^T$.
 \end{theorem}
-Note that Theorem \ref{thm: atbt} is not conclusive if there is no an eigenvector of $A^T$ in the kernel of $B^T$.
-
-The following theorem is an alternative to testing the controllability matrix.
+The following theorem is a restatement of the previous one.
 \begin{theorem}
 	The (constant) pair $(A,B)$ is controllable if and only if the rank of $\begin{bmatrix}A-\lambda I & B\end{bmatrix}$ is $n$.
 \end{theorem}
