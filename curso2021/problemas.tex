@@ -78,5 +78,27 @@ Given the following linear sytem
 \section{Question 5}
 Given a second-order system $\ddot x(t) = u(t) = \cos(t)$, where $x\in\mathbb{R}$, and $y(t) = x_1(t)$, please, design an observer to estimate $x_2(t)$.
 
+\section{Question 6}
+Given the following system
+\begin{equation}
+	\Sigma_{\text{linear}} := \begin{cases}
+		\dot x(t) &= \begin{bmatrix}0 & 1 \\ -2 & 0\end{bmatrix}x(t) \\
+			y(t) &= \begin{bmatrix}4 & -7\end{bmatrix}x(t)
+	\end{cases},
+\label{eq: sigmalin}
+\end{equation}
+please, design an observer to estimate $x(t)$.
+
+\section{Question 7}
+Given the following system
+\begin{equation}
+	\Sigma_{\text{linear}} := \begin{cases}
+		\dot x(t) &= \begin{bmatrix}1 & 1 \\ -2 & 1\end{bmatrix}x(t) \\
+			y(t) &= \begin{bmatrix}1 & 0\end{bmatrix}x(t)
+	\end{cases},
+\label{eq: sigmalin}
+\end{equation}
+please, design a controller such that $x(t) \to 0$, as $t\to\infty$.
+
 
 \end{document}
