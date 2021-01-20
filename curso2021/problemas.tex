@@ -93,7 +93,7 @@ please, design an observer to estimate $x(t)$.
 Given the following system
 \begin{equation}
 	\Sigma_{\text{linear}} := \begin{cases}
-		\dot x(t) &= \begin{bmatrix}1 & 1 \\ -2 & 1\end{bmatrix}x(t) \\
+		\dot x(t) &= \begin{bmatrix}1 & 1 \\ -2 & 1\end{bmatrix}x(t) + \begin{bmatrix}0 \\ 1 \end{bmatrix} u(t)\\
 			y(t) &= \begin{bmatrix}1 & 0\end{bmatrix}x(t)
 	\end{cases},
 \label{eq: sigmalin}
