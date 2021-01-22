@@ -44,7 +44,7 @@ Las preguntas que hay que contestar para la práctica/simulación sobre el contr
 
 			\item Mismo objetivo que el apartado anterior, pero esta vez considera que solo puedes medir posición angular. Por lo tanto, tendrás que diseñar un estimador para poder implementar $u = -K\hat x$. Pon los autovalores del estimador $(A-LC)$ dos veces más grandes que los diseñados para $(A-BK)$. Cuando utilizamos un estimador, y a partir únicamente de tus observaciones a las gráficas de los estados reales del motor ¿se cumplen los valores máximos admisibles para el diseño de LQR?
 		\end{itemize}
-	\item Motor con un modelo (ya en tiempo discretizado) más realista (modelo de la Figura 4.7 en las prácticas). Mismas preguntas que en el modelo de continua pero sin \emph{LQR}. Por ejemplo, \emph{pasa directamente a discreto} los autovalores de $(A-BK)$ con la $K$ diseñada con el \emph{LQR} para el modelo ideal en tiempo continuo. Para el estimador, también \emph{pasa directamente a discreto} los autovalores de $(A-LC)$ del modelo anterior en tiempo continuo.
+	\item Motor con un modelo (ya en tiempo discretizado) más realista es el \emph{modelo\_realista.slx}. Mismas preguntas que en el modelo de continua pero sin \emph{LQR}. Por ejemplo, para el diseño del controlador de este modelo \emph{pasa directamente a discreto} los autovalores de $(A-BK)$ con la $K$ diseñada con el \emph{LQR} para el modelo ideal en tiempo continuo. Para el estimador, también \emph{pasa directamente a discreto} los autovalores de $(A-LC)$ del modelo anterior en tiempo continuo.
 \end{itemize}
 
 El modelo del motor en tiempo continuo es el siguiente
@@ -57,10 +57,9 @@ El modelo del motor en tiempo continuo es el siguiente
 \end{equation}
 donde $x(t) = \begin{bmatrix}\theta(t) \\ \dot\theta(t) \end{bmatrix}$, $p = 50$ y $k_e = 100$. Las unidades de $\theta$ están en grados. Las unidades de la entrada $u(t)$ están en voltios.
 
-	Intenta diseñar el controlador y estimador tal que $u(t)$ estén entre $\pm 12$ voltios. Con el diseño \emph{LQR} más o menos podrías garantizarlo. Puedes asumir que nunca vamos a querer mover el motor más de $\theta^* = 90$ grados, y que empezamos siempre en reposo. Puedes intentar encontrar por prueba y error (en el diseño \emph{LQR}) cual sería la velocidad angular máxima admisible tal que $u(t)$ siempre esté entre $\pm 12$ voltios. Recuerda, que la posición máxima admisible será siempre mayor o igual a $\theta^*$, que es tu posición inicial.
+	Intenta diseñar el controlador y estimador tal que $u(t)$ esté entre $\pm 12$ voltios. Con el diseño \emph{LQR} más o menos podrías garantizarlo. Puedes asumir que nunca vamos a querer mover el motor más de $\theta^* = 90$ grados, y que empezamos siempre en reposo. Puedes intentar encontrar por prueba y error (en el diseño \emph{LQR}) cual sería la velocidad angular máxima admisible tal que $u(t)$ siempre esté entre $\pm 12$ voltios. Recuerda, que la posición máxima admisible será siempre mayor o igual a $\theta^*$, que es tu posición inicial.
 
-	Recuerda que para establecer la posición inicial en el modelo \emph{realista} también has de poner el contador inicial del encoder para la posición en $-\theta^*$.
-
+En \emph{motor\_realista.slx} ya he puesto dentro como condición inicial la variable \emph{pos\_ini} que tendrás que inicializar tú. La velocidad inicial ya está puesta y es $0$. También tienes que inicializar $T$ que es el periodo de muestreo (escoge $0.005$ segundos).
 
 
 \end{document}
