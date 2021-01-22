@@ -34,8 +34,30 @@
 
 
 \begin{document}
-\maketitle
 
+Las preguntas que hay que contestar para la práctica/simulación sobre el control de un motor de continua son las siguientes:
+
+\begin{itemize}
+	\item Motor ideal en tiempo continuo (\emph{modelo ABCD}).
+		\begin{itemize}
+			\item Considera que puedes medir posición y velocidad angular. Entonces, diseña un controlador por realimentación de estados $u = -Kx$ para mover el motor $\theta^*$ grados. Hazlo de dos maneras: 1\ Diseña $K$ poniendo los autovalores donde tú quieras; 2\ Mediante \emph{LQR}. Recuerda que el controlador lleva los estados a cero, por lo tanto la condición inicial del motor en posición ha de ser $-\theta^*$, y la velocidad inicial la que tú quieras.
+
+			\item Mismo objetivo que el apartado anterior, pero esta vez considera que solo puedes medir posición angular. Por lo tanto, tendrás que diseñar un estimador para poder implementar $u = -K\hat x$. Pon los autovalores del estimador $(A-LC)$ dos veces más grandes que los diseñados para $(A-BK)$. Cuando utilizamos un estimador, y a partir únicamente de tus observaciones a las gráficas de los estados reales del motor ¿se cumplen los valores máximos admisibles para el diseño de LQR?
+		\end{itemize}
+	\item Motor con un modelo (ya en tiempo discretizado) más realista (modelo de la Figura 4.7 en las prácticas). Mismas preguntas que en el modelo de continua pero sin \emph{LQR}. Por ejemplo, \emph{pasa directamente a discreto} los autovalores de $(A-BK)$ con la $K$ diseñada con el \emph{LQR} para el modelo ideal en tiempo continuo. Para el estimador, también \emph{pasa directamente a discreto} los autovalores de $(A-LC)$ del modelo anterior en tiempo continuo.
+\end{itemize}
+
+El modelo del motor en tiempo continuo es el siguiente
+\begin{equation}
+	\Sigma_{\text{linear}} := \begin{cases}
+		\dot x(t) &= \begin{bmatrix}0 & 1 \\ 0 & -p\end{bmatrix}x(t) + \begin{bmatrix}0 \\ k_e\end{bmatrix} u(t) \\
+			y(t) &= \begin{bmatrix}1 & 0\end{bmatrix}x(t)
+	\end{cases},
+\label{eq: sigmalin}
+\end{equation}
+donde $x(t) = \begin{bmatrix}\theta(t) \\ \dot\theta(t) \end{bmatrix}$, $p = 50$ y $k_e = 100$. Las unidades de $\theta$ están en grados. Las unidades de la entrada $u(t)$ están en voltios.
+
+	Intenta diseñar el controlador y estimador tal que $u(t)$ estén entre $\pm 12$ voltios. Con el diseño \emph{LQR} más o menos podrías garantizarlo. Puedes asumir que nunca vamos a querer mover el motor más de $\theta^* = 90$ grados, y que empezamos siempre en reposo. Puedes intentar encontrar por prueba y error (en el diseño \emph{LQR}) cual sería la velocidad angular máxima admisible tal que $u(t)$ siempre esté entre $\pm 12$ voltios. Recuerda, que la posición máxima admisible será siempre mayor o igual a $\theta^*$, que es tu posición inicial.
 
 
 
