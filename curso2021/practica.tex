@@ -59,6 +59,8 @@ donde $x(t) = \begin{bmatrix}\theta(t) \\ \dot\theta(t) \end{bmatrix}$, $p = 50$
 
 	Intenta diseñar el controlador y estimador tal que $u(t)$ estén entre $\pm 12$ voltios. Con el diseño \emph{LQR} más o menos podrías garantizarlo. Puedes asumir que nunca vamos a querer mover el motor más de $\theta^* = 90$ grados, y que empezamos siempre en reposo. Puedes intentar encontrar por prueba y error (en el diseño \emph{LQR}) cual sería la velocidad angular máxima admisible tal que $u(t)$ siempre esté entre $\pm 12$ voltios. Recuerda, que la posición máxima admisible será siempre mayor o igual a $\theta^*$, que es tu posición inicial.
 
+	Recuerda que para establecer la posición inicial en el modelo \emph{realista} también has de poner el contador inicial del encoder para la posición en $-\theta^*$.
+
 
 
 \end{document}
