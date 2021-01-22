@@ -572,11 +572,9 @@ The following theorem is the combination of the Definition \ref{def: con} and Th
 The following theorem is an easy check numerically.
 \begin{theorem}
 	\label{thm: atbt}
-	The (constant) pair $(A,B)$ is not controllable if there is an eigenvector of $A^T$ in the kernel of $B^T$.
+	The (constant) pair $(A,B)$ is controllable if and only if there is no eigenvector of $A^T$ in the kernel of $B^T$.
 \end{theorem}
-Note that Theorem \ref{thm: atbt} is not conclusive if there is no an eigenvector of $A^T$ in the kernel of $B^T$.
-
-The following theorem is an alternative to testing the controllability matrix.
+The following theorem is a restatement of the previous one.
 \begin{theorem}
 	The (constant) pair $(A,B)$ is controllable if and only if the rank of $\begin{bmatrix}A-\lambda I & B\end{bmatrix}$ is $n$.
 \end{theorem}
@@ -823,6 +821,51 @@ where $x\in\mathbb{R}^n$ is the state of the system, $u\in\mathbb{R}^k$ is the i
 	For example, if you did not need an observer, the region $x^* + \delta x$ where the linear controller is guaranteed to work is given in (\ref{eq: Bregion}).
 \end{enumerate}
 
+\subsubsection{Linear Quadratic Regulation (LQR)}
+
+If the pair $(A,B)$ is controllable, since we can place the eigenvalues of $A-BK$ wherever we like, one might ask what is the \emph{best} place?
+
+Here, the \emph{best} answers to the following criteria design. Consider that we focus our interest on the output
+\begin{equation}
+	z(t) = G x(t) + H u(t) \label{eq: z}.
+\end{equation}
+Of course, $z(t)\in\mathbb{R}^l$ might be equal to the output $y(t)$. However, it might be part of the signal $y(t)$ or even a totally different signal. We shall distinguish then between the output $y(t)$ for the control of the system through an estimator, and the output $z(t)$ that might answer to other interests.
+
+The LQR problem is defined as follows. Find the control input $u(t), t\in[0,\infty)$ that makes the following cost function as small as possible:
+\begin{equation}
+	J := \int_0^\infty z(t)^T \bar Q z(t) + \rho \, u(t)^T \bar R u(t) dt,
+	\label{eq: J}
+\end{equation}
+where $\bar Q\in\mathbb{R}^{l\times l}$ and $\bar R\in\mathbb{R}^{m\times m}$ are positive-definite matrices, and $\rho$ is a positive constant. Since $z = Gx + Hu$, then $J$ can be rewritten as
+\begin{equation}
+	J := \int_0^\infty x(t)^T Q x(t) + \, u(t)^T R u(t) + 2x(t)^T N u(t)dt,
+	\label{eq: J2},
+\end{equation}
+where $Q = G^T\bar Q G$, $R = H^T\bar QH + \rho \bar R$, and $N = G^T\bar Q H$.
+
+Note that with $\bar Q$, $\bar R$ and $\rho$ we are choosing how important are for us the energy minimization of the signals $z$ and $u$.
+
+If we are able to select a positive-definite matrix $P$ so that the \emph{algebraic Riccati equation}
+\begin{equation}
+	A^TP + PA + Q - (PB + N)R^{-1}(B^TP + N^T) = 0,
+\end{equation}
+then
+\begin{theorem}
+	If $A - BR^{-1}(B^TP+N^T)$ is a stability matrix. Then, the control input
+	\begin{equation}
+	u(t) = -R^{-1}(B^TP+N^T) x(t),
+	\end{equation}
+	minimizes $J$, furthermore, $J = x(0)^T P x(0)$.
+\end{theorem}
+
+A simple and reasonable choice for the matrices $\bar Q$ and $\bar R$ is given by the \emph{Bryson's rule}:
+
+\begin{align}
+	\bar Q_{ii} &= \frac{1}{\text{maximum acceptable value of}\, z_i^2} \nonumber \\
+	\bar R_{jj} &= \frac{1}{\text{maximum acceptable value of}\, u_j^2} \nonumber
+\end{align}
+
+
 %\subsection{Hint for the control of the DC motor}
 %If you want to drive the motor to the position $\theta^*$, then consider the linear system resultant from analyzing the following two error signals $e_\theta(t) = \theta(t) - \theta^*$ and $e_v(t) = \dot\theta(t) - 0$ (because we want the motor to stop at $\theta^*$), i.e., we have the linear system $\dot e_\theta(t) = \dot \theta(t), \quad \dot e_v(t) = \ddot\theta(t)$. Therefore, what we want to do is to stabilize the point $e = \begin{bmatrix}0 \\ 0 \end{bmatrix}$, and you can apply the above methodology to design a controller to stabilize the origin of $e$, i.e., to find an input $u(t)$ to the motor such that $e(t)\to 0$ as $t\to\infty$.
 
@@ -888,9 +931,9 @@ Now consider the following Lyapunov candidate function
 \end{equation}
 	whose time derivative satisfies (for now consider $\dot p^*(t) = 0$)\footnote{Recall that the gradient is written as a row vector.}
 	\begin{equation}
-		\frac{\mathrm{d}V}{\mathrm{dt}} = e\dot e + \dot p^T\ddot p = e \nabla\phi(p)\dot p + \dot p^T u,
+		\frac{\mathrm{d}V}{\mathrm{dt}} = e\dot e + \dot p^T\ddot p = e \nabla\phi(p) \dot p + \dot p^T u,
 	\end{equation}
-	therefore if one chooses $u = -e \nabla\phi(p) -\dot p$, then we have that
+	therefore if one chooses $u = -e \nabla\phi(p)^T -\dot p$, then we have that
 	\begin{equation}
 \frac{\mathrm{d}V}{\mathrm{dt}} = -||\dot p||^2 \leq 0,
 	\end{equation}
