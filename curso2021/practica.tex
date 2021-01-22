@@ -57,7 +57,7 @@ El modelo del motor en tiempo continuo es el siguiente
 \end{equation}
 donde $x(t) = \begin{bmatrix}\theta(t) \\ \dot\theta(t) \end{bmatrix}$, $p = 50$ y $k_e = 100$. Las unidades de $\theta$ están en grados. Las unidades de la entrada $u(t)$ están en voltios.
 
-	Intenta diseñar el controlador y estimador tal que $u(t)$ esté entre $\pm 12$ voltios. Con el diseño \emph{LQR} más o menos podrías garantizarlo. Puedes asumir que nunca vamos a querer mover el motor más de $\theta^* = 90$ grados, y que empezamos siempre en reposo. Puedes intentar encontrar por prueba y error (en el diseño \emph{LQR}) cual sería la velocidad angular máxima admisible tal que $u(t)$ siempre esté entre $\pm 12$ voltios. Recuerda, que la posición máxima admisible será siempre mayor o igual a $\theta^*$, que es tu posición inicial.
+	Intenta diseñar el controlador y estimador tal que $u(t)$ esté entre $\pm 12$ voltios. Con el diseño \emph{LQR} más o menos podrías garantizar ese valor máximo asumible para la entrada. Puedes asumir que nunca vamos a querer mover el motor más de $\theta^* = 90$ grados, y que empezamos siempre en reposo. Recuerda, que la posición máxima admisible será siempre mayor o igual a $\theta^*$, que es tu posición inicial.
 
 En \emph{motor\_realista.slx} ya he puesto dentro como condición inicial la variable \emph{pos\_ini} que tendrás que inicializar tú. La velocidad inicial ya está puesta y es $0$. También tienes que inicializar $T$ que es el periodo de muestreo (escoge $0.005$ segundos).
 
