@@ -346,12 +346,8 @@ We say that the linear system (\ref{eq: sigmalin}) \emph{in the sense of Lyapuno
 
 %In control, it is very common to focus on \emph{error signals}, e.g., $e(t) := x(t) - x^*(t)$, where $x^*(t)$ is a trajectory goal. Note that if $x^*$ is constant, then $\dot e(t) = \dot x(t)$, and this is why we focus on having $x(t) \to 0$ as $t\to\infty$ in the above definitions for (\ref{eq: sigmalin}).
 
-Let us now check the particular case when $A$ is constant, i.e., $\Phi(t,t_0) = e^{A(t-t_0)}$. Then, we can stablish a clear relation between the eigenvalues of $A$ and the stability definitions in the sense of Lyapunov by inspecting the solution to $\dot x(t) = Ax(t)$ given by
-\begin{equation}
-	x(t) = \sum_{l=1}^n f_le^{\lambda_l t},
-\label{eq: solptcom}
-\end{equation}
-where $\lambda_l$ are the eigenvalues of $A$, $f_l(t,c_l,\dots,c_n,w_l,\dots,w_n)$ are different functions corresponding to linear combinations like $c_lw_l + c_{l+1}(w_{l+1}+w_lt)+\dots$ depending on the (possibly generalized) eigenvectors $w_l$ associated to $\lambda_t$, and $c_l$ are constants determined by the initial condition $x(0)$. Note that for single eigenvalues we have that $f_l = w_l$.
+Let us now check the particular case when $A$ is constant, i.e., $\Phi(t,t_0) = e^{A(t-t_0)}$. Then, we can stablish a clear relation between the eigenvalues of $A$ and the stability definitions in the sense of Lyapunov by inspecting the solution to $\dot x(t) = Ax(t)$ given by (\ref{eq: solptcom}).
+
 
 The system $\dot x(t) = Ax(t)$
 \begin{enumerate}
