@@ -297,12 +297,9 @@ Note that $A = P^{-1}JP$ as well, and we leave as an exercise to prove that
 so we can calculate
 \begin{align}
 	exp(At) &= P^{-1}\left(\sum_{k=0}^\infty \frac{t^k}{k!} \begin{bmatrix}J_1^k & 0 & \cdots & 0 \\ 0 & J_2^k & \cdots & 0 \\ \vdots & \vdots & \cdots & \vdots \\ 0 & 0 & \cdots & J_l^k \end{bmatrix} \right) P \nonumber \\
-		&= P^{-1} \begin{bmatrix}exp(J_1t) & 0 & \cdots & 0 \\ 0 & exp(J_2t) & \cdots & 0 \\ \vdots & \vdots & \cdots & \vdots \\ 0 & 0 & \cdots & exp(J_lt) \end{bmatrix} P.
+		&= P^{-1} \begin{bmatrix}exp(J_1t) & 0 & \cdots & 0 \\ 0 & exp(J_2t) & \cdots & 0 \\ \vdots & \vdots & \cdots & \vdots \\ 0 & 0 & \cdots & exp(J_lt) \end{bmatrix} P. \label{eq: pap}
 \end{align}
-
-Therefore if $J$ is just a diagonal matrix with the eigenvalues of $A$, i.e., $J_l = \lambda_l \in \mathbb{C}$, then $exp(J_lt) = e^{\lambda_lt} \in\mathbb{C}$ is a trivial calculation.
-
-In general, we have that
+Where in general, from each Jordan block we have that
 \begin{equation}
 	exp(J_it) = e^{\lambda_i t}
 	\begin{bmatrix}1 & t & \frac{t^2}{2!} & \frac{t^3}{3!} & \cdots & \frac{t^{n_i-1}}{(n_i-1)!} \\
@@ -311,15 +308,28 @@ In general, we have that
 	\vdots & \vdots & \vdots & \ddots & \ddots & \vdots \\
 	0 & 0 & 0 & 0 & \ddots & t \\
 	0 & 0 & 0 & 0 & \cdots & 1
-\end{bmatrix},
+	\end{bmatrix}, \label{eq: jit}
 \end{equation}
 where $n_i$ is the size of the corresponding Jordan block.
+
+Note that the columns of $P$ are the (possibly generalized) eigenvectors of $A$. Therefore, if all the Jordan blocks $J_i$ have size $1\times 1$, e.g., if all the eigenvalues of $A$ are different, then we have that $J_i = \lambda_i \in \mathbb{C}, \forall i$, then $exp(J_it) = e^{\lambda_it} \in\mathbb{C}, \forall i$, and the matrix in the middle in (\ref{eq: pap}) is diagonal. In such a case, we can write (\ref{eq: xexp}) in a more friendly way as
+\begin{equation}
+	x(t) = \sum_{i=1}^n c_i p_i e^{\lambda_i t},
+\end{equation}
+where $c_i\in\mathbb{R}$ depends on the initial condition $x(0)$ and $p_i$ is the i-th column of $P$.
+
+In general, if we have Jordan blocks with arbitrary sizes, then (\ref{eq: xexp}) can be written as
+\begin{equation}
+	x(t) = \sum_{i=1}^n f_ie^{\lambda_i t},
+\label{eq: solptcom}
+\end{equation}
+where looking at (\ref{eq: jit}) we can identify $f_i(t,c_l,\dots,c_n,w_l,\dots,w_n)$ as functions corresponding to linear combinations like $c_ip_i + c_{i+1}(p_{i+1}+p_it)+\dots$ depending on the (possibly generalized) eigenvectors $p_i$ of $A$.
 
 \subsubsection{Connection between the eigenvalues of $A$ and the $exp(At)$}
 Now, let us check the consequences and connections between the eigenvalues of $A$ and the $exp(At)$:
 \begin{enumerate}
 	\item When all the eigenvalues of $A$ have strictly negative real parts, then all the $exp(J_it) \to 0$ as $t\to\infty$. Thus, $exp(At)\to 0 $ as $t\to\infty$.
-	\item When all the eigenvalues of $A$ have negative or zero real parts and all the Jordan blocks corresponding to eigenvalues with zero real parts are $1\times 1$, then all the $exp(J_it)$ remain bounded as $t\to\infty$. Thus, $exp(At)\to 0 $ remains bounded as $t\to\infty$.
+	\item When all the eigenvalues of $A$ have negative or zero real parts and all the Jordan blocks corresponding to eigenvalues with zero real parts are $1\times 1$, then all the $exp(J_it)$ remain bounded as $t\to\infty$. Thus, $exp(At)$ remains bounded as $t\to\infty$.
 	\item When at least one eigenvalue of $A$ has a positive real part or a zero real part with the corresponding Jordan block bigger than $1\times 1$, then $exp(At)$ is unbounded as $t\to\infty$.
 \end{enumerate}
 
