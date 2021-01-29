@@ -320,10 +320,10 @@ where $c_i\in\mathbb{R}$ depends on the initial condition $x(0)$ and $p_i$ is th
 
 In general, if we have Jordan blocks with arbitrary sizes, then (\ref{eq: xexp}) can be written as
 \begin{equation}
-	x(t) = \sum_{i=1}^n f_ie^{\lambda_i t},
+	x(t) = \sum_{i=1}^n f_i(t,c_i,\dots,c_n,p_i,\dots,p_n)e^{\lambda_i t},
 \label{eq: solptcom}
 \end{equation}
-where looking at (\ref{eq: jit}) we can identify $f_i(t,c_l,\dots,c_n,w_l,\dots,w_n)$ as functions corresponding to linear combinations like $c_ip_i + c_{i+1}(p_{i+1}+p_it)+\dots$ depending on the (possibly generalized) eigenvectors $p_i$ of $A$.
+where looking at (\ref{eq: jit}) we can identify $f_i(t,c_i,\dots,c_n,p_i,\dots,p_n)$ as functions corresponding to linear combinations like $c_ip_i + c_{i+1}(p_{i+1}+p_it)+\dots$ depending on the (possibly generalized) eigenvectors $p_i$ of $A$.
 
 \subsubsection{Connection between the eigenvalues of $A$ and the $exp(At)$}
 Now, let us check the consequences and connections between the eigenvalues of $A$ and the $exp(At)$:
