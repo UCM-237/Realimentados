@@ -1,74 +1,96 @@
-\chapter{Control methodologies for state-space systems}
+\chapter{Diseño de controladores para sistemas en el espacio de estados}
 
-\section{Trajectory tracking}
-Consider the following second-order kinematic system
+\section{Seguidor de trayectorias deseadas}
+Considera el sistema $\Sigma$ en (\ref{eq: sigma}). Dada una señal deseada o trayectoria $x^*(t)\in\mathbb{R}^n$, nuestro objetivo es diseñar $u(t)\in\mathbb{R}^k$ tal que $x(t) \to x^*(t)$ para $t\to\infty$.
+
+Para ello vamos a construir la función de error
+\begin{equation}
+	e(t) := x(t) - x^*(t),
+\end{equation}
+junto con la siguiente función candidata de Lyapunov
+\begin{equation}
+	V(t) = \frac{1}{2}||e(t)||^2,
+	\label{eq: lyaE}
+\end{equation}
+cuya derivada temporal satisface
+\begin{equation}
+	\frac{\mathrm{d}V}{\mathrm{dt}} = e^T\dot e = e^T\big(\dot x(t) - \dot x^*(t)\big) = e^Tf(x,u) - e^T \dot x^*(t).
+\end{equation}
+Podemos garantizar que $e(t)\to 0$ cuando $t\to\infty$ si para un conjunto compacto $\mathcal{B} := \{e : ||e|| \leq \rho, \, \rho\in\mathbb{R}_+ \}$ tenemos que $\frac{\mathrm{d}V}{\mathrm{dt}} < 0$ si $e\in\mathcal{B} \setminus \{0\}$ y $\frac{\mathrm{d}V}{\mathrm{dt}} = 0$ si $e = 0$.
+
+\subsection{Ejemplo con un sistema cinemático de segundo orden}
+Considera el siguiente sistema cinemático de segundo orden
 \begin{equation}
 	\ddot p(t) = u,
 	\label{eq: pdyn}
 \end{equation}
-where $p,u\in\mathbb{R}^n$ are the \emph{positions} and the \emph{acceleration} inputs respectively in a $l\in\mathbb{N}$-dimensional space. Let us focus on $l=2$, then we will have a linear system with
+donde $p,u\in\mathbb{R}^n$ son las \emph{posiciones} y las \emph{aceleraciones} respectivamente en un espacio $l\in\mathbb{N}$-dimensional. Vamos a particularizar para $l=2$. Apilamos las posiciones y velocidades $p_x,p_y,\dot p_x$ y $\dot p_y$ en $x\in\mathbb{R}^4$, consideramos que podemos medir $x$, y apilamos las aceleraciones $\ddot p_x$ y $\ddot p_y$ en $u\in\mathbb{R}^2$. Por lo que las funciones $f$ y $g$ del sistema $\Sigma$ (\ref{eq: sigma}) son
 \begin{equation}
-	A = \begin{bmatrix}0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 0 \\
-		0 & 0 & 0 & 1 \\ 0 & 0 & 0 & 0 \end{bmatrix}, \quad B = \begin{bmatrix}0 & 0  \\ 1 & 0  \\ 0 & 0 \\ 0 & 1\end{bmatrix},
+	\begin{cases}
+		f &= \begin{bmatrix}0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 0 \\
+		0 & 0 & 0 & 1 \\ 0 & 0 & 0 & 0 \end{bmatrix} x + \begin{bmatrix}0 & 0  \\ 1 & 0  \\ 0 & 0 \\ 0 & 1\end{bmatrix} u \\
+			g &= x.
+\end{cases}
 \end{equation}
-and for now we assume that we can measure all the states, i.e., $y = x$, so $C = I_4$.
 
-We define as trajectory the desired signal to be tracked, i.e.,
+Definimos como trayectorias deseadas para seguir
 \begin{equation}
 	p^*(t) = f(t), \quad \dot p^*(t) = f'(t),
 \end{equation}
-where $f(t) \in C^2$ function.
-Let us construct the following error signals for the states
+donde $f(t) \in C^2$.
+Vamos a construir las siguientes señales de error
 \begin{equation}
-	e_1(t) = p(t) - p^*(t), \quad e_2(t) = \dot p(t) - \dot p^*(t).
+	e_1(t) = p(t) - p^*(t), \quad e_2(t) = \dot p(t) - \dot p^*(t),
 \end{equation}
-Now consider the following Lyapunov candidate function
+	para definir la siguiente función candidata de Lyapunov al estilo de (\ref{eq: lyaE}).
 \begin{equation}
 	V(e(t)) = \frac{1}{2}||e(t)||^2,
 	\label{eq: Ve}
 \end{equation}
-	where $e(t)\in\mathbb{R}^4$ is the stacked error vector with components $e_1, e_2$. The time derivative of ($\ref{eq: Ve}$) satisfies
+	en donde $e(t)\in\mathbb{R}^4$ hemos apilado $e_1$ y $e_2$. La derivada temporal de ($\ref{eq: Ve}$) satisface
 \begin{align}
 	\frac{\mathrm{d}V}{\mathrm{dt}} &= e^T\dot e = e_1^T\dot e_1 + e_2^T\dot e_2 =  e_1^T(\dot p - f'(t)) + e_2^T(u - f''(t)) \nonumber \\
 	&= e_1^Te_2 + e_2^T(u - f''(t))
 \end{align}
-	if one chooses 
+por lo que si uno escoge
 	\begin{equation}
 	u = f''(t) - e_1 - e_2 = f''(t) - p(t) + f(t) -\dot p(t) + f'(t),
 	\label{eq: ue}
 	\end{equation}
-	leads to
+nos lleva a
 	\begin{equation}
 \frac{\mathrm{d}V}{\mathrm{dt}} = -||e_2||^2 \leq 0.
 	\end{equation}
-	In fact, the time derivative of $V(t)$ is only zero when $e_2 = 0$. Therefore, by invoking the LaSalle's invariance principle, we must check that the largest invariant set for the dynamics of the (autonomous) error system (when $u$ equals (\ref{eq: ue})) when $e_2 = 0$, i.e., 
+	De hecho, la derivada temporal de $V(t)$ es cero sí y solo sí $e_2 = 0$. Por lo que para invocar al principio de invariance de LaSalle, debemos comprobar cual es el conjunto invariante más grande del sistema (autónomo) error $\dot e$ cuando $e_2 = 0$, esto es,
 	\begin{equation}
 	\begin{cases}
 	\dot e_1 &= e_2 \\
 	\dot e_2 &= -e_1 -e_2
 	\end{cases},
 	\end{equation}
-	and we can see that when $e_2 = 0$, the largest invariant set is $e_1 = e_2 = 0$. Consequently, we can conclude that $e(t) \to 0$ as $t\to\infty$.
+	donde se puede ver que cuando $e_2 = 0$, el conjunto invariante más grande es $e_1 = e_2 = 0$. Consecuentemente, podemos concluir que $e(t) \to 0$ cuando $t\to\infty$ para cualquier $e(0)$ empezando en $\mathcal{B}$ con un $\rho$ arbitrario, esto es, tenemos convergencia global.
 
-	\section{Design of limit cycles for planar systems}
-	Now we want to attract the position of system (\ref{eq: pdyn}) to the \emph{curve} $\phi(p_x, p_y) = 0$, which is an implicit equation where the position $p$ is at the level set zero. For example, for a circle of radius $r\in\mathbb{R}_+$ we might consider
+	\section{Diseño de ciclos límites para sistemas planos}
+	Consideremos de nuevo el sistema (\ref{eq: pdyn}) para $l=2$, es decir, seguimos en 2D, o un sistema en el plano. En vez de querer seguir una trayectoria $p^*(t)$, queremos que la posición converja a un \emph{camino} cerrado que además sea un ciclo límite. El camino cerrado lo podemos definir como una curva $\phi(p_x, p_y) = 0$, es decir, todos los puntos con curva de nivel igual a cero definen \emph{el camino}. Por ejemplo, un círculo de radio $r\in\mathbb{R}_+$ 
+ satisface
 	\begin{equation}
 	\phi(p) := p_x^2 + p_y^2 - r^2 = 0.
 	\end{equation}
-	Note that we can consider $\phi(p)$ as an error signal, i.e., $e(t) := \phi(p(t))$. Now, consider the following Lyapunov candidate
+Atención a que podemos considerar $\phi(p)$ como una señal de error, i.e., $e(t) := \phi(p(t))$. Consecuentemente, podemos definir la siguiente función candidata de Lyapunov.
 \begin{equation}
 	V(e(t)) = \frac{1}{2}e(t)^2 + \frac{1}{2}||\dot p(t) - \dot p^*(t)||^2,
 	\label{eq: Ve2}
 \end{equation}
-	whose time derivative satisfies (for now consider $\dot p^*(t) = 0$)\footnote{Recall that the gradient is written as a row vector.}
+	cuya derivada temporal satisface (por ahora considera $\dot p^*(t) = 0$).
 	\begin{equation}
 		\frac{\mathrm{d}V}{\mathrm{dt}} = e\dot e + \dot p^T\ddot p = e \nabla\phi(p) \dot p + \dot p^T u,
 	\end{equation}
-	therefore if one chooses $u = -e \nabla\phi(p)^T -\dot p$, then we have that
+	entonces, si uno escoge $u = -e \nabla\phi(p)^T -\dot p$, entonces tenemos que
 	\begin{equation}
 \frac{\mathrm{d}V}{\mathrm{dt}} = -||\dot p||^2 \leq 0,
 	\end{equation}
-and by LaSalle's invariance principle we can conclude that $e(t) \to 0$ as $t\to\infty$.
+y, similarmente a como hemos hecho en la sección anterior, por el principio de invarianza de LaSalle's concluimos que $e(t) \to 0$ cuando $t\to\infty$.
 
-What would happen if $\dot p^*(t) = \begin{bmatrix}0 & 1 \\ -1 & 0\end{bmatrix}\nabla\phi(p)^T$?
+\subsection{Ejercicio}
+Para que $\phi(p)$ sea un ciclo límite, la posición no solo ha de converger a ese camino, sino que ha de evolucionar en él en el tiempo. Para ello considera $\dot p^*(t) = \begin{bmatrix}0 & 1 \\ -1 & 0\end{bmatrix}\nabla\phi(p)^T$, y concluye que ahora $\phi(p)$ sí es un ciclo límite.
 
