@@ -1,21 +1,20 @@
 \chapter{Modelado de sistemas dinámicos}
-Warning: Section in progress
 
-\section{State-space systems}
-We will focus on systems that can be described by quantifiable characteristics or states, e.g., temperature, velocity or voltage. These states might change over time. One might interact with a system via a quantifiable input, and one might measure some information from the states of the system via a quantifiable output.
+\section{Sistemas en el espacio de estados}
+Nos vamos a centrar en sistemas que puedan ser descritos por características cuantificables. A estas características las vamos a llamar {\bf estados}, como por ejemplo, una temperatura, una velocidad, o un voltaje. Si estos estados dependen del tiempo, entonces, llamamos {\bf señal} a la sucesión de valores de los estados en el tiempo. Uno podría interaccionar con el sistema a través de una {\bf entrada} cuantificable, y a su vez medir información del sistema a través de una {\bf salida} cuantificable.
 
-Let us define $x(t)\in\mathbb{R}^n$, $y(t)\in\mathbb{R}^m$ and $u(t)\in\mathbb{R}^k$ as the stacked (signal) vector of states, the output, and the input of a system $\Sigma$ respectively. In particular, we will describe them as continuous signals over time, e.g., $x :[0,\infty) \to \mathbb{R}^n$. 
+Vamos a definir $x(t)\in\mathbb{R}^n$, $y(t)\in\mathbb{R}^m$ y $u(t)\in\mathbb{R}^k$ como el vector apilado de estados, la salida, y la entrada a un sistema $\Sigma$ respectivamente. En particular, son señales, e.g., $x :[0,\infty) \to \mathbb{R}^n$.
 
-The system $\Sigma$ is a model that predicts the value of the states and the output over time. This prediction incorporates the impact of the input on the states and the output. We utilize differential equations as a tool to predict the evolution of the states of the system $\Sigma$ over time as follows
+El sistema $\Sigma$ es un modelo que predice el valor de los estados y la salida a lo largo del tiempo. Esta predicción incorpora la interacción de la entrada en los estados y la salida. En particular, vamos a emplear ecuaciones diferenciales como herramienta para predecir la evolución en el tiempo de los estados del sistema $\Sigma$ como se muestra a continuación
 \begin{equation}
 	\Sigma := \begin{cases}
 		\dot x(t) =& f(x(t),u(t)) \\ y(t) =& g(x(t),u(t))
 	\end{cases}, 
 \label{eq: sigma}
 \end{equation}
-where $\dot x := \frac{\mathrm{d}}{\mathrm{dt}}(x(t))$ is the short notation for total derivative with respect to time, and $f: \mathbb{R}^n \times \mathbb{R}^k \to \mathbb{R}^n$ and $g: \mathbb{R}^n \times \mathbb{R}^k \to \mathbb{R}^m$ are functions.
+en donde $\dot x := \frac{\mathrm{d}}{\mathrm{dt}}(x(t))$ es la notación para la derivada total con respecto del tiempo, y $f: \mathbb{R}^n \times \mathbb{R}^k \to \mathbb{R}^n$ y $g: \mathbb{R}^n \times \mathbb{R}^k \to \mathbb{R}^m$ son funciones.
 
-We can represent the system $\Sigma$ as a block with input/output ports as in figure \ref{fig: sigma}.
+Podemos representar el sistema $\Sigma$ como un bloque con puertos de entrada y de salida como se muestra en la figura \ref{fig: sigma}.
 
 \begin{figure}[!h]
 \centering
@@ -26,7 +25,7 @@ We can represent the system $\Sigma$ as a block with input/output ports as in fi
 	\draw [draw,->] (input) -- node {$u(t)$} (system);
 	\draw [->] (system) -- node [name=y] {$y(t)$}(output);
 \end{tikzpicture}
-	\caption{Input/output block diagram of system $\Sigma$.}
+	\caption{Diagrama de bloque entrada/salida del sistema $\Sigma$.}
 	\label{fig: sigma}
 \end{figure}
 
