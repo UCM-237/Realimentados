@@ -1,0 +1,105 @@
+\documentclass[11pt,a4paper,titlepage]{article}
+
+\usepackage[pdftex]{graphicx}
+\usepackage{epstopdf}
+\usepackage{subfigure}
+\usepackage{amsmath,amsthm}
+\usepackage{tikz}
+\usetikzlibrary{babel}
+\usetikzlibrary{shapes, arrows}
+\textwidth= 15cm
+\evensidemargin=0cm
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{textcomp}
+\usepackage{amstext}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[hyperindex=true,breaklinks=true,colorlinks=true,linkcolor=blue]{hyperref}
+
+
+\title{Short questions}
+\author{Hector Garcia de Marina}
+
+\tikzstyle{block} = [draw, rectangle, minimum width=6em]
+\tikzstyle{sum} = [draw, fill=blue!20, circle, node distance=1cm]
+\tikzstyle{input} = [coordinate]
+\tikzstyle{output} = [coordinate]
+\tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
+
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{algo}{Algorithm}
+\newtheorem{remark}{Remark}
+
+
+\begin{document}
+\maketitle
+\section{Question 1}
+Consider the following matrices coming from a linear system model.
+
+\begin{align}
+	A_1 &= \begin{bmatrix}3 & 0 \\ 0 & -6\end{bmatrix}, &A_2 = \begin{bmatrix}3 & 0.1 \\ 0 & -6\end{bmatrix}, \nonumber \\
+		B_1 &= \begin{bmatrix}1 \\ 0\end{bmatrix}, & B_2 = \begin{bmatrix}0 \\ 1\end{bmatrix}. \nonumber \\
+\end{align}
+
+\begin{enumerate}
+\item Is the pair $(A_1, B_1)$ controllable?
+\item Is the pair $(A_1, B_1)$ stabilizable?
+\item Is the pair $(A_1, B_2)$ controllable?
+\item Is the pair $(A_1, B_2)$ stabilizable?
+\item Is the pair $(A_2, B_1)$ controllable?
+\item Is the pair $(A_2, B_1)$ stabilizable?
+\item Design $B$ such that $(A_1, B)$ is controllable.
+\end{enumerate}
+
+\section{Question 2}
+Given a second-order system $\ddot x(t) = u(t)$, where $x\in\mathbb{R}$, design a controller $u(t)$ such that $x(t) \to cos(t)$ as $t\to\infty$.
+
+\section{Question 3}
+Given a second-order system $\ddot x(t) = u(t)$, where $x\in\mathbb{R}^2$ design a controller $u(t)$ such that $x(t) \to \mathcal{C}$, where $C := \{x_1^2 + x_2^2 = 1\}$ as $t\to\infty$.
+
+\section{Question 4}
+Given the following linear sytem
+\begin{equation}
+	\Sigma_{\text{linear}} := \begin{cases}
+		\dot x(t) &= -\begin{bmatrix}1 & -1 \\ -1 & 1\end{bmatrix}x(t) \\
+			y(t) &= \begin{bmatrix}1 & 0\end{bmatrix}x(t)
+	\end{cases},
+\label{eq: sigmalin}
+\end{equation}
+
+\begin{itemize}
+\item Is it observable?
+\item Is it stable in the sense of Lyapunov?
+\item Find the analytic solution of $x(t)$, and verify that your prediction checks out with the numerical simulation.
+\item What can you say about the behavior of $z(t) := x_1(t) - x_2(t)$? Find the analytic solution of $z(t)$, and verify that your prediction checks out with its numerical solution. Is the behavior of $z(t)$ coherent with $x(t)$?
+\end{itemize}
+
+\section{Question 5}
+Given a second-order system $\ddot x(t) = u(t) = \cos(t)$, where $x\in\mathbb{R}$, and $y(t) = x_1(t)$, please, design an observer to estimate $x_2(t)$.
+
+\section{Question 6}
+Given the following system
+\begin{equation}
+	\Sigma_{\text{linear}} := \begin{cases}
+		\dot x(t) &= \begin{bmatrix}0 & 1 \\ -2 & 0\end{bmatrix}x(t) \\
+			y(t) &= \begin{bmatrix}4 & -7\end{bmatrix}x(t)
+	\end{cases},
+\label{eq: sigmalin}
+\end{equation}
+please, design an observer to estimate $x(t)$.
+
+\section{Question 7}
+Given the following system
+\begin{equation}
+	\Sigma_{\text{linear}} := \begin{cases}
+		\dot x(t) &= \begin{bmatrix}1 & 1 \\ -2 & 1\end{bmatrix}x(t) + \begin{bmatrix}0 \\ 1 \end{bmatrix} u(t)\\
+			y(t) &= \begin{bmatrix}1 & 0\end{bmatrix}x(t)
+	\end{cases},
+\label{eq: sigmalin}
+\end{equation}
+please, design a controller such that $x(t) \to 0$, as $t\to\infty$.
+
+
+\end{document}
