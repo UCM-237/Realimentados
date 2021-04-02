@@ -1,0 +1,74 @@
+\chapter{Control methodologies for state-space systems}
+
+\section{Trajectory tracking}
+Consider the following second-order kinematic system
+\begin{equation}
+	\ddot p(t) = u,
+	\label{eq: pdyn}
+\end{equation}
+where $p,u\in\mathbb{R}^n$ are the \emph{positions} and the \emph{acceleration} inputs respectively in a $l\in\mathbb{N}$-dimensional space. Let us focus on $l=2$, then we will have a linear system with
+\begin{equation}
+	A = \begin{bmatrix}0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 0 \\
+		0 & 0 & 0 & 1 \\ 0 & 0 & 0 & 0 \end{bmatrix}, \quad B = \begin{bmatrix}0 & 0  \\ 1 & 0  \\ 0 & 0 \\ 0 & 1\end{bmatrix},
+\end{equation}
+and for now we assume that we can measure all the states, i.e., $y = x$, so $C = I_4$.
+
+We define as trajectory the desired signal to be tracked, i.e.,
+\begin{equation}
+	p^*(t) = f(t), \quad \dot p^*(t) = f'(t),
+\end{equation}
+where $f(t) \in C^2$ function.
+Let us construct the following error signals for the states
+\begin{equation}
+	e_1(t) = p(t) - p^*(t), \quad e_2(t) = \dot p(t) - \dot p^*(t).
+\end{equation}
+Now consider the following Lyapunov candidate function
+\begin{equation}
+	V(e(t)) = \frac{1}{2}||e(t)||^2,
+	\label{eq: Ve}
+\end{equation}
+	where $e(t)\in\mathbb{R}^4$ is the stacked error vector with components $e_1, e_2$. The time derivative of ($\ref{eq: Ve}$) satisfies
+\begin{align}
+	\frac{\mathrm{d}V}{\mathrm{dt}} &= e^T\dot e = e_1^T\dot e_1 + e_2^T\dot e_2 =  e_1^T(\dot p - f'(t)) + e_2^T(u - f''(t)) \nonumber \\
+	&= e_1^Te_2 + e_2^T(u - f''(t))
+\end{align}
+	if one chooses 
+	\begin{equation}
+	u = f''(t) - e_1 - e_2 = f''(t) - p(t) + f(t) -\dot p(t) + f'(t),
+	\label{eq: ue}
+	\end{equation}
+	leads to
+	\begin{equation}
+\frac{\mathrm{d}V}{\mathrm{dt}} = -||e_2||^2 \leq 0.
+	\end{equation}
+	In fact, the time derivative of $V(t)$ is only zero when $e_2 = 0$. Therefore, by invoking the LaSalle's invariance principle, we must check that the largest invariant set for the dynamics of the (autonomous) error system (when $u$ equals (\ref{eq: ue})) when $e_2 = 0$, i.e., 
+	\begin{equation}
+	\begin{cases}
+	\dot e_1 &= e_2 \\
+	\dot e_2 &= -e_1 -e_2
+	\end{cases},
+	\end{equation}
+	and we can see that when $e_2 = 0$, the largest invariant set is $e_1 = e_2 = 0$. Consequently, we can conclude that $e(t) \to 0$ as $t\to\infty$.
+
+	\section{Design of limit cycles for planar systems}
+	Now we want to attract the position of system (\ref{eq: pdyn}) to the \emph{curve} $\phi(p_x, p_y) = 0$, which is an implicit equation where the position $p$ is at the level set zero. For example, for a circle of radius $r\in\mathbb{R}_+$ we might consider
+	\begin{equation}
+	\phi(p) := p_x^2 + p_y^2 - r^2 = 0.
+	\end{equation}
+	Note that we can consider $\phi(p)$ as an error signal, i.e., $e(t) := \phi(p(t))$. Now, consider the following Lyapunov candidate
+\begin{equation}
+	V(e(t)) = \frac{1}{2}e(t)^2 + \frac{1}{2}||\dot p(t) - \dot p^*(t)||^2,
+	\label{eq: Ve2}
+\end{equation}
+	whose time derivative satisfies (for now consider $\dot p^*(t) = 0$)\footnote{Recall that the gradient is written as a row vector.}
+	\begin{equation}
+		\frac{\mathrm{d}V}{\mathrm{dt}} = e\dot e + \dot p^T\ddot p = e \nabla\phi(p) \dot p + \dot p^T u,
+	\end{equation}
+	therefore if one chooses $u = -e \nabla\phi(p)^T -\dot p$, then we have that
+	\begin{equation}
+\frac{\mathrm{d}V}{\mathrm{dt}} = -||\dot p||^2 \leq 0,
+	\end{equation}
+and by LaSalle's invariance principle we can conclude that $e(t) \to 0$ as $t\to\infty$.
+
+What would happen if $\dot p^*(t) = \begin{bmatrix}0 & 1 \\ -1 & 0\end{bmatrix}\nabla\phi(p)^T$?
+
