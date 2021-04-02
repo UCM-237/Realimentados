@@ -1,0 +1,267 @@
+\chapter{Sistema Lineales}
+
+\section{Linear maps}
+
+In this chapter, we focus on a particular class of state-space systems called \emph{state-space linear systems}. First, we need the notion of \emph{linear map}.
+
+\begin{definition} Consider the mapping $H: V \to W$. If $H$ preserves the operations of addition and scalar multiplication, i.e.,
+\begin{align}
+	H(v_1+v_2) &= H(v_1) + H(v_2), \quad v_1, v_2\in\mathbb{V} \nonumber \\
+	H(\alpha v_1) &= \alpha H(v_1), \quad \alpha\in\mathbb{K} \nonumber,
+\end{align}
+then $H$ is a linear map.
+\end{definition}
+
+\subsection{Exercise: Check whether the following maps are linear or not}
+
+\begin{enumerate}
+	\item $H_1(v) := Av, A\in\mathbb{R}^{n\times n}, \quad v\in\mathbb{R}^n$
+	\item $H_2(v) := \frac{\mathrm{d}}{\mathrm{dt}}(v(t)), \quad v\in\mathcal{C}^1$
+	\item $H_3(v) := \int_0^T v(t) dt, \quad v\in\mathcal{C}^1, T\in\mathbb{R}_{\geq 0}$
+	\item $H_4(v) := D(v) := v(t - T), \quad v\in\mathcal{C}^1, T\in\mathbb{R}_{\geq 0}$
+	\item $H_5(v) := Av + b, \quad A\in\mathbb{R}^{n\times n}, v,b\in\mathbb{R}^n$
+\end{enumerate}
+
+\section{Continuous state-space linear systems}
+
+The following system defines a continuous state-space linear system
+
+\begin{equation}
+	\Sigma := \begin{cases}
+	\dot x(t) &= A(t)x(t) + B(t)u(t), \quad x\in\mathbb{R}^n, u\in\mathbb{R}^k \\
+	\dot y(t) &= C(t)x(t) + D(t)u(t), \quad y\in\mathbb{R}^m
+	\end{cases}
+	\label{eq: linsys}
+\end{equation}
+
+\subsection{Exercise: Write as a block diagram the continuous state-space linear system and check that consists only of linear maps}
+
+\subsection{Exercise: Interconnections of continuous state-space linear systems}
+Rewrite as a single system, i.e., as in (\ref{eq: linsys}):
+
+\begin{enumerate}
+	\item the series (or cascade) interconnection of two continuous state-space linear systems, i.e., $y_1(t) = u_2(t)$.
+	\item the parallel interconnection of two continuous state-space linear systems, i.e., $y(t) = y_1(t) + y_2(t)$.
+	\item the feedback interconnection, i.e., $u_1(t) = u(t) - y(t)$, assuming $u, y, \in\mathbb{R}^k$.
+\end{enumerate}
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[auto, node distance=3.5cm, >=latex']
+	\node [input, name=input] {};
+	\node [block, right of=input] (system) {$\Sigma_1$};
+	\node [output, right of=system] (output) {};
+	\draw [draw,->] (input) -- node {$u(t) = u_1(t)$} (system);
+	\draw [->] (system) -- node [name=y] {$y_1(t)$}(output);
+	\node [block, right of=output] (system2) {$\Sigma_2$};
+	\node [output, right of=system2] (output2) {};
+	\draw [draw,->] (output) -- node {$u_2(t)$} (system2);
+	\draw [->] (system2) -- node [name=y] {$y_2(t) = y(t)$}(output2);
+\end{tikzpicture}
+	\caption{Example of series interconnection.}
+	\label{fig: series}
+\end{figure}
+
+\section{Solution to Linear State-Space systems}
+The solution to an \emph{ordinary differential equation} (ODE) is given by the addition of two terms: the solution to the homogeneous part, and a particular solution to the non-homogeneous.
+
+\begin{equation}
+	\dot x(t) = \underbrace{A(t)x(t)}_{\text{homogeneous}} + \underbrace{B(t)u(t)}_{\text{non-homogeneous}}
+	\label{eq: xdyn}
+\end{equation}
+
+\begin{theorem}{Peano-Barker series}
+The unique solution to the homogeneous $\dot x = Ax$ is given by
+	\begin{equation}
+		x(t) = \Phi(t,t_0)x(t_0), \quad x(t_0)\in\mathbb{R}^n, t\geq 0,
+	\end{equation}
+where
+	\begin{align}
+		\Phi(t,t_0) := I + \int_{t_0}^t A(s_1)ds_1 + \int_{t_0}^t A(s_1) \int_{t_0}^{s_1} A(s_2)ds_2ds_1 \nonumber \\ + \int_{t_0}^t A(s_1) \int_{t_0}^{s_1} A(s_2)\int_{t_0}^{s_2} A(s_3) ds_3ds_2ds_1 + \dots . \label{eq: ser}
+	\end{align}
+\end{theorem}
+Sketch of the proof:
+First we calculate the following time derivative
+	\begin{align}
+		\frac{d}{dt}\Phi(t,t_0) &= A(t) + A(t)\int_{t_0}^{t}A(s_2)ds_2 \nonumber \\ &+ A(t)\int_{t_0}^t A(s_2) \int_{t_0}^{s_2} A(s_3)ds_3ds_2 + \dots \nonumber \\
+		&= A(t) \Phi(t,t_0).
+	\end{align}
+We claim that the solution to the homogenenous part of (\ref{eq: xdyn}) is $x(t) = \Phi(t,t_0)x_0$ ($x_0$ is the short notation for $x(t_0)$), whose time derivative is given by
+\begin{align}
+	\frac{d}{dt} x &= \frac{d}{dt}\Phi(t,t_0)x_0 \nonumber \\
+	&= A(t) \Phi(t,t_0) x_0 \nonumber \\
+	&= A(t)x(t),
+\end{align}
+which is proving the identity $\dot x = A(t)x(t)$ given that $x(t) = \Phi(t,t_0)x_0$. In order to make this proof complete, we would need to prove that the series (\ref{eq: ser}) converges for $t\geq t_0$. That material should be covered in a standard course on differential equations.
+
+The matrix $\Phi(t,t_0)$ is called the \textbf{\emph{state transition matrix}}. Given an initial condition $x_0$, we can predict $x(t)$ in (\ref{eq: xdyn}) by \emph{iterating} over and over with $\Phi(t,t_0)$ given that we do not interact with the system, i.e., $u(t) = 0, t\geq t_0$.
+
+\subsection{Exercise}
+Check that 
+\begin{align}
+	x(t) &= \Phi(t,t_0)x_0 + \int_{t_0}^t \Phi(t,\tau)B(\tau)u(\tau)d\tau \nonumber \\
+	y(t) &= C(t)\phi(t,t_0)x_0 + \int_{t_0}^t C(t)\Phi(t,\tau)B(\tau)u(\tau)d\tau + D(t)u(t) \nonumber
+\end{align}
+are the solutions to
+
+\begin{align}
+	\dot x(t) &= A(t)x(t) + B(t)u(t)  \nonumber \\
+	\dot y(t) &= C(t)x(t) + D(t)u(t)  \nonumber
+\end{align}
+
+\section{Solution to Linear Time Invariant Systems}
+
+The matrix $\Phi(t,t_0)$ can be calculated analytically when $A$ is a matrix with constant coefficients. If $A$ is constant, we can take it out from the integrals in (\ref{eq: ser})
+\begin{align}
+	\Phi(t,t_0) := I + A \int_{t_0}^t ds_1 + A^2 \int_{t_0}^t \int_{t_0}^{s_1} ds_2ds_1 \nonumber \\ + A^3 \int_{t_0}^t \int_{t_0}^{s_1} \int_{t_0}^{s_2} ds_3ds_2ds_1 + \dots \label{eq: phi},
+\end{align}
+and noting that the following integrals can be easily solved
+\begin{align}
+	\int_{t_0}^t ds_1 &= (t-t_0) \nonumber \\
+	\int_{t_0}^t\int_{t_0}^{s_1} ds_2ds_1 &= \frac{(t-t_0)^2}{2} \nonumber \\
+	\vdots \nonumber \\
+	\int_{t_0}^t\int_{t_0}^{s_1} \cdots \int_{t_0}^{s_{k-2}}\int_{t_0}^{s_{k-1}}ds_k ds_{k-1} \cdots ds_2ds_1 &= \frac{(t-t_0)^k}{k!}, \nonumber
+\end{align}
+then we have that (\ref{eq: phi}) can be calculated by
+\begin{equation}
+	\Phi(t,t_0) = \sum_{k=0}^{\infty} \frac{(t-t_0)^k}{k!}A^k,
+\end{equation}
+which resembles to the power series of the scalar exponential function, i.e., $e^x := \sum_{k=0}^{\infty}\frac{1}{k!}x^k = 1 + x + \frac{x^2}{2} + \frac{x^3}{3!} + \dots $. In fact, the definition of the \emph{exponential of a matrix} is
+\begin{equation}
+	exp(A) = I + A + \frac{1}{2} A^2 + \frac{1}{3!} A^3 + \dots
+\end{equation}
+
+Let us set $t_0 = 0$ for the sake of convinience, then
+\begin{align}
+	\Phi(t,0) &= I + tA + \frac{t^2}{2} A^2 + \frac{t^3}{3!} A^3 + \dots \nonumber \\
+	&= exp(At),
+\end{align}
+therefore the solution to the homogeneous (\ref{eq: xdyn}) with $A$ constant and setting $t_0 = 0$ is
+\begin{equation}
+	x(t) = exp(At)x_0,\quad t\geq 0.
+	\label{eq: xexp}
+\end{equation}
+
+To continue further, we need the following result from Linear Algebra.
+\begin{theorem}
+\textbf{Jordan Form}. For every square matrix $A\in\mathbb{C}^{n \times n}$, there exists a non-singular change of basis matrix $P\in\mathbb{C}^{n \times n}$ that transform $A$ into
+\begin{equation}
+	J = PAP^{-1} = \begin{bmatrix}
+		J_1 & 0 & 0 & \dots & 0 \\
+		0 & J_2 & 0 & \dots & 0 \\
+		0 & 0 & J_3 & \dots & 0 \\
+		\vdots & \vdots & \vdots & \cdots & \vdots \\
+		0 & 0 & 0 & \cdots & J_l
+	\end{bmatrix},
+\end{equation}
+where each $J_i$ is a Jordan block of the form
+	\begin{equation}
+	J_i = \begin{bmatrix}
+\lambda_i & 1 & 0 & \dots & 0 \\
+		0 & \lambda_i & 1 & \dots & 0 \\
+		0 & 0 & \lambda_i & \dots & 0 \\
+		\vdots & \vdots & \vdots & \cdots & \vdots \\
+		0 & 0 & 0 & \cdots & \lambda_i
+	\end{bmatrix}_{n_i\times n_i},
+	\end{equation}
+	where each $\lambda_i$ is an eigenvalue of $A$, and the number $l$ of Jordan blocks is equal to the total number of independent eigenvectors of $A$. The matrix $J$ is unique up to a reordering of the Jordan blocks and is called the \textbf{Jordan normal form} of $A$.
+\end{theorem}
+
+Note that $A = P^{-1}JP$ as well, and we leave as an exercise to prove that
+\begin{equation}
+	A^k = P^{-1} J^k P,
+\end{equation}
+so we can calculate
+\begin{align}
+	exp(At) &= P^{-1}\left(\sum_{k=1}^\infty \frac{t^k}{k!} \begin{bmatrix}J_1^k & 0 & \cdots & 0 \\ 0 & J_2^k & \cdots & 0 \\ \vdots & \vdots & \cdots & \vdots \\ 0 & 0 & \cdots & J_l^k \end{bmatrix} \right) P \nonumber \\
+		&= P^{-1} \begin{bmatrix}exp(J_1t) & 0 & \cdots & 0 \\ 0 & exp(J_2t) & \cdots & 0 \\ \vdots & \vdots & \cdots & \vdots \\ 0 & 0 & \cdots & exp(J_lt) \end{bmatrix} P
+\end{align}
+
+
+Therefore if $J$ is just a diagonal matrix with the eigenvalues of $A$, i.e., $J_l = \lambda_l \in \mathbb{C}$, then $exp(J_lt) = e^{\lambda_lt} \in\mathbb{C}$ is a trivial calculation.
+
+Now, let us check the consequencues on the following two conditions
+\begin{enumerate}
+	\item $J$ is diagonal.
+	\item All the eigenvalues of $A$ have negative real part.
+\end{enumerate}
+
+Knowing that $\lim_{t\to\infty} e^{\lambda t} \to 0$ if $\lambda \in \mathbb{R}_{<0}$, then we will have that $exp(At) \to 0$ as $t\to\infty$ if the previous two conditions are satisfied! So if we take a look at (\ref{eq: xexp}), we can conclude that
+\begin{equation}
+	\lim_{t\to\infty} x(t) \to 0,
+	\label{eq: xlim}
+\end{equation}
+therefore we can make a prediction on the evolution of $x(t)$ by just checking the eigenvalues of $A$. If $J$ is not diagonal we can also conclude similar results, but we will not cover them here. We will talk about stability in the next lecture, and how to design a controller such that we can guarantee (\ref{eq: xlim}).
+
+\section{Linearization of state-space systems}
+Unfortunately, it is really (really) hard to calculate the analytic solution of $x(t)$ and $y(t)$ for a generic system $\Sigma$. Nevertheless, we will see that we can find the analytic solution for a state-space linear system.
+
+The question then is whether we can relate a generic $\Sigma$ to a state-space linear system.
+
+If $f(x,t)$ and $g(x,t)$ are real analytic around a specific point $(x^*,u^*)$, then we can approximate them around $(x^*,u^*)$ by a Taylor series expansion. This approximation is what we call \emph{linearization} if we stop at order one in the Taylor series
+\begin{equation}
+	\Sigma := \left.\begin{cases}
+	\dot x(t) =& f(x(t),u(t)) \\ y(t) =& g(x(t),u(t))
+	\end{cases}\right|_{x\approx x^*, u\approx u^*} \approx
+	\begin{cases}
+		x(t) &= x^* + \delta x(t) \\
+		u(t) &= u^* + \delta u(t) \\
+	\delta \dot x(t) &= A(t)\delta x(t) + B(t)\delta u(t) \\
+	\delta y(t) &= C(t)\delta x(t) + D(t)\delta u(t)
+	\end{cases}, \nonumber
+\end{equation}
+where
+\begin{align}
+	A(t) &= \begin{bmatrix}
+		\frac{\partial f_1}{\partial x_1} & \dots & \frac{\partial f_1}{\partial x_n} \\
+		\vdots & \vdots & \vdots \\
+		\frac{\partial f_n}{\partial x_1} & \dots & \frac{\partial f_n}{\partial x_n}
+	\end{bmatrix}_{|_{x=x^*, u=u^*}} \quad
+	&B(t) = \begin{bmatrix}
+		\frac{\partial f_1}{\partial u_1} & \dots & \frac{\partial f_1}{\partial u_k} \\
+		\vdots & \vdots & \vdots \\
+		\frac{\partial f_k}{\partial u_1} & \dots & \frac{\partial f_k}{\partial u_k}
+	\end{bmatrix}_{|_{x=x^*, u=u^*}} \nonumber \\
+	C(t) &= \begin{bmatrix}
+		\frac{\partial g_1}{\partial x_1} & \dots & \frac{\partial g_1}{\partial x_n} \\
+		\vdots & \vdots & \vdots \\
+		\frac{\partial g_m}{\partial x_1} & \dots & \frac{\partial g_m}{\partial x_n}
+	\end{bmatrix}_{|_{x=x^*, u=u^*}} \quad
+	&D(t) = \begin{bmatrix}
+		\frac{\partial g_1}{\partial u_1} & \dots & \frac{\partial g_1}{\partial u_k} \\
+		\vdots & \vdots & \vdots \\
+		\frac{\partial g_m}{\partial u_1} & \dots & \frac{\partial g_m}{\partial u_k}
+	\end{bmatrix}_{|_{x=x^*, u=u^*}}. \nonumber
+\end{align}
+Roughly speaking, we calculate the sensitivity (up to first order) of $f$ and $g$ when we make a small variation on $x$ and $u$ around $(x^*,u^*)$. How close $(x,u)$ must be to $(x^*,u^*)$ depends on the particular system $\Sigma$. Later in the course, we will provide bounds for $\delta x$ and $\delta u$ such that we can apply with guarantees our control algorithms.
+
+\subsection{Linearization of the inverted pendulum}
+We will see that, with the linearization, we can design controllers $u(t)$, i.e., a signal that our torque $T$ must follow, to drive the state of the pendulum where we wish. Let us define this point of interest as $x^* = \begin{bmatrix}\theta^* \\ 0\end{bmatrix}$, i.e., a fixed angle with (obviously) zero velocity. Indeed, this is an equilibrium point for the angle $\theta$. In order to have an equilibrium, we need to find a $u(t)$ in (\ref{eq: f}) such that $\frac{\mathrm{d}}{\mathrm{dt}}\left(\begin{bmatrix}\theta \\ \dot\theta \end{bmatrix}\right) = \begin{bmatrix}0 \\ 0 \end{bmatrix}$. A quick inspection to the dynamics (\ref{eq: dyn}) we have that
+\begin{equation}
+	u^* = T^* = -\frac{g}{l}\sin\theta^*,
+\end{equation}
+for example, for the vertical position of the pendulum corresponding to $\theta^* = 0$ we have that $T^*=0$, i.e., $x^* = \begin{bmatrix}0\\0\end{bmatrix}$ and $u^* = 0$.
+
+The calculation of the matrices $A,B,C,$ and $D$ are the corresponding Jacobians for $(\ref{eq: f})$ and $(\ref{eq: g})$, i.e.,
+
+\begin{align}
+\frac{\partial f_1}{\partial x_1} &= 0 \nonumber \\
+\frac{\partial f_1}{\partial x_2} &= 1 \nonumber \\
+\frac{\partial f_2}{\partial x_1} &= \frac{g}{l}\cos\theta \nonumber \\
+\frac{\partial f_2}{\partial x_2} &= -\frac{b}{ml^2} \nonumber \\
+\frac{\partial f_1}{\partial u_1} &= 0 \nonumber \\
+\frac{\partial f_2}{\partial u_1} &= 1 \nonumber \\
+\frac{\partial g_1}{\partial x_1} &= 1 \nonumber \\
+\frac{\partial g_1}{\partial x_2} &= 0 \nonumber \\
+\frac{\partial g_1}{\partial u_1} &= 0, \nonumber
+\end{align}
+therefore we can arrive at
+\begin{align}
+	\frac{\mathrm{d}}{\mathrm{dt}}\left(\begin{bmatrix}\delta\theta \\ \dot\delta\theta \end{bmatrix}\right) &= \begin{bmatrix}0 & 1 \\ \frac{g}{l}\cos\theta & -\frac{b}{ml^2} \end{bmatrix}_{|_{\theta=\theta^*}} \begin{bmatrix}\delta\theta \\ \dot\delta\theta \end{bmatrix} + \begin{bmatrix}0 \\ 1 \end{bmatrix} \delta T \nonumber \\
+		\delta y &= \begin{bmatrix}1 & 0\end{bmatrix}\begin{bmatrix}\delta\theta \\ \dot\delta\theta \end{bmatrix} + 0 \, \delta T,
+\end{align}
+to model the dynamics of $x(t)$ and the output $y(t)$ around the points $x^*$ and $u^*$.
+
+Finally, we would like to hightlight that the Jacobians can have time-varying elements, and still have a linear system. For example, we can consider that the lenght $l$ depends on the time explicitly, e.g., $l(t) = l + \sin(t)$. In such a case, we would have a $A(t)$.
+
+\section{Stability of nonlinear systems through linearization}

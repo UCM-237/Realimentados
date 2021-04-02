@@ -1,0 +1,73 @@
+\documentclass[a4paper,10pt]{book}
+\usepackage[pdftex]{graphicx}
+\usepackage{epstopdf}
+\usepackage{subfigure}
+\usepackage{amsmath,amsthm}
+\usepackage{tikz}
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+\usetikzlibrary{shapes, arrows}
+\textwidth= 15cm
+\evensidemargin=0cm
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{textcomp}
+\usepackage{amstext}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[hyperindex=true,breaklinks=true,colorlinks=true,linkcolor=blue]{hyperref}
+\renewcommand{\tablename}{Tabla}
+\renewcommand{\listtablename}{\'Indice de Tablas}
+
+\usepackage{multirow}
+\usepackage{makeidx}
+
+%\usepackage{draftwatermark}
+%\SetWatermarkText{Borrador,juan.jimenez@fis.ucm.es}
+%\SetWatermarkScale{2}
+
+% Atajos para el tikz
+\tikzstyle{block} = [draw, rectangle, minimum width=6em]
+\tikzstyle{sum} = [draw, fill=blue!20, circle, node distance=1cm]
+\tikzstyle{input} = [coordinate]
+\tikzstyle{output} = [coordinate]
+\tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
+
+% Entornos para los "teoremas"
+\newtheorem{definition}{Definition}
+\newtheorem{algo}{Algorithm}
+\newtheorem{theorem}{Theorem}
+
+\graphicspath{{./figuras/}}
+\makeindex
+\begin{document}
+\title{
+\begin{flushleft}
+\includegraphics[width=2.5cm]{ucm2.eps}
+Universidad Complutense de Madrid\\
+---------------------------------------------------------------------\
+\end{flushleft}
+Sistemas Din\'amicos y Realimentaci\'on}
+\author{ Juan Jim\'enez \\ H\'ector Garc\'ia de Marina}
+
+\maketitle\
+\
+\vspace*{\fill}
+
+\includegraphics[scale=1]{by-sa.eps}\\
+El contenido de estos apuntes est\'e1 bajo licencia Creative Commons Atribution-ShareAlike 4.0\\
+\href{http://creativecommons.org/licenses/by-sa/4.0/}{http://creativecommons.org/licenses/by-sa/4.0/}\\
+\copyright Juan Jim\'enez
+
+\bigskip
+\tableofcontents
+\listoffigures
+\listoftables
+\include{preface}
+\include{introduccion}
+\include{modelado}
+\include{estabilidad}
+\include{lineales}
+\include{realimentacion}
+\printindex
+\end{document} 
