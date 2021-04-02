@@ -6,7 +6,7 @@
 \usepackage{tikz}
 \usepackage{circuitikz}
 \usetikzlibrary{babel}
-\usetikzlibrary{shapes, arrows}
+\usetikzlibrary{shapes, arrows, patterns, angles, quotes}
 \textwidth= 15cm
 \evensidemargin=0cm
 \usepackage[spanish]{babel}
@@ -37,6 +37,7 @@
 \newtheorem{definition}{Definition}
 \newtheorem{algo}{Algorithm}
 \newtheorem{theorem}{Theorem}
+\newtheorem{remark}{Remark}
 
 \graphicspath{{./figuras/}}
 \makeindex
@@ -47,7 +48,7 @@
 Universidad Complutense de Madrid\\
 ---------------------------------------------------------------------\
 \end{flushleft}
-Sistemas Din\'amicos y Realimentaci\'on}
+Sistemas din\'amicos y realimentaci\'on}
 \author{ Juan Jim\'enez \\ H\'ector Garc\'ia de Marina}
 
 \maketitle\
@@ -67,6 +68,7 @@ El contenido de estos apuntes est\'e1 bajo licencia Creative Commons Atribution-
 \include{introduccion}
 \include{modelado}
 \include{estabilidad}
+\include{control_nonlinear}
 \include{lineales}
 \include{realimentacion}
 \printindex
