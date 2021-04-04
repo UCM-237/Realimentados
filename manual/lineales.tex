@@ -291,58 +291,58 @@ El sistema $\dot x(t) = Ax(t)$
 Comprobando las soluciones (\ref{eq: solx})-(\ref{eq: soly}), podemos decir que si $A$ tiene coeficientes constantes y $\dot x = Ax$ es asintóticamente estable, entonces $x(t) \to \int_{t_0}^t e^{A(t-\tau)}B(\tau)u(\tau)d\tau$ según $t\to\infty$. 
 
 \subsection{Estabilidad local de sistemas linearizados}
-The following equation is also equivalent to have asymptotic (exponential) stability for $\dot x(t) = Ax(t)$. There exists a unique solution $P$ for the following \emph{Lyapunov equation}
+Si $x(t)$ es asintóticamente (exponencialmente) estable en $\dot x(t) = Ax(t)$, entonces, existe una única $P$ que satisface la \emph{ecuación de Lyapunov}
 \begin{equation}
 A^TP + PA = -Q, \quad \forall Q \succ 0.
 	\label{eq: lya}
 \end{equation}
-You can prove (\ref{eq: lya}) by considering
+Uno puede probar (\ref{eq: lya}) si considera
 \begin{equation}
 	P:= \int_0^\infty e^{A^Tt}Qe^{At}dt.
 	\label{eq: P}
 \end{equation}
-Hint: First, substitute $P$ in (\ref{eq: lya}), and then check the calculation $\frac{\mathrm{d}}{\mathrm{dt}}\left(e^{A^Tt}Qe^{At}\right)$. Since $P$ is unique, then $P$ must be positive definite according to its definition (\ref{eq: P}).
+Pista: Primero, sustituye $P$ en (\ref{eq: lya}), y después verifica el cálculo  $\frac{\mathrm{d}}{\mathrm{dt}}\left(e^{A^Tt}Qe^{At}\right)$. Si uno prueba que $P$ es única, entonces $P$ ha de ser positiva definida acorde a su definición (\ref{eq: P}).
 
-Let us consider an autonomous continuous-time nonlinear system
+Ahora vamos a considerar un sistema continuo, autónomo y no lineal en general
 \begin{equation}
 	\dot x(t) = f(x(t)), \quad x\in\mathbb{R}^n,
 	\label{eq: non}
 \end{equation}
-with an equilibrium point $x^*\in\mathbb{R}^n$, i.e., $f(x^*) = 0$. The dynamics of $x(t)$ around $x^*$ can be approximated by considering $x(t) = x^* + \delta x(t)$ where
+con un punto de equilibrio $x^*\in\mathbb{R}^n$, i.e, $f(x^*) = 0$. La dinámica de $x(t)$ puede ser aproximada considerando $x(t) = x^* + \delta x(t)$ donde 
 \begin{equation}
 	\dot{\delta x(t)} = A\,\delta x(t), \quad A:=\frac{\partial f(x)}{\partial x}.
 	\label{eq: delta}
 \end{equation}
 
-What is this approximation good for?
+¿Cómo de buena es esta aproximación?
 
 \begin{theorem}
 	\label{thm: tayl}
-	Assume that $f(x)$ is twice differentiable. If (\ref{eq: delta}) is exponentially stable, then there exists a neighborhood $\mathcal{B}$ around $x^*$ and constants $c, \lambda > 0$ such that for every solution $x(t)$ to the nonlinear system (\ref{eq: non}) that starts at $x(t_0)\in\mathcal{B}$, we have
+	Asume que $f(x)$ is dos veces diferenciable. Si (\ref{eq: delta}) es exponencialmente estable, entonces, existe un entorno $\mathcal{B}$ alrededor de $x^*$ y constantes $c, \lambda > 0$ tal que para cada solución $x(t)$ del sistema (\ref{eq: non}) que empiece con $x(t_0)\in\mathcal{B}$, tenemos que
 	\begin{equation}
 	||x(t) - x^*|| \leq ce^{\lambda(t-t_0)} ||x(t_0) - x^*||, \quad \forall t\geq t_0.
 	\end{equation}
 \end{theorem}
 
-\subsubsection{How big is $\mathcal{B}$? Can we estimate it? Sketch of the proof of Theorem \ref{thm: tayl}}
+\subsubsection{¿Cómo de grande es $\mathcal{B}$? ¿Podemos estimarlo? Esbozo de la prueba del Teorema \ref{thm: tayl}}
 
-Since $f$ is twice differentiable, from its Taylor's series we have that
+Como $f$ es dos veces diferenciable, de su desarrollo de Taylor tenemos que
 \begin{equation}
 	r(x) := f(x) - (f(x^*) + A(x - x^*)) = f(x) - A\,\delta x = O(||\delta x||^2),
 \end{equation}
-which means that there exist a constant $c$ and a ball $\bar B$ around $x^*$ such that
+lo cual significa que existe una constante $c$ y una bola $\bar B$ alrededor de $x^*$ tal que 
 \begin{equation}
 	||r(x)|| \leq c||\delta x||^2, \quad x\in\bar B.
 \end{equation}
-If the linearized system is exponentially stable, we have that
+Si el sistema linearizado es exponencialmente estable, tenemos que
 \begin{equation}
 A^TP + PA = -I.
 \end{equation}
-Now consider the following scalar signal
+Ahora considera la siguiente señal escalar
 \begin{equation}
 	v(t) := (\delta x)^T P \delta x, \quad \forall t\geq 0.
 \end{equation}
-Noting that $\delta x(t) = x(t) - x^*$, then $\dot{\delta x(t)} = \dot x(t) = f(t)$. Therefore, the time derivative of $v(t)$ satisfies
+Observa que $\delta x(t) = x(t) - x^*$, entonces $\dot{\delta x(t)} = \dot x(t) = f(t)$. Por lo tanto, la derivada con respecto del tiempo de $v(t)$ satisface
 \begin{align}
 	\dot v &= f(x)^T P \delta x + (\delta x)^T P f(x) \nonumber \\
 	&= (A\delta x + r(x))^T P \delta x + (\delta x)^T P (A\delta x + r(x)) \nonumber \\
@@ -351,57 +351,58 @@ Noting that $\delta x(t) = x(t) - x^*$, then $\dot{\delta x(t)} = \dot x(t) = f(
 	&\leq -||\delta x||^2 + 2 ||P||\, ||\delta x|| \, ||r(x)||.
 \end{align}
 
-We have that $v(t)$ is positive excepting when $\delta x = 0$. If we can guarantee that $\dot v(t) < 0$ and $\dot v(t) = 0$ only when $\delta x = 0$, then $v(t) \to 0$ as $t\to\infty$, which means that $\delta x(t) \to 0$ as $t\to\infty$.
+Sabemos que $v(t)$ es positiva excepto cuando $\delta x = 0$. Si podemos garantizar que $\dot v(t) < 0$ y que $\dot v(t) = 0$ solo cuando  $\delta x = 0$, entonces $v(t) \to 0$ as $t\to\infty$, lo cual implica que  $\delta x(t) \to 0$ as $t\to\infty$.
 
-Now, if $x\in\mathcal{\bar B}$, then
+Ahora, si $x\in\mathcal{\bar B}$, entonces
+
 \begin{equation}
 	\dot v \leq -\Big(1 - 2c\,||P||\,||\delta x||\Big)||\delta x||^2,
 \end{equation}
-Thus, if the deviation $\delta x$ is small enough, i.e.,
+Por lo tanto, si la desviación  $\delta x$ es suficientemente pequeña, i.e., 
 \begin{equation}
 ||\delta x|| < \frac{1}{2c||P||},
 \end{equation}
-then $\dot v(t) < 0$ if $\delta x(0) \neq 0$ and $\delta x(0) < \frac{1}{2c||P||}$.
+entonces  $\dot v(t) < 0$ si $\delta x(0) \neq 0$ y $\delta x(0) < \frac{1}{2c||P||}$.
 
-We can conclude that an estimation of $\mathcal B$ is
+Podemos concluir que una estimación de $\mathcal B$ es
 \begin{equation}
 	\mathcal{B} := \{ \delta x : ||\delta x|| < \frac{1}{2c||P||} \}.
 	\label{eq: Bregion}
 \end{equation}
 
-\section{Controllability}
-\subsection{Reachable and Controllable subspaces}
-We recall that when we apply an input $u(\cdot)$ to (\ref{eq: sigmalin}), we transfer the system from a state $x(t_0):=x_0$ to a state $x(t_1):=x_1$, and it is calculated from (\ref{eq: solx}) as follows
+\section{Controlabilidad}
+\subsection{Subespacios alcanzables y controlables}
+Recordemos que cueando aplicamos una entrada genérica $u(\cdot)$ a (\ref{eq: linsys}), transferimos el sistema de un estado $x(t_0):=x_0$ a un estado $x(t_1):=x_1$, que además podemos calcular con la expresión
 \begin{equation}
 	x_1 = \Phi(t_1,t_0)x_0 + \int_{t_0}^{t_1} \Phi(t_1,\tau)B(\tau)u(\tau)d\tau,
 \end{equation}
-where $\Phi(\cdot)$ is the system's state transition matrix.
+donde recordemos que $\Phi(\cdot)$ es la matriz de transición de estados del sistema.
 
-Questions: 
+Preguntas:
 \begin{enumerate}
-	\item Which states can I reach from $x_0$?
-	\item Is there always an input $u(\cdot)$ that transfers the system from an arbirtrary state $x_0$ to another arbitrary state $x_1$?
+	\item ¿Qué estados puedo alcanzar desde $x_0$?
+	\item ¿Existe siempre una entrada $u(\cdot)$ que transfiera un estado arbitrario $x_0$ a otro $x_1$?
 \end{enumerate}
 
-These two questions lead to the definition of the reachable and controllable subspaces.
+Estas dos preguntas llevan a acuñar las definiciones de (sub)espacios alcanzables y controlables.
 
-\begin{definition}[Reachable subspace]
-	Given two times $t_1>t_0\geq 0$, the reachable or controllable-from-the-origin on $[t_0,t_1]$ subspace $\mathcal{R}[t_0,t_1]$ consists of all the states $x_1$ for wichi there exists an input $u:[t_0,t_1]\to \mathbb{R}^k$ that transfers the state from $x_0 = 0$ to $x_1 \in\mathbb{R}^n$; i.e.,
+\begin{definition}[Subespacio alcanzable]
+	Dados dos instantes de tiempo $t_1>t_0\geq 0$, el subespacio alcanzable (o controlable desde el origen) $\mathcal{R}[t_0,t_1]$ consiste en todos los estados $x_1$ por los que existe una entrada $u:[t_0,t_1]\to \mathbb{R}^k$ que transfiere el estado $x_0 = 0$ a  $x_1 \in\mathbb{R}^n$; i.e.,
 	\begin{equation}
 		\mathcal{R}[t_0,t_1] := \Big\{x_1\in\mathbb{R}^n : \exists u(\cdot),\, x_1 = \int_{t_0}^{t_1} \Phi(t_1,\tau)B(\tau)u(\tau)d\tau \Big\}. \label{eq: rs}
 	\end{equation}
 \end{definition}
 
-\begin{definition}[Controllable subspace]
-	Given two times $t_1>t_0\geq 0$, the controllable or controllable-to-the-origin on $[t_0,t_1]$ subspace $\mathcal{C}[t_0,t_1]$ consists of all the states $x_1$ for wichi there exists an input $u:[t_0,t_1]\to \mathbb{R}^k$ that transfers the state from $x_0\in\mathbb{R}^n$ to $x_1 = 0$; i.e.,
+\begin{definition}[Subespacio controlable]
+	Dados dos instantes de tiempo $t_1>t_0\geq 0$, el subespacio controlable (or controlable hacia el origen) $\mathcal{C}[t_0,t_1]$ consiste en todos los estados $x_0$ por los que existe una entrada $u:[t_0,t_1]\to \mathbb{R}^k$ que transfiera un estado $x_0\in\mathbb{R}^n$ a $x_1 = 0$; i.e.,
 	\begin{equation}
 		\mathcal{C}[t_0,t_1] := \Big\{x_0\in\mathbb{R}^n : \exists u(\cdot),\, 0 = \Phi(t_1,t_0)x_0 + \int_{t_0}^{t_1} \Phi(t_1,\tau)B(\tau)u(\tau)d\tau \Big\}.
 	\end{equation}
 \end{definition}
 
-How to calculate the $\mathcal{R}[t_0,t_1]$ and $\mathcal{C}[t_0,t_1]$ subspaces? We will exploit the following two matrices called \emph{Gramians}.
+¿Cómo podemos calcular $\mathcal{R}[t_0,t_1]$ y $\mathcal{C}[t_0,t_1]$? Para ello vamos a introducir y explotar las siguientes dos matrices llamadas \emph{Gramianos}.
 
-\begin{definition}[Reachability and Controllability Gramians]
+\begin{definition}[Gramianos de alcanzabilidad y controlabilidad]
 	\begin{align}
 		W_R(t_0,t_1) &:= \int_{t_0}^{t_1} \Phi(t_1,\tau)B(\tau)B(\tau)^T\Phi(t_1,\tau)^Td\tau \\
 		W_C(t_0,t_1) &:= \int_{t_0}^{t_1} \Phi(t_0,\tau)B(\tau)B(\tau)^T\Phi(t_0,\tau)^Td\tau 
@@ -409,189 +410,194 @@ How to calculate the $\mathcal{R}[t_0,t_1]$ and $\mathcal{C}[t_0,t_1]$ subspaces
 \end{definition}
 
 \begin{theorem}
-Given two times $t_1 > t_0 \geq 0$,
+Dados dos instantes de tiempo $t_1 > t_0 \geq 0$,
 	\begin{align}
 		\mathcal{R}[t_0,t_1] &= \text{Im}\{W_R(t_0,t_1)\} \label{RI} \\
 		\mathcal{C}[t_0,t_1] &= \text{Im}\{W_C(t_0,t_1)\} \label{CI},
 	\end{align}
-	where $\text{Im}\{A\}:= \Big\{y\in\mathbb{R}^m: \exists x\in\mathbb{R}^n, y = Ax\Big\}$ for a matrix $A\in\mathbb{R}^{m\times n}$.
+	donde $\text{Im}\{A\}:= \Big\{y\in\mathbb{R}^m: \exists x\in\mathbb{R}^n, y = Ax\Big\}$ para una matriz $A\in\mathbb{R}^{m\times n}$.
 \end{theorem}
 \begin{proof}
-	We will only prove (\ref{RI}) since (\ref{CI}) has a similar proof.
-	We need to show both ways: firsty, if $x_1 \in \text{Im}\{W_R(t_0,t_1)$, then $x_1 \in \mathcal{R}[t_0,t_1]$; secondly, if $x_1 \in \mathcal{R}[t_0,t_1]$ then $x_1 \in \text{Im}\{W_R(t_0,t_1)$.\\
-	When $x_1 \in \text{Im}\{W_R(t_0,t_1)$, there exists a vector $\mu_1\in\mathbb{R}^n$ such that
+	Solo vamos a probar (\ref{RI}) porque (\ref{CI}) tiene una prueba similar.
+	Necesitamos mostrar ambas implicaciones: primero, si $x_1 \in \text{Im}\{W_R(t_0,t_1)$, entonces $x_1 \in \mathcal{R}[t_0,t_1]$; segundo, si $x_1 \in \mathcal{R}[t_0,t_1]$ entonces $x_1 \in \text{Im}\{W_R(t_0,t_1)$.\\
+	Cuando  $x_1 \in \text{Im}\{W_R(t_0,t_1)$, existe un vector $\mu_1\in\mathbb{R}^n$ tal que
 	\begin{equation}
 	x_1 = W_R(t_0,t_1)\eta_1.
 	\end{equation}
-	Choose $u(\tau) = B(\tau)^T\Phi(t_1, \tau)^T\eta_1$, and plug it into (\ref{eq: rs}), then we have that
+	Escoge $u(\tau) = B(\tau)^T\Phi(t_1, \tau)^T\eta_1$, y sustitúyelo en (\ref{eq: rs}), entonces tenemos que 
 	\begin{equation}
 	x_1 = \int_{t_0}^{t_1} \Phi(t_1,\tau)B(\tau) B(\tau)^T\Phi(t_1, \tau)^T \eta_1d\tau = W_R(t_0,t_1)\eta_1.
 	\end{equation}
-	When $x_1 \in \mathcal{R}[t_0,t_1]$, there exists an input $u(\cdot)$ for which
+	Cuando $x_1 \in \mathcal{R}[t_0,t_1]$, existe una entrada $u(\cdot)$ para la cual 
 	\begin{equation}
 		x_1 = \int_{t_0}^{t_1} \Phi(t_1,\tau)B(\tau)u(\tau)d\tau.
 		\label{x1}
 	\end{equation}
-	If (\ref{x1}) is in $\text{Im}\{W_R(t_0,t_1)\}$, then $x_1^T\mu = 0, \, \mu \in \text{Ker}\{W_R(t_0,t_1)\}$\footnote{If $x\in\text{Ker}\{A^T\}$, then $A^Tx = 0$. If $y\in\text{Im}\{A\}$, then $y = A\eta$. Thus, $x^Ty = x^TA\eta = \eta^TA^Tx = \eta \cdot 0 = 0$. Note that $W_R^T = W_R$ by definition.}. Let us calculate
+	Si (\ref{x1}) es en $\text{Im}\{W_R(t_0,t_1)\}$, entonces $x_1^T\mu = 0, \, \mu \in \text{Ker}\{W_R(t_0,t_1)\}$\footnote{If $x\in\text{Ker}\{A^T\}$, por lo que $A^Tx = 0$. Si $y\in\text{Im}\{A\}$, entonces  $y = A\eta$. Por lo tanto, $x^Ty = x^TA\eta = \eta^TA^Tx = \eta \cdot 0 = 0$. Observa que $W_R^T = W_R$ por definción.} Vamos a calcular 
 	\begin{equation}
 		x_1^T\mu = \int_{t_0}^{t_1}u(\tau)^TB(\tau)^T\Phi(t_1,\tau)^T\mu \, d\tau. \label{eq: x1eta1}
 	\end{equation}
-	And noting that
+	Y observando que 
 	\begin{align}
 	\mu \in \text{Ker}\{W_R(t_0,t_1)\} \implies \mu^TW_R(t_0,t_1)\mu &= 0 \nonumber \\ &= \int_{t_0}^{t_1}\mu^T \Phi(t_1,\tau)B(\tau)B(\tau)^T\Phi(t_1,\tau)^T \mu \, d\tau \nonumber \\ &= \int_{t_0}^{t_1} ||B(\tau)^T\Phi(t_1,\tau)^T \mu||^2 d \tau,
 	\end{align}
-	give us that $B(\tau)^T\Phi(t_1,\tau)^T \mu  = 0$, leading to (\ref{eq: x1eta1}) equals zero.
+	obtenemos que $B(\tau)^T\Phi(t_1,\tau)^T \mu  = 0$, llevando a (\ref{eq: x1eta1}) ser igual a cero.
 \end{proof}
 \begin{remark}
-Note that we have proven that $u(\tau) = B(\tau)^T\Phi(t_1,\tau)^T \eta_1$ can be used as a control input to transfer the system from $x_0 = 0$ to $x_1\in\mathbb{R}^n$ in the finite time $(t_1 - t_0)$. In fact, this is the \emph{open-loop minimun energy control}.
+	Observa que hemos probado que $u(\tau) = B(\tau)^T\Phi(t_1,\tau)^T \eta_1$ puede ser como una entrada de control para transferir $x_0 = 0$ a $x_1\in\mathbb{R}^n$ en un tiempo finito $(t_1 - t_0)$. De hecho, esta es la señal de control \emph{en lazo abierto de mínima energía}.
 \end{remark}
-To see this fact, consider another control input $\bar u(t)$ so that
+Vamos a ver este hecho en más detalle. Considera otra señal de control  $\bar u(t)$ tal que 
 \begin{equation}
 x_1 = \int_{t_0}^{t_1} \Phi(t_1,\tau)B(\tau)u(\tau)d\tau = \int_{t_0}^{t_1} \Phi(t_1,\tau)B(\tau)\bar u(\tau)d\tau.
 \end{equation}
+Para que sea cierto, debemos tener
 For this to hold, we must have
 \begin{equation}
 	\int_{t_0}^{t_1} \Phi(t_1,\tau)B(\tau)v(\tau) \, d\tau = 0,
 	\label{eq: ve}
 \end{equation}
-where $v(\tau) = u(\tau) - \bar u(\tau)$.
-Let us see the energy of $\bar u$
+donde $v(\tau) = u(\tau) - \bar u(\tau)$.
+Vamos a ver la energía asociada a $\bar u$
 \begin{align}
 \int_{t_0}^{t_1}||\bar u(\tau)||^2 d\tau &= \int_{t_0}^{t_1} || B(\tau)^T\Phi(t_1,\tau)^T \eta_1 + v(\tau)||^2 d\tau \nonumber \\ 
-&= \eta_1^T W_R(t_0,t_1)\eta_1 + \int_{t_0}^{t_1} ||v(\tau)||^2 d \tau + 2\eta_1^T \int_{t_0}^{t_1}B(\tau)\Phi(t_1,\tau)v(\tau) d \tau
+&= \eta_1^T W_R(t_0,t_1)\eta_1 + \int_{t_0}^{t_1} ||v(\tau)||^2 d \tau + 2\eta_1^T \int_{t_0}^{t_1}B(\tau)\Phi(t_1,\tau)v(\tau) d \tau,
 \end{align}
-where the third term is zero because of (\ref{eq: ve}). Hence, if $\bar u(t)$ difers $v(t)$ from $u(t)$, it will expend $\int_{t_0}^{t_1} ||v(\tau)||^2 d\tau$ more energy than $u(t)$.
+donde el tercer término es cero por (\ref{eq: ve}). Por lo tanto, si $\bar u(t)$ difiere $v(t)$ de $u(t)$, gastará $\int_{t_0}^{t_1} ||v(\tau)||^2 d\tau$ más energía que $u(t)$.
 
-\subsection{Controllability matrix for $A,B$ being constant}
+\subsection{Matriz de controlabilidad para un sistema lti}
 
-We have that the Cayley-Hamilton theorem allows us to write
+Consideremos un sistema lineal (\ref{eq: linsys}) con $A$ y $B$ con coeficientes constantes.
+
+El teorema de Cayley-Hamilton nos permite escribir
 \begin{equation}
 	e^{At} = \sum_{i=0}^{n-1}\alpha_i(t)A^i, \quad \forall t\in\mathbb{R},
 \end{equation}
-for some appropriate scalar functions $\alpha_i(t)$. We also have that if $A$ and $B$ are constant then
+para algunas funciones escalares apropiadas $\alpha_i(t)$. Tenemos también que si $A$ y $B$ tienen coeficientes constantes, entonces
 \begin{align}
 	x_1 &= \int_{0}^{t_0-t_1} e^{At}Bu(t) dt \nonumber \\
 	&= \sum_{i=0}^{n-1} A^iB \Big(\int_{0}^{t_1-t_0}\alpha_i(t)u(t)dt \Big) \nonumber \\
 	&= \mathcal{C} \begin{bmatrix}\int_{0}^{t_1-t_0}\alpha_0(t)u(t)dt \\ \vdots \\ \int_{0}^{t_1-t_0} \alpha_{n-1}(t)u(t)dt \end{bmatrix},
 \end{align}
-where $\mathcal{C}:=\begin{bmatrix}B & AB & A^2B & \cdots & A^{n-1}B
-\end{bmatrix}_{n\times (kn)}$\footnote{Please, note that $\mathcal{C}[t_0,t_1]$ and $\mathcal{C}$ are different objects. The former is a space, the latter is a matrix.}.
-Note that we just have proven that the image of $\mathcal{C}$ is the same as the image of $W_R(t_0,t_1)$. The following more general result can be proven as well:
+donde $\mathcal{C}:=\begin{bmatrix}B & AB & A^2B & \cdots & A^{n-1}B
+\end{bmatrix}_{n\times (kn)}$\footnote{Por favor, observa que $\mathcal{C}[t_0,t_1]$ y $\mathcal{C}$  son diferentes objetos. El primero es un (sub)espacio, mientras que el segundo es una matriz.}.
 
+Observa que acabamos de probar que la imagen de $\mathcal{C}$ es la misma que la imagen de $W_R(t_0,t_1)$. La siguiente afirmación más general puede probarse también:
 \begin{theorem}
 	\label{thm: spcon}
-For any two times $t_0, t_1$, with $t_1 > t_0$, we have
+Dados dos instantes de tiempo $t_0, t_1$, con $t_1 > t_0$, tenemos que
 	\begin{equation}
 		\mathcal{R}[t_0,t_1] = \text{Im}\{W_R(t_0,t_1)\} = \text{Im}\{\mathcal{C}\} = \text{Im}\{W_C(t_0,t_1)\} = \mathcal{C}[t_0,t_1],
 	\end{equation}
 \end{theorem}
 
-Two important consequences can be extracted from Theorem \ref{thm: spcon} for systems with $A$ and $B$ constant. Note that $\text{Im}\{\mathcal{C}\}$ does not depend on any time variable!
+Podemos extraer dos importantes consecuencias del Teorema \ref{thm: spcon} para sistemas lti. ¡Observa que $\text{Im}\{\mathcal{C}\}$ no depende de ninguna variable tiempo!
+
 \begin{enumerate}
-	\item \emph{Time reversibility}: If you can reach $x_1$ from zero, then you can reach zero from $x_1$, i.e, the controllability and reachibility subspaces are the same.
-	\item \emph{Time scaling}: The notions of reachable and controllable subspaces do not depend on the considered time interval. If you can transfer the state from $x_0$ to $x_1$ in $t$ seconds, then you can also do it in $\bar t$ seconds.
+	\item \emph{Reversibilidad temporal}: Si uno puede alcanzar $x_1$ desde el origen, entonces uno puede alcanzar el origen desde $x_1$. Es decir, los subespacios de alcanzabilidad y controlabilidad son el mismo subespacio.
+	\item \emph{Escalado de tiempo}: La alcanzabilidad y la controlabilidad no dependen del tiempo. Si uno puede transferir el estado de $x_0$ and $x_1$ en $t$ segundos, entonces también puedes hacerlo en $\bar t \neq t$ segundos.
 \end{enumerate}
 
 \begin{definition}
-	Given two times $t_1 > t_0 \geq 0$, the pair $(A,B)$ from system (\ref{eq: sigmalin}) is reachable on $[t_0, t_1]$ if $\mathcal{R}[t_0,t_1] = \mathbb{R}^n$, i.e., if we can drive the state of the system from the origin to any arbitrary state in finite time.
+	Dados dos instantes de tiempo $t_1 > t_0 \geq 0$, el par $(A,B)$ del sistema (\ref{eq: linsys}) se dice \emph{alcanzable} en $[t_0, t_1]$ si $\mathcal{R}[t_0,t_1] = \mathbb{R}^n$. Es decir, si podemos alcanzar cualquier estado en tiempo finito partiendo desde el origen.
 \end{definition}
 
 \begin{definition}
 	\label{def: con}
-	Given two times $t_1 > t_0 \geq 0$, the pair $(A,B)$ from system (\ref{eq: sigmalin}) is controllable on $[t_0, t_1]$ if $\mathcal{C}[t_0,t_1] = \mathbb{R}^n$, i.e., if every state can be driven to the origin in finite time.
+	Dados dos instantes de tiempo $t_1 > t_0$, el par del sistema (\ref{eq: linsys}) se dice \emph{controlable} en $[t_0, t_1]$ si $\mathcal{C}[t_0,t_1] = \mathbb{R}^n$. Es decir, si podemos alcanzar el origen partiendo desde cualquier estado en tiempo finito.
 \end{definition}
 
-\subsection{Controllability tests}
-The following theorem is the combination of the Definition \ref{def: con} and Theorem \ref{thm: spcon}:
+\subsection{Tests de controlabilidad}
+El siguiente teorema es el resultado de combinar la Definición \ref{def: con} con el Teorema \ref{thm: spcon}:
 \begin{theorem}
-	The (constant) pair $(A,B)$ is controllable if and only if the rank of $\mathcal{C}$ is $n$.
+	El par (constante) $(A,B)$ es controlable si y solo si el rango de $\mathcal{C}$ es $n$.
 \end{theorem}
 
-The following theorem is an easy check numerically.
+El siguiente teorema se puede comprobar numéricamente a partir de los siguientes resultados.
 \begin{theorem}
 	\label{thm: atbt}
-	The (constant) pair $(A,B)$ is controllable if and only if there is no eigenvector of $A^T$ in the kernel of $B^T$.
+	El par (constante) $(A,B)$ es controlable si y solo si no existe ningún autovector de $A^T$ en el kernel de $B^T$.
 \end{theorem}
-The following theorem is a restatement of the previous one.
+El siguiente teorema es una reescritura del anterior.
 \begin{theorem}
-	The (constant) pair $(A,B)$ is controllable if and only if the rank of $\begin{bmatrix}A-\lambda I & B\end{bmatrix}$ is $n$.
+El par (constante) $(A,B)$ es controlable si y solo si el dango de $\begin{bmatrix}A-\lambda I & B\end{bmatrix}$ es $n$.
 \end{theorem}
 
 \begin{remark}
-	Note that having an asymptotically stable system does not imply to have a controllable system (pair (A,B) controllable). Let us also illustrate Theorem \ref{thm: atbt} with the following system:
+	Observa que el tener un sistema asintóticamente estable no implica el tener 
+	un sistema lti controlable. Por ejemplo, 
 \begin{equation}
 	\dot x = \begin{bmatrix}-3 & 0 \\ 0 & -7\end{bmatrix}x + \begin{bmatrix}0 \\ 1\end{bmatrix}u, \quad x\in\mathbb{R}^2, u\in\mathbb{R}.
 \end{equation}
-	The kernel of $B^T$ is spanned by $\begin{bmatrix}1 \\ 0\end{bmatrix}$, which is an eigenvector of $A = A^T$. Therefore, the system is not controllable according to Theorem \ref{thm: atbt}. Note that we do not have any control over $x_1$ via $u$. However, it is asympotically stable. One can see that $x_{\{1,2\}}(t) \to 0$ as $t\to\infty$ when $u = 0$. Remember that controllability is about going from a nonzero state $x^*$ to $0$ in \textbf{finite time}.
+	El kernel de $B^T$ es generado por $\begin{bmatrix}1 \\ 0\end{bmatrix}$, el cual es proporcional a un autovector de $A = A^T$. Entonces, el sistema no es controlable acorde al teorema \ref{thm: atbt}. Observa, que no tenemos autoridad ninguna sobre $x_1$ a través de $u$. Sin embargo, es asintóticamente estable. Uno puede ver que $x_{\{1,2\}}(t) \to 0$ según $t\to\infty$ cuando $u = 0$. Recuerda que la controlabilidad trata de transferir estados en \textbf{tiempo finito}.
 \end{remark}
 
-\section{Feedback stabilization based on the Lyapunov test}
-\subsection{Lyapunov test for stabilization}
+\section{Estabilización de un sistema lti por realimentación basado en el test de Lyapunov}
+\subsection{Test de Lyapunov para la estabilización de un sistema lti}
 \begin{definition}
-The system (\ref{eq: sigmalin}) is stabilizable if there exists an input $u(t)$ for every $x(0)$ such that $x(t)\to 0$ as $t\to\infty$.
+	Si el sistema (\ref{eq: linsys}) es lti, entonces es estabilizable si existe una entrada $u(t)$ para cualquier $x(0)$ tal que $x(t)\to 0$ as $t\to\infty$.
 \end{definition}
-This is somehow a \emph{controllable} version of the system in infinite time instead of in finite time. In the next theorem, we will see that \emph{stabilizable} is less restrictive than \emph{controllable}.
+Esta definición es una versión de \emph{sistema controlable} pero para tiempo infinito. En el siguiente teorema veremos que \emph{estabilizable} es menos restrictivo que \emph{controlable}.
 
 \begin{theorem}
-The system (\ref{eq: sigmalin}) is stabilizable if and only if every eigen-vector of $A^T$ corresponding to an eigenvalue with a positive or zero real part is not in the kernel of $B^T$.
+	Si el sistema (\ref{eq: linsys}) es lti, entonces es estabilizable si y solo si todos los autovectores de $A^T$ correspondientes a autovalores con parte real no negativa pertenecen al kernel de $B^T$.
 \end{theorem}
 
-The components of $x(t)$ corresponding to the eigenvectors with associated eigenvalues with negative real part go to zero as the time goes to infinity without any \emph{assistance} from an input. Therefore, the input $u(t)$ must counterreact the components corresponding to the eigenvectors with associated eigenvalues with non-negative real part. For example:
+La proyección de $x(t)$ sobre el espacio generado por los autovectores de $A^T$ asociados a autovalores con parte real negativa van a cero sin necesidad de la \emph{asistencia} de ninguna entrada. Entonces, la entrada $u(t)$ debe asistir a las proyecciones de $x(t)$ en el resto de autovectores de $A^T$. Por ejemplo,
+
 \begin{equation}
 	\dot x = \begin{bmatrix}-3 & 0 \\ 0 & 7\end{bmatrix}x + \begin{bmatrix}0 \\ 1\end{bmatrix}u, \quad x\in\mathbb{R}^2, u\in\mathbb{R},
 \end{equation}
-while we do not have any \emph{authority} over $x_1(t)$, we can employ $u(t)$ to drive $x_2(t)$ to zero so that $x(t)\to 0$ as $t\to\infty$.
+mientras que no tenemos ninguna \emph{autoridad} sobre $x_1(t)$, podemos emplear $u(t)$ para lleva a $x_2(t)$ a cero de tal manera que $x(t)\to 0$ según $t\to\infty$.
 \begin{theorem}
-	The system (\ref{eq: sigmalin}) is stabilizable if and only if there is a positive-definite solution $P$ to the following Lyapunov matrix inequality
+	Si el sistema (\ref{eq: linsys}) es lti, entonces es estabilizable si y solo si hay una matriz positiva definida $P$ a la siguiente desigualdad
 	\begin{equation}
 	AP + PA^T - BB^T \prec 0
 		\label{eq: lb}
 	\end{equation}
 \end{theorem}
 \begin{proof}
-	We will see only one direction of the proof. Do not confuse (\ref{eq: lb}) with the Lyapunov equation\footnote{Note the order of the transposed matrices, and also note the opposite sign of $-BB^T$ and $+I$ for the two equations.} $PA+A^TP \prec -I$ in (\ref{eq: lya}).
+	Solo vamos a ver una dirección de la prueba. No confundir (\ref{eq: lb}) con la ecuación de Lyapunov\footnote{Observa el orden de las matrices traspuestas, y observa también el signo opuesto de $-BB^T$ y $+I$ en las dos ecuaciones.} $PA+A^TP \prec -I$ en (\ref{eq: lya}).
 
-
-Consider $x$ being an eigenvector associated to an eigenvalue $\lambda$ with non-negative real part of $A^T$. Then
+Conisdera $x$ como un autovector asociado al autovalor $\lambda$ de $A^T$ con parte real no negativa. Entonces,
 	\begin{equation}
 	x^*(AP+PA^T)x < x^*BB^Tx = ||B^Tx||^2,
 		\label{eq: aux}
 	\end{equation}
-	where $x^*$ is the complex conjugate transpose of $x$. But the left-hand side of (\ref{eq: aux}) equals
+	donde $x^*$ es el complejo conjugado de $x$. Pero el lado izquierdo de (\ref{eq: aux}) es igual a 
 	\begin{equation}
 		(A^T(x^*)^T)^TPx + x^*PA^Tx = \lambda^*x^*Px + \lambda x^*Px = 2\text{Real}\{\lambda\}x^*Px.
 	\end{equation}
-	Since $P$ is positive-definite and $\text{Real}\{\lambda\} \geq 0$, we can conclude that
+	Como $P$ es positiva definida, y $\text{Real}\{\lambda\} \geq 0$, podemos concluir que 
 \begin{equation}
 0 \leq 2\text{Real}\{\lambda\}x^*Px < ||B^Tx||^2,
 \end{equation}
-and therefore $x$ must not belong to the kernel of $B$, otherwise we will have
+y por tanto $x$ debe pertenecer al kernel de $B$, si no tendríamos que 
 \begin{equation}
 0 \leq 2\text{Real}\{\lambda\}x^*Px < 0,
 \end{equation}
-which cannot be possible.
+y eso no es posible.
 \end{proof}
 
-\subsection{State-feedback controller}
-Define the \emph{control matrix gain}
+\subsection{Controlador por realimentación de estados}
+Define la ganancia matriz de control
 \begin{equation}
 	K:=\frac{1}{2}B^TP^{-1}, \label{eq: K}
 \end{equation}
-where $P$ is calculated from (\ref{eq: lb}) if and only if the system (\ref{eq: sigmalin}) is stabilizable. Therefore, we can rewrite (\ref{eq: lb}) as
+donde $P$ se calcula en (\ref{eq: lb}) si y solo si el sistema lti es estabilizable. Por lo tanto, podemos rescribir (\ref{eq: lb}) como
 \begin{equation}
 	(A - \frac{1}{2}BB^TP^{-1})P + P(A - \frac{1}{2}BB^TP^{-1})^T = (A-BK)P+P(A-BK)^T \prec 0,
 \end{equation}
-and by multiplying on the left and right by $Q:=P^{-1}$ we have that
+y multiplicando a la izquierda y derecha por $Q:=P^{-1}$ tenemos que
 \begin{equation}
 	Q(A-BK)+(A-BK)^TQ \prec 0,
 \end{equation}
-which is the Lyapunov equation. Thus, we can conclude that $(A-BK)$ has all its eigenvalues with negative real part, i.e., if one chooses the input 
+la cual es una ecuación de Lyapunov. Por lo tanto, podemos concluir que $(A-BK)$ tiene todos sus autovalores \emph{estables}, esto es, si uno escoge la entrada
 \begin{equation}
 	u = -Kx = -\frac{1}{2}B^TP^{-1}x, \label{eq: conK}
 \end{equation}
-in the stabilizable (\ref{eq: sigmalin}), then $x(t) \to 0$ as $t\to\infty$ exponentially fast.
+en el sistema lti estabilizable, entonces $x(t) \to 0$ exponencialmente rápido según $t\to\infty$.
 
-\section{Observability for linear time invariant (lti) systems}
+\section{Observabilidad en sistemas lti}
 In this section we will consider only the following linear system
 \begin{equation}
 	\Sigma_{\text{lti}} := \begin{cases}
