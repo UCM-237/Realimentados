@@ -761,3 +761,80 @@ que junto con (\ref{eq: ed}) nos lleva al siguiente sistema autónomo
 	\begin{bmatrix}\dot x \\ \dot e\end{bmatrix} = \begin{bmatrix}A-BK & -BK \\ 0 & A-LC\end{bmatrix}\begin{bmatrix}x \\ e\end{bmatrix},
 \end{equation}
 el cual es un sistema triangular, y será exponencialmente estable porque $(A-BK)$ y $(A-LC)$ son matrices diseñadas para tener todos sus autovalores estables.
+
+\section{Regulador cuadrático lineal o LQR}
+Si el par $(A,B)$ es controlable, entonces hemos visto que podemos colocar los autovalores de $(A-BK)$ donde queramos. Entonces uno podría preguntarse ¿cuál es el mejor lugar para los autovalores?
+
+El \emph{mejor} lugar responde al siguiente criterio de diseño. Considera que tenemos la siguiente salida de interés
+\begin{equation}
+	z(t) = G x(t) + H u(t) \label{eq: z}.
+\end{equation}
+Por supuesto $z(t)\in\mathbb{R}^l$ puede ser la señal de salida $y(t)$, pero no tiene por qué. En particular, debemos distinguir que $y(t)$ la usaremos para alimentar el estimador/controlador, y $z(t)$ la usaremos para optimizar nuestro criterio sobre \emph{el mejor} lugar para los autovalores de $(A-BK)$.
+
+El problema LQR está definido de la siguiente manera:
+\begin{problem}
+	Encontrar una entrada $u(t), t\in[0,\infty)$ que minimice la siguiente función de coste
+\begin{equation}
+	J := \int_0^\infty z(t)^T \bar Q z(t) + \rho \, u(t)^T \bar R u(t) dt,
+	\label{eq: J}
+\end{equation}
+	donde $\bar Q\in\mathbb{R}^{l\times l}$ y $\bar R\in\mathbb{R}^{m\times m}$ son matrices positivas definidas, y $\rho$ es una constante positiva para relativizar ambos términos en (\ref{eq: J}).
+\end{problem}
+
+Como $z = Gx + Hu$, entonces $J$ puede ser rescrito como
+\begin{equation}
+	J := \int_0^\infty x(t)^T Q x(t) + \, u(t)^T R u(t) + 2x(t)^T N u(t)dt,
+	\label{eq: J2},
+\end{equation}
+donde $Q = G^T\bar Q G$, $R = H^T\bar QH + \rho \bar R$, y $N = G^T\bar Q H$.
+
+Observa como $\bar Q$, $\bar R$ y $\rho$ determinan como de importante es el minimizar los elementos de $z$ y $u$.
+
+Si somos capaces de encontrar una matriz positiva definida $P$ tal que satisface la \emph{ecuación algebraica de Ricatti}
+\begin{equation}
+	A^TP + PA + Q - (PB + N)R^{-1}(B^TP + N^T) = 0,
+\end{equation}
+entonces
+\begin{theorem}
+	Si $A - BR^{-1}(B^TP+N^T)$ es una matriz de estabilidad. Entonces, la señal de entrada
+	\begin{equation}
+	u(t) = -R^{-1}(B^TP+N^T) x(t),
+	\end{equation}
+	minimiza $J$, es más, $J = x(0)^T P x(0)$.
+\end{theorem}
+
+La \emph{regla de Bryson} nos orienta para unos valores razonables de $\bar Q$ y $\bar R$:
+\begin{align}
+	\bar Q_{ii} &= \frac{1}{\text{valor máximo aceptable de}\, z_i^2} \nonumber \\
+	\bar R_{jj} &= \frac{1}{\text{valor máximo aceptable de}\, u_j^2}. \nonumber
+\end{align}
+
+
+\section{Resumen para la estabilización de un punto en un sistema no lineal}
+Dado el siguiente sistema no lineal
+\begin{equation}
+	\Sigma :=
+\begin{cases}
+	\dot x &= f(x,u) \\
+	y &= g(x,u)
+\end{cases}, \label{eq: sisnl}
+\end{equation}
+donde $x\in\mathbb{R}^n$ es el estado del sistema, $u\in\mathbb{R}^k$ es la entrada al sistema, $y\in\mathbb{R}^m$ es la salida del sistema, y $f(x,u): \mathbb{R}^n\times\mathbb{R}^k \to \mathbb{R}^n$ y  $g(x,u): \mathbb{R}^n\times \times\mathbb{R}^k \to \mathbb{R}^m$ son funciones arbitrarias.
+
+El siguiente algoritmo nos permite estabilizar un punto arbitrario $x^*$ del sistema (\ref{eq: sisnl}).
+
+\begin{enumerate}
+	\item Escoge un punto de interés $x^*$, y entonces calcula $u^*$ de tal manera que  $f(x^*,u^*) = 0$.
+	\item Lineariza (\ref{eq: sisnl}) alrededor de  $x^*$ y $u^*$, i.e., calcula sus Jacobianos $A:=\frac{\partial f(x,u)}{\partial x}$ y $B:=\frac{\partial f(x,u)}{\partial u}$ y evalúalos en $x=x^*$ y $u=u^*$. Observa, que si un Jacobiano no existe, e.g., $f(x,u)$ no es real analítica, entonces, no podemos continuar.
+	\item Comprobar si $(A,B)$ es controlable. Si este test falla, entonces comprueba si es almenos estabilizable. Si ambos tests fallan, no podemos continuar.
+	\item Calcular el Jacobiano $C:=\frac{\partial g(x,u)}{\partial x}$. Si $C$ no es invertible, entonces necesitaremos un observador/estimador. Si $C$ es invertible, entonces ves al paso \ref{step}.
+	\item Si necesitamos un estimador, entonces comprueba que $(A,C)$ es observable. Si no, comprueba que $(A,C)$ es detectable. Si ambos tests fallan, no podemos continuar.
+	\item Si $(A,C)$ es observable, entonces contruye el estimador (\ref{eq: sigmaest2}), con $D:=\frac{\partial g(x,u)}{\partial u}$, y calcula $L$ de tal manera que $(A-LC)$ sea una matriz estable. Por ejemplo, con el Teorema \ref{thm: ack}.
+	\item Si $(A,C)$ no es observable pero sí detectable, entonces, calcula $L$ a través del sistema dual con el test de Lyapunov para la estabilización como en (\ref{eq: K}). Recuerda, que entonces $L = K^T$.
+	\item \label{step} Si el par $(A,B)$ es controlable, entonces podemos calcular $K$ de tal manera que $(A-BK)$ sea una matriz estable. Por ejemplo, con el Teorema \ref{thm: ack}.
+	\item Si $(A,B)$ no es controlable, pero estabilizable. Entonces calcula $K$ a través del test de Lyapunov para la estabilización como en (\ref{eq: K}).
+	\item Felicidades! Escoge\footnote{Recuerda que nos referimos muchas veces a $u(t)$ como la entrada al sistema lti, para el sistema lineal no olvides que es $u(t) = u^*(t) + \delta u(t)$, i.e., para el sistema no lineal tendríamos que $u(t) = u^* -K\delta x$.}  $u(t) = -Kx(t)$ o $u(t) = -K\hat x(t)$ si has necesitado de un estimador.
+	\item Por último recuerda que el controlador ha sido diseñado para un sistema no lineal. Por lo que existe una región dada en (\ref{eq: Bregion}) que garantiza la convergencia. Fuera de ahí, no podemos decir nada con seguridad.
+\end{enumerate}
+
+
