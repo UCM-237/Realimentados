@@ -478,8 +478,15 @@ para algunas funciones escalares apropiadas $\alpha_i(t)$. Tenemos también que 
 	&= \sum_{i=0}^{n-1} A^iB \Big(\int_{0}^{t_1-t_0}\alpha_i(t)u(t)dt \Big) \nonumber \\
 	&= \mathcal{C} \begin{bmatrix}\int_{0}^{t_1-t_0}\alpha_0(t)u(t)dt \\ \vdots \\ \int_{0}^{t_1-t_0} \alpha_{n-1}(t)u(t)dt \end{bmatrix},
 \end{align}
-donde $\mathcal{C}:=\begin{bmatrix}B & AB & A^2B & \cdots & A^{n-1}B
-\end{bmatrix}_{n\times (kn)}$\footnote{Por favor, observa que $\mathcal{C}[t_0,t_1]$ y $\mathcal{C}$  son diferentes objetos. El primero es un (sub)espacio, mientras que el segundo es una matriz.}.
+donde
+\begin{equation}
+\mathcal{C}:=\begin{bmatrix}B & AB & A^2B & \cdots & A^{n-1}B
+\end{bmatrix}_{n\times (kn)},
+	\label{eq: conmat}
+\end{equation}
+es la llamada matrix de controlabilidad del sistema lti.
+\begin{remark}Observa que $\mathcal{C}[t_0,t_1]$ y $\mathcal{C}$  son diferentes objetos. El primero es un (sub)espacio, mientras que el segundo es una matriz.
+\end{remark}
 
 Observa que acabamos de probar que la imagen de $\mathcal{C}$ es la misma que la imagen de $W_R(t_0,t_1)$. La siguiente afirmación más general puede probarse también:
 \begin{theorem}
@@ -579,11 +586,18 @@ y eso no es posible.
 \end{proof}
 
 \subsection{Controlador por realimentación de estados}
+Realimentación de estados implica el escoger una señal de entrada que dependa únicamente de los estados del sistema, es decir, diseñar una
+\begin{equation}
+u(t) = -Kx(t),
+	\label{eq: kx}
+\end{equation}
+donde $K\in\mathbb{R}^{n\times k}$, tal que $x(t) \to 0$ en (\ref{eq: linsys}) exponencialmente rápido según $t\to\infty$.
+
 Define la ganancia matriz de control
 \begin{equation}
 	K:=\frac{1}{2}B^TP^{-1}, \label{eq: K}
 \end{equation}
-donde $P$ se calcula en (\ref{eq: lb}) si y solo si el sistema lti es estabilizable. Por lo tanto, podemos rescribir (\ref{eq: lb}) como
+donde $P$ se calcula en (\ref{eq: lb}) si y solo si un sistema lti es estabilizable. Por lo tanto, podemos rescribir (\ref{eq: lb}) como
 \begin{equation}
 	(A - \frac{1}{2}BB^TP^{-1})P + P(A - \frac{1}{2}BB^TP^{-1})^T = (A-BK)P+P(A-BK)^T \prec 0,
 \end{equation}
@@ -596,6 +610,18 @@ la cual es una ecuación de Lyapunov. Por lo tanto, podemos concluir que $(A-BK)
 	u = -Kx = -\frac{1}{2}B^TP^{-1}x, \label{eq: conK}
 \end{equation}
 en el sistema lti estabilizable, entonces $x(t) \to 0$ exponencialmente rápido según $t\to\infty$.
+
+Encontrar la matrix $P$ en (\ref{eq: K}) requiere resolver la \emph{linear matrix inequality} (LMI) en (\ref{eq: lb}). Para ello existen herramientas numéricas \emph{LMI solvers} disponibles en Matlab o Python.
+
+Si el sistema lti es controlable (recordemos que es más restrictivo que estabilizable), la matriz $K$ en (\ref{eq: kx}) puede explotar el Teorema \ref{thm: atbt}. Es decir, podemos encontrar una matriz $K$ tal que $(A-BK)$ tenga sus autovalores donde nosotros queramos por diseño. Por ejemplo, a través del Teorema de Ackermann.
+\begin{theorem}
+	Si el sistema lti es controlable, entonces $(A-BK)$ tiene como autovalores un conjunto deseado $\Lambda$ si
+	\begin{equation}
+		K = \begin{bmatrix}0 & \dots & 0 & 0 & 1\end{bmatrix}\mathcal{C}^{-1} \Delta(A),
+	\end{equation}
+	en donde $\mathcal{C}$ es la matrix de controlabilidad (\ref{eq: conmat}) y $\Delta$ es el polinomio característico que satisface $\Lambda$.
+\end{theorem}
+
 
 \section{Observabilidad en sistemas lti}
 In this section we will consider only the following linear system
