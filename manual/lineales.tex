@@ -615,12 +615,14 @@ Encontrar la matrix $P$ en (\ref{eq: K}) requiere resolver la \emph{linear matri
 
 Si el sistema lti es controlable (recordemos que es más restrictivo que estabilizable), la matriz $K$ en (\ref{eq: kx}) puede explotar el Teorema \ref{thm: atbt}. Es decir, podemos encontrar una matriz $K$ tal que $(A-BK)$ tenga sus autovalores donde nosotros queramos por diseño. Por ejemplo, a través del Teorema de Ackermann.
 \begin{theorem}
+	\label{thm: ack}
 	Si el sistema lti es controlable, entonces $(A-BK)$ tiene como autovalores un conjunto deseado $\Lambda$ si
 	\begin{equation}
 		K = \begin{bmatrix}0 & \dots & 0 & 0 & 1\end{bmatrix}\mathcal{C}^{-1} \Delta(A),
 	\end{equation}
 	en donde $\mathcal{C}$ es la matrix de controlabilidad (\ref{eq: conmat}) y $\Delta$ es el polinomio característico que satisface $\Lambda$.
 \end{theorem}
+Obviamente, al requerir la inversa de la matriz de contolabilidad, se requiere por tanto que $\mathcal{C}$ sea de rango máximo. Es decir, el sistema lti ha de ser controlable para poder aplicar el Teorema \ref{thm: ack}.
 
 
 \section{Observabilidad en sistemas lti}
