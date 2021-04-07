@@ -5,10 +5,10 @@ Nos vamos a centrar en sistemas que puedan ser descritos por características cu
 
 Vamos a definir $x(t)\in\mathbb{R}^n$, $y(t)\in\mathbb{R}^m$ y $u(t)\in\mathbb{R}^k$ como el vector apilado de estados, la salida, y la entrada a un sistema $\Sigma$ respectivamente. En particular, son señales, e.g., $x :[0,\infty) \to \mathbb{R}^n$.
 
-El sistema $\Sigma$ es un modelo que predice el valor de los estados y la salida a lo largo del tiempo. Esta predicción incorpora la interacción de la entrada en los estados y la salida. En particular, vamos a emplear ecuaciones diferenciales como herramienta para predecir la evolución en el tiempo de los estados del sistema $\Sigma$ como se muestra a continuación
+El sistema $\Sigma$ es un modelo que predice el valor de los estados y la salida a lo largo del tiempo. Esta predicción incorpora la interacción de la entrada con los estados y la salida. En particular, vamos a emplear ecuaciones diferenciales como herramienta para predecir la evolución en el tiempo de los estados del sistema $\Sigma$ como se muestra a continuación
 \begin{equation}
 	\Sigma := \begin{cases}
-		\dot x(t) =& f(x(t),u(t)) \\ y(t) =& g(x(t),u(t))
+		\dot x(t) =& f(t,x(t),u(t)) \\ y(t) =& g(t,x(t),u(t))
 	\end{cases}, 
 \label{eq: sigma}
 \end{equation}
@@ -29,6 +29,64 @@ Podemos representar el sistema $\Sigma$ como un bloque con puertos de entrada y 
 	\label{fig: sigma}
 \end{figure}
 
+Dado que el sistema viene descrito por las variables de estado,  con frecuencia es posible prescindir de la salida y centrar el estudio en la primera de las dos ecuaciones anteriores.
+
+ En ocasiones podemos emplear para describir un sistema ecuaciones de estado en las que no aparece explícitamente la entrada,
+\begin{equation}
+\dot x = f(t,x)
+\end{equation}\label{eq: for}
+En este caso se, se habla de una ecuación de estado no forzada. Esto no quiere decir necesariamente que la entrada al sistema sea cero. Puede aparecer representada directamente como una función del tiempo, $u=\rho(t)$,  como una función (\emph{realimentación}) de los estados $u = \rho(x)$ o como una función de ambos $u=\rho(t,x)$.
+Un caso especialmente interesante de (\ref{eq. for}) se obtiene cuando $f$ no depende explícitamente del tiempo,
+\begin{equation}
+\dot x = f(x)
+\end{equation}
+Se trata entonces de un sistema \emph{autónomo} o \emph{invariante en el tiempo}. Es decir, el comportamiento del sistema es invariante bajo traslaciones del origen de tiempos; si cambiamos la variable tiempo de $t$ a $t-a$, la parte derecha de la ecuación de estado no experimenta cambio.
+
+Para un sistema dinámico, descrito mediante variable de estados, un punto de equilibrio $x=x^*$  tiene la propiedad de que si el sistema se encuentra en $x*$ en un instante de tiempo $t_0$, permanecerá en ese  mismo punto para todo instante de tiempo posterior $t>t_0$. En el caso de un sistema autónomo, los puntos de equilibrio son las raíces reales de la ecuación,
+\begin{equation}
+f(x)=0
+\end{equation} 
+
+Los puntos de equilibrio de juegan un papel muy importante en el estudio de los sistemas dinámicos, como tendremos ocasión de ver más adelante.
+
+Un caso particular de sistema dinámicos los constituyen los sistemas lineales. Para ellos la ecuación \ref{eq: sigma} toma la forma,
+\begin{equation}
+	\Sigma := \begin{cases}
+		\dot x(t) =& A(t)x(t)+B(t)u(t) \\ y(t) =& C(t)x(t)+D(t)u(t)
+	\end{cases}, 
+\label{eq: sigmaL}
+\end{equation}
+
+En el capítulo 5 se estudiarán en detalle los sistemas lineales, cuyas propiedades permiten emplear herramientas de análisis precisas y potentes para su estudio y caracterización. En el caso del resto de los sistemas, es decir todos aquellos que son no-lineales, el análisis resulta más complejo.
+
+Una primera aproximación al estudio de los sistemas no-lineales es linealizarlos en torno a punto de trabajo y estudiar el sistema lineal resultante. Esta aproximación es muy valiosa, como  veemos en la sección (\ref{sec: linear}), sin embargo, solo es válida en las proximidades del punto de trabajo, por tanto no es posible predecir a partir de ella el comportamiento del sistema cuando nos alejamos de dicho punto. Por otro lado, los sistemas no-lineales presentan una dinámica mucho mas rica, con fenómenos que no se dan en los sistemas lineales y, por tanto no pueden describirse con un modelo linealizado del sistema no-lineal. Algunos de éstos fenómenos son:
+
+\begin{itemize}
+
+
+\item \textbf{Múltiples puntos de equilibrio aislados.} Para un sistema lineal solo es posible encontrar un punto de equilibrio.  Un sistema lineal es estable cuando, partiendo de valores iniciales arbitrarios, sus variables de estado se aproximan al punto de equilibrio con el tiempo. 
+
+\begin{equation}
+\lim_{ t \to \infty} x \to x^*
+\end{equation}
+
+Un sistema no lineal puede presentar más de un punto de equilibrio y aproximarse a uno u otro dependiendo de las condiciones iniciales.
+
+\item \textbf{Tiempo de escape finito (\emph{Finite escape time}).} Un sistema lineal es inestable cuando, partiendo de valores arbitrarios, sus variables de estado divergen --se van a infinito-- con el tiempo.
+\begin{equation}
+\lim_{ t \to \infty} x \to \infty
+\end{equation}
+Es posible encontrar sistemas no-lineales inestables que se comportan de modo análogo a los lineal pero además, algunos sistemas lineales divergen, se van a infinito, en un tiempo finito. 
+\begin{equation}
+\lim_{ t \to t_e} x \to \infty
+\end{equation}
+
+\item \textbf{Cíclos límite.} Un sistema lineal se dice que es marginalmente estable, cuando sus variables de estado oscilan periódicamente. Sin embargo, como veremos más adelante, las condiciones para que se de una oscilación man en un sistema lineal, constituyen una condición no robusta, por lo que es casi imposible que se de en presencia en condiciones reales. Además la amplitud de las oscilaciones depende de las condiciones iniciales del sistema.
+
+Hay sistemas no lineales que pueden oscilar de modo estable con una amplitud y frecuencia independiente de las condiciones iniciales. A este tipo de oscilaciones se les conoce con el nombre de ciclos límite. 
+\end{itemize}
+
+ Resulta por tanto necesario, buscar herramientas específicas para el análisis de los sistemas no-lineales.
 \section{Ejemplos}
 \subsection{Péndulo invertido}
 
@@ -152,7 +210,7 @@ algún tipo de situación de equilibrio. Más adelante definiremos esta situaci�
 La figura \ref{fig:vehir} muestra un esquema de un vehículo terrestre de cuatro ruedas, visto desde arriba. Si consideramos que se mueve en el plano $x,y$, y que su velocidad instántanea $\vec{V}$ está siempre orientada en la dirección de avance del vehículo $\psi$ --asumimos que no derrapa, ni se mueve lateralmente--, podemos entonces definir la velocidad, en el sistema de referencia $x,y$ como,
 \begin{align}
 \dot{x} = V_x(t) = V\cos(\psi(t))\\
-\dot{y} = V_y(t) = V\sin(\psi(t))\\
+\dot{y} = V_y(t) = V\sin(\psi(t)).
 \end{align}
 
 \begin{figure}
@@ -238,3 +296,20 @@ Dado un punto inicial $x(0)$, podemos predecir o calcular numéricamente $x(t)$.
 \end{algo}
 
 Este algoritmo rinde bien cuando $\Delta T$ es suficientemente pequeño en función de como de rápido varíe $f$ en el tiempo. Por ahora hemos considerado $u=0$, es decir, no hay control o interacción alguna con el sistema.
+
+\section{Sistemas autónomos de segundo orden}
+Los sistema autónomos de segundo orden, son especialmente atractivos para el estudio de los fenómenos no lineales porque sus soluciones se pueden representar fácilmente en el llamado plano e fases.
+En general, podemos definir un sistema autónomo de segundo orden a partir de dos ecuaciones escalares, una para la derivada temporal de cada estado,
+\begin{align}
+\dot x_1 &= f_1(x_1,x_2) \label{eq: sysa1}\\
+\dot x_2 &= f_2(x_1,x_2) \label{eq: sysa2}
+\end{align}
+
+Supongamos que conocemos una solución al sistema $x(t) = [x_1(t),x_2(t)]^T$, que pasa por el punto $x(0) = x_0$. La solución describe una curva sobre el plano $x_1-x_2$ que pasa por el punto $x_0$. Esta curva recibe el nombre de trayectoria u órbita, desde $x_0$, del sistema. El plano $x_1-x_2$ recibe el nombre de plano de fases. La ecuaciones (\ref{eq: sysa1}) - (\ref{eq: sysa2}) representa un vector tangente $\dot x(t) = [\dot x_1(t),\dot x_2(t)]$ a la trayectoria en el punto $x(t)$ .
+
+Además podemos considerar $f(x)=[f_1(x),f_2(x)]$ como un campo vectorial definido sobre el plano de fases., es decir asignamos a cada punto $x$ en el espacio de fases el vector $f(x)$. 
+
+La familia de todas 
+
+
+
