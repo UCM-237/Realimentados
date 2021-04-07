@@ -36,7 +36,7 @@ Dado que el sistema viene descrito por las variables de estado,  con frecuencia 
 \dot x = f(t,x)
 \end{equation}\label{eq: for}
 En este caso se, se habla de una ecuación de estado no forzada. Esto no quiere decir necesariamente que la entrada al sistema sea cero. Puede aparecer representada directamente como una función del tiempo, $u=\rho(t)$,  como una función (\emph{realimentación}) de los estados $u = \rho(x)$ o como una función de ambos $u=\rho(t,x)$.
-Un caso especialmente interesante de (\ref{eq. for}) se obtiene cuando $f$ no depende explícitamente del tiempo,
+Un caso especialmente interesante de (\ref{eq: for}) se obtiene cuando $f$ no depende explícitamente del tiempo,
 \begin{equation}
 \dot x = f(x)
 \end{equation}
@@ -87,7 +87,7 @@ Hay sistemas no lineales que pueden oscilar de modo estable con una amplitud y f
 \end{itemize}
 
  Resulta por tanto necesario, buscar herramientas específicas para el análisis de los sistemas no-lineales.
-\section{Ejemplos}
+\section{Ejemplos} \label{sec: ejem}
 \subsection{Péndulo invertido}
 
 Vamos a derivar las funciones $f$ y $g$ en (\ref{eq: sigma}) para el sistema del péndulo invertido.
@@ -307,9 +307,24 @@ En general, podemos definir un sistema autónomo de segundo orden a partir de do
 
 Supongamos que conocemos una solución al sistema $x(t) = [x_1(t),x_2(t)]^T$, que pasa por el punto $x(0) = x_0$. La solución describe una curva sobre el plano $x_1-x_2$ que pasa por el punto $x_0$. Esta curva recibe el nombre de trayectoria u órbita, desde $x_0$, del sistema. El plano $x_1-x_2$ recibe el nombre de plano de fases. La ecuaciones (\ref{eq: sysa1}) - (\ref{eq: sysa2}) representa un vector tangente $\dot x(t) = [\dot x_1(t),\dot x_2(t)]$ a la trayectoria en el punto $x(t)$ .
 
-Además podemos considerar $f(x)=[f_1(x),f_2(x)]$ como un campo vectorial definido sobre el plano de fases., es decir asignamos a cada punto $x$ en el espacio de fases el vector $f(x)$. 
+Además podemos considerar $f(x)=[f_1(x),f_2(x)]$ como un campo vectorial definido sobre el plano de fases., es decir asignamos a cada punto $x$ en el espacio de fases el vector $f(x)$. Es posible obtener una representación aproximada del campo vectorial asociado a un sistema si definimos una región de interés del plano de fase, por ejemplo, una región que contenga sus puntos de equilibrio. Seleccionamos un conjunto de puntos $x$ en posiciones equiespaciadas dentro de la región de interés, y representamos en cada punto $x$ el campo asociado $f(x)$ mediante una flecha que apunte en la dirección de $f(x)$ y cuya longitud sea proporcional al módulo de $f(x)$.
 
-La familia de todas 
+El conjunto de todas las trayectorias en el plano de fases de un sistema se denomina su diagrama de fases. de modo análogo al caso de campo vectorial, podemos obtener una representación aproximada del diagrama de fases obteniendo las trayectorias del sistemas para un conjunto suficientemente grande de condiciones iniciales en una región de interés y dibujándolas en el plano de fases.
+
+Las representaciones en el plano de fases, no ofrecen un camino sencillo para observar algunos de los fenómenos propios de los sistemas no lineales. A continuación, vamos a emplearlas con algunos de los ejemplos de la sección \ref{sec: ejem}
+
+\subsection{Diagrama de fases para el péndulo invertido}
+Podemos obtener un sistema autónomo para el péndulo invertido, eliminando la tensión $T$ de las ecuaciones \ref{eq: f},
+
+\begin{align}
+\dot x_1 = &x_2\\
+\dot x_2 = &\frac{g}{l}\sin x_1 - \frac{b}{l}x_2
+\end{align}
+donde $x_1 = \theta$ y $x_2 = \dot \theta$,. Una primera característica del sistema la obtenemos calculando los puntos de equilibrio, $x*=[n\pi,0]^T, n \in \mathbb{Z}$. Tenemos un conjunto infinito de posibles puntos de equilibrio, correspondiente a las posiciones verticales del péndulo.
+
+La figura \ref{fig:trpen} muestra una trayectoria del péndulo invertido para una realización particular; $l=g=b$ y una condición inicial $x_0=[\pi/3,0]$.
+
+
 
 
 
