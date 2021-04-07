@@ -58,7 +58,7 @@ Primero, vamos a hallar la ecuación diferencial que describe la dinámica de un
 
     \pic [draw, <-, "$\theta$", angle eccentricity=1.5] {angle = bob--origo--mary};
 \end{tikzpicture}
-\caption{Inverted pendulum}
+\caption{Péndulo Invertido}
 \label{fig: invpen}
 \end{figure}
 
@@ -180,7 +180,7 @@ La figura \ref{fig:vehir} muestra un esquema de un vehículo terrestre de cuatro
 \label{fig:vehir}
 \end{figure}
 
-Además el vehículo girará, siempre que las ruedas delanteras no estén alineadas con las ruedas traseras, cambiando así su dirección de avance . Podemos relacionar la velocidad de giro del vehículo $\dot{\psi}$ con el ángulo de orientación de las ruedas delanteras $\phi$, y la velocidad a la que avanzan $\vec{v'}$.  podemos obtener las componetes de dicha velocidad en ejes cuerpo (paralela y perpendicular a la dirección de avance del vehículo),
+Además el vehículo girará, siempre que las ruedas delanteras no estén alineadas con las ruedas traseras, cambiando así su dirección de avance . Podemos relacionar la velocidad de giro del vehículo $\dot{\psi}$ con el ángulo de orientación de las ruedas delanteras $\phi$, y la velocidad a la que avanzan $\vec{v}'$.  podemos obtener las componentes de dicha velocidad en ejes cuerpo (paralela y perpendicular a la dirección de avance del vehículo),
 
 \begin{align}
 v_{P} = v'\cos(\phi(t))\\
@@ -198,13 +198,13 @@ Si tomamos como centro de giro del vehículo el centro de su eje trasero, y la b
 \end{equation}
 
 En resumen, podemos describir el sistema mediante tres ecuaciones de estado $x_1 \equiv x, x_2\equiv	y, x_3 \equiv \psi$:
-<<<<<<< HEAD:manual/modelado.tex
-\begin{align}
-\dot{x}_1 =  V\cos(x_3)\\  
-\dot{x}_2 =  V\sin(x_3)\\
-\dot{x}_3 = \frac{V}{l}\tan(\phi)
-\end{align}
-=======
+
+%\begin{align}
+%\dot{x}_1 =  V\cos(x_3)\\  
+%\dot{x}_2 =  V\sin(x_3)\\
+%\dot{x}_3 = \frac{V}{l}\tan(\phi)
+%\end{align}
+
 \begin{equation}
 	\begin{cases}
 		\dot x_1 &=  V\cos(x_3)\\  
@@ -212,7 +212,6 @@ En resumen, podemos describir el sistema mediante tres ecuaciones de estado $x_1
 		\dot x_3 &= \frac{V}{l}\tan(\phi)
 	\end{cases}
 \end{equation}
->>>>>>> 2aa5508cddde52e40909a7c802b24529eb27dd55:modelado.tex
 
 Si consideramos $V=cte$, la única entrada al sistema sería el ángulo de giro de las ruedas $u(t) = \phi(t)$, controlando su valor, podemos hacer girar al vehículo en la dirección deseada. 
 
