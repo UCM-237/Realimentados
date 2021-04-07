@@ -194,7 +194,7 @@ Sabiendo que $\lim_{t\to\infty} e^{\lambda t} \to 0$ si $\lambda \in \mathbb{R}_
 por tanto, podemos predecir la evolución de $x(t)$ con sólamente mirar los autovalores de $A$. Si $J$ no es diagonal, podremos concluir más resultados. Lo veremos en la sección siguiente a la linearización de sistemas en el espacio de estados.
 
 
-\section{Linearización de sistemas en el espacio de estados}
+\section{Linearización de sistemas en el espacio de estados}\label{sec: linear}
 Desafortunadamente, es realmente dificil (cuando no imposible) calcular una solución analítica para $x(t)$ e $y(t)$ para un sistema arbitrario $\Sigma$ como en (\ref{eq: sigma}). No obstante, hemos visto que sí se puede calcular una solución analítica para $x(t)$ e $y(t)$ cuando $\Sigma$ es un sistema invariante en el tiempo, continuo y lineal en el espacio de estados.
 
 Será de gran utilidad encontrar una relación entre ambos sistemas.
@@ -271,7 +271,7 @@ para modelar una aproximación a la dinámica de $x(t)$ y la salida $y(t)$ alred
 Decimos que el sistema lineal (\ref{eq: linsys}) \emph{en el sentido de Lyapunov}
 \begin{enumerate}
 	\item es \emph{(marginalmente) estable} si para cada condición inicial $x_0$, entonces $x(t) = \Phi(t,t_0) x_0$ está acotada uniformamente para todo $t>t_0$.
-	\item es \emph{asintóticamente estable} si admeás $x(t) \to 0$ según $t\to\infty$.
+	\item es \emph{asintóticamente estable} si además $x(t) \to 0$ según $t\to\infty$.
 	\item es \emph{exponencialmente estable} si además $||x(t)|| \leq c e^{\lambda(t-t_0)}||x(t_0)||$ para algunas constantes $c,\lambda > 0$.
 	\item is \emph{inestable} si no es marginalmente estable.
 \end{enumerate}
