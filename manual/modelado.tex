@@ -42,7 +42,7 @@ Un caso especialmente interesante de (\ref{eq: for}) se obtiene cuando $f$ no de
 \end{equation}
 Se trata entonces de un sistema \emph{autónomo} o \emph{invariante en el tiempo}. Es decir, el comportamiento del sistema es invariante bajo traslaciones del origen de tiempos; si cambiamos la variable tiempo de $t$ a $t-a$, la parte derecha de la ecuación de estado no experimenta cambio.
 
-Para un sistema dinámico, descrito mediante variable de estados, un punto de equilibrio $x=x^*$  tiene la propiedad de que si el sistema se encuentra en $x*$ en un instante de tiempo $t_0$, permanecerá en ese  mismo punto para todo instante de tiempo posterior $t>t_0$. En el caso de un sistema autónomo, los puntos de equilibrio son las raíces reales de la ecuación,
+Para un sistema dinámico, descrito mediante variable de estados, un punto de equilibrio $\overline x$  tiene la propiedad de que si el sistema se encuentra en $\overline x$ en un instante de tiempo $t_0$, permanecerá en ese  mismo punto para todo instante de tiempo posterior $t>t_0$. En el caso de un sistema autónomo, los puntos de equilibrio son las raíces reales de la ecuación,
 \begin{equation}
 f(x)=0
 \end{equation} 
@@ -59,20 +59,17 @@ Un caso particular de sistema dinámicos los constituyen los sistemas lineales. 
 
 En el capítulo 5 se estudiarán en detalle los sistemas lineales, cuyas propiedades permiten emplear herramientas de análisis precisas y potentes para su estudio y caracterización. En el caso del resto de los sistemas, es decir todos aquellos que son no-lineales, el análisis resulta más complejo.
 
-Una primera aproximación al estudio de los sistemas no-lineales es linealizarlos en torno a punto de trabajo y estudiar el sistema lineal resultante. Esta aproximación es muy valiosa, como  veemos en la sección (\ref{sec: linear}), sin embargo, solo es válida en las proximidades del punto de trabajo, por tanto no es posible predecir a partir de ella el comportamiento del sistema cuando nos alejamos de dicho punto. Por otro lado, los sistemas no-lineales presentan una dinámica mucho mas rica, con fenómenos que no se dan en los sistemas lineales y, por tanto no pueden describirse con un modelo linealizado del sistema no-lineal. Algunos de éstos fenómenos son:
+Una primera aproximación al estudio de los sistemas no-lineales es linealizarlos en torno a punto de trabajo y estudiar el sistema lineal resultante. Esta aproximación es muy valiosa, como  veremos en la sección (\ref{sec: linear}), sin embargo, solo es válida en las proximidades del punto de trabajo, por tanto no es posible predecir a partir de ella el comportamiento del sistema cuando nos alejamos de dicho punto. Por otro lado, los sistemas no-lineales presentan una dinámica mucho mas rica, con fenómenos que no se dan en los sistemas lineales y, por tanto no pueden describirse con un modelo linealizado del sistema no-lineal. Algunos de éstos fenómenos son:
 
-\begin{itemize}
-
-
-\item \textbf{Múltiples puntos de equilibrio aislados.} Para un sistema lineal solo es posible encontrar un punto de equilibrio.  Un sistema lineal es estable cuando, partiendo de valores iniciales arbitrarios, sus variables de estado se aproximan al punto de equilibrio con el tiempo. 
+\paragraph{Múltiples puntos de equilibrio aislados.} Para un sistema lineal solo es posible encontrar un punto de equilibrio.  Un sistema lineal es estable cuando, partiendo de valores iniciales arbitrarios, sus variables de estado se aproximan al punto de equilibrio con el tiempo. 
 
 \begin{equation}
-\lim_{ t \to \infty} x \to x^*
+\lim_{ t \to \infty} x \to \overline x
 \end{equation}
 
 Un sistema no lineal puede presentar más de un punto de equilibrio y aproximarse a uno u otro dependiendo de las condiciones iniciales.
 
-\item \textbf{Tiempo de escape finito (\emph{Finite escape time}).} Un sistema lineal es inestable cuando, partiendo de valores arbitrarios, sus variables de estado divergen --se van a infinito-- con el tiempo.
+\paragraph{Tiempo de escape finito (\emph{Finite escape time}).} Un sistema lineal es inestable cuando, partiendo de valores arbitrarios, sus variables de estado divergen --se van a infinito-- con el tiempo.
 \begin{equation}
 \lim_{ t \to \infty} x \to \infty
 \end{equation}
@@ -81,10 +78,10 @@ Es posible encontrar sistemas no-lineales inestables que se comportan de modo an
 \lim_{ t \to t_e} x \to \infty
 \end{equation}
 
-\item \textbf{Cíclos límite.} Un sistema lineal se dice que es marginalmente estable, cuando sus variables de estado oscilan periódicamente. Sin embargo, como veremos más adelante, las condiciones para que se de una oscilación man en un sistema lineal, constituyen una condición no robusta, por lo que es casi imposible que se de en presencia en condiciones reales. Además la amplitud de las oscilaciones depende de las condiciones iniciales del sistema.
+\paragraph{Cíclos límite.} Un sistema lineal se dice que es marginalmente estable, cuando sus variables de estado oscilan periódicamente. Sin embargo, como veremos más adelante, las condiciones para que se de una oscilación man en un sistema lineal, constituyen una condición no robusta, por lo que es casi imposible que se de en presencia en condiciones reales. Además la amplitud de las oscilaciones depende de las condiciones iniciales del sistema.
 
 Hay sistemas no lineales que pueden oscilar de modo estable con una amplitud y frecuencia independiente de las condiciones iniciales. A este tipo de oscilaciones se les conoce con el nombre de ciclos límite. 
-\end{itemize}
+
 
  Resulta por tanto necesario, buscar herramientas específicas para el análisis de los sistemas no-lineales.
 \section{Ejemplos} \label{sec: ejem}
@@ -318,11 +315,16 @@ Podemos obtener un sistema autónomo para el péndulo invertido, eliminando la t
 
 \begin{align}
 \dot x_1 = &x_2\\
-\dot x_2 = &\frac{g}{l}\sin x_1 - \frac{b}{l}x_2
+\dot x_2 = &\frac{g}{l}\sin x_1 - \frac{b}{ml}x_2
 \end{align}
 donde $x_1 = \theta$ y $x_2 = \dot \theta$,. Una primera característica del sistema la obtenemos calculando los puntos de equilibrio, $x*=[n\pi,0]^T, n \in \mathbb{Z}$. Tenemos un conjunto infinito de posibles puntos de equilibrio, correspondiente a las posiciones verticales del péndulo.
 
-La figura \ref{fig:trpen} muestra una trayectoria del péndulo invertido para una realización particular; $l=g=b$ y una condición inicial $x_0=[\pi/3,0]$.
+La figura \ref{fig:trpen} muestra una trayectoria del péndulo invertido para una realización particular; $l=g$,$ml=b$ y una condición inicial $x_0=[\pi/3,0]$.
+
+\begin{figure}
+\includegraphics[scale=0.8]{resp_p_inv.eps}
+\caption{Evolución temporal y trayectoria en el plano de fases para el péndulo invertido. La condición ininial, $x_0=[\pi/3,0]^T$, aparece representada con un aspa en el espacio de fases.} \label{fig:trpen}
+\end{figure}
 
 
 
