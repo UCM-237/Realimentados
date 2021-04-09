@@ -34,11 +34,16 @@
 \tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
 
 % Entornos para los "teoremas"
-\newtheorem{definition}{Definición}
-\newtheorem{algo}{Algoritmo}
-\newtheorem{theorem}{Teorema}
-\newtheorem{remark}{Atención}
-\newtheorem{problem}{Problema}
+\newtheorem{algo}{Algoritmo}[section]
+\newtheorem{theorem}{Teorema}[section]
+\newtheorem{problem}{Problema}[section]
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definición}[section]
+\newtheorem{example}{Ejemplo}[section]
+
+\theoremstyle{remark}
+\newtheorem{remark}{Atención}[section]
 
 \graphicspath{{./figuras/}}
 \makeindex
