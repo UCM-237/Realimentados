@@ -29,7 +29,7 @@ El siguiente sistema define un sistema continuo y lineal en el espacio de estado
 \begin{equation}
 	\Sigma := \begin{cases}
 	\dot x(t) &= A(t)x(t) + B(t)u(t), \quad x\in\mathbb{R}^n, u\in\mathbb{R}^k \\
-	\dot y(t) &= C(t)x(t) + D(t)u(t), \quad y\in\mathbb{R}^m
+	y(t) &= C(t)x(t) + D(t)u(t), \quad y\in\mathbb{R}^m
 	\end{cases}
 	\label{eq: linsys}
 \end{equation}
@@ -837,4 +837,97 @@ El siguiente algoritmo nos permite estabilizar un punto arbitrario $x^*$ del sis
 	\item Por último recuerda que el controlador ha sido diseñado para un sistema no lineal. Por lo que existe una región dada en (\ref{eq: Bregion}) que garantiza la convergencia. Fuera de ahí, no podemos decir nada con seguridad.
 \end{enumerate}
 
+\section{Seguimiento por parte de la salida de una consigna constante}
 
+Considera el siguiente sistema lti con dos señales de salida
+\begin{equation}
+	\Sigma := \begin{cases}
+	\dot x(t) &= Ax(t) + Bu(t), \quad x\in\mathbb{R}^n, u\in\mathbb{R}^k \\
+	y_1(t) &= C_1x(t), \quad y_1\in\mathbb{R}^m \\
+	y_2(t) &= C_2x(t), \quad y_2\in\mathbb{R}^l
+	\end{cases}.
+	\label{eq: linsys2}
+\end{equation}
+Hasta ahora nos hemos centrado en hacer el origen del vector de estados en (\ref{eq: linsys2}) estable, y por lo tanto las señales de salida $y_{1,2}(t) = C_{1,2}x(t)$ convergen a cero si $x(t) \to 0$ según $t\to\infty$.
+
+Por mantener esta sección corta, vamos a considerar que $C_1 = I$, es decir, que podemos medir todos los estados $x$ a partir de la salida $y_1$. Vamos a utilizar esta señal para después diseñar un controlador de realimentación de estados. Si $C_1$ fuera una matriz arbitraria, pero el par $(A,C_1)$ fuera observable, la técnica explicada en esta sección seguiría siendo aplicable con el uso de un estimador.
+
+En esta sección vamos a centrarnos en que dada una consigna constante $y_d\in\mathbb{R}^l$, entonces que el objetivo sea $y_2(t) \to y_d$ según $t\to\infty$.
+
+\begin{remark}
+Observa que para que $y_2(t)$ pueda alcanzar un valor arbitrario $y_d$, entonces ha de existir un estado $x_d\in\mathbb{R}^n$ tal que $y_d = C_2x_d$. Es decir, necesitamos la condición de que $C_2$ sea de rango máximo para poder imponer sin problemas un $y_d$ arbitrario.
+\end{remark}
+
+Considera el cambio de variable $\tilde x(t) = x(t) - x_d$, entonces el sistema (\ref{eq: linsys2}) se puede reescribir como
+\begin{equation}
+	\Sigma := \begin{cases}
+		\dot{\tilde x}(t) &= A\tilde x(t) + Bu(t) + Ax_d \\
+	\tilde y_1(t) &= \tilde x(t)  \\
+	\tilde y_2(t) &= C_2\tilde x(t)
+	\end{cases},
+	\label{eq: linsys3}
+\end{equation}
+y si existe una solución $u^*$ tal que $Bu^* = -Ax_d$, entonces con una entrada $u = \tilde u + u^*$ tenemos que
+\begin{equation}
+	\Sigma := \begin{cases}
+		\dot{\tilde x}(t) &= A\tilde x(t) + B\tilde u(t)  \\
+	\tilde y_1(t) &= \tilde x(t)  \\
+	\tilde y_2(t) &= C_2\tilde x(t) 
+	\end{cases},
+	\label{eq: linsys4}
+\end{equation}
+para el cual podemos encontrar una matriz $K\in\mathbb{R}^{n\times n}$ tal que $u(t) = K (x(t) - x_d) + u^*$ haga el origen de (\ref{eq: linsys4}) asintóticamente estable. Observa que si $\tilde y_2 \to 0$ según $t\to\infty$, entonces $y_2(t) \to y_d$ también. También observa que para el diseño de $K$, las matrices $A$ y $B$ de (\ref{eq: linsys4}) son las mismas que en (\ref{eq: linsys2}). Vamos a resumir este resultado en el siguiente teorema
+\begin{theorem}
+	Dado el sistema lti (\ref{eq: linsys2}) con $C_1 = I$, entonces $y_2(t) \to y_d\in\mathbb{R}^l$ según $t\to\infty$ con la siguiente ley de control
+	$$
+	u(t) = K (x(t) - x_d) + u^*,
+	$$
+	donde $x_d$ y $u^*$ han de existir como soluciones a 
+$$
+	\begin{cases}
+		y_d &= C_2x_d \\
+		Bu^* &= -Ax_d
+	\end{cases}.
+	$$\label{thm: ff}
+\end{theorem}
+
+
+\subsubsection{Control integral}
+El Teorema (\ref{thm: ff}) se basa fundamentalmente en que hay que conocer con exactitud las matrices $A$ y $B$ para poder calcular una señal en \emph{lazo abierto} $u^*$. Cualquier error de modelado puede hacernos calcular la $u^*$ equivocada y consecuentemente $y_2(t)$ puede no converger al valor deseado $y_d$.
+
+Vamos a utilizar la técnica conocida como \emph{control integral} para garantizar que $y_2(t) \to y_d$ aún bajo errores de modelado. Definamos la siguiente señal (integral)
+\begin{equation}
+	e_i(t) := \int_0^t (y_2(t) - y_d) \mathrm{dt},
+	\label{eq: ei}
+\end{equation}
+cuya dinámica viene dada por
+\begin{equation}
+	\dot e_i(t) = y_2(t) - y_d + e_i(0), \quad e_i(0)\in\mathbb{R}^l,
+	\label{eq: dei}
+\end{equation}
+donde $e_i(0)$ por conveniencia tenemos la libertad de igualarla a cero. Observa que cuando $y_2 = y_d$, entonces (\ref{eq: ei}) es cero, i.e., la señal $e_i(t)$ está en equilibrio. Vamos a apilar las señales $x$ y $e_i$ y analizar su dinámica.
+\begin{equation}
+	\begin{bmatrix}\dot x \\ \dot e_i\end{bmatrix} = \begin{bmatrix}A & 0 \\ C_2 & 0\end{bmatrix}\begin{bmatrix}x \\ e_i\end{bmatrix} + \begin{bmatrix}B \\ 0 \end{bmatrix} u + \begin{bmatrix}0 \\ -I\end{bmatrix} y_d.
+	\label{eq: xei}
+\end{equation}
+Ahora vamos a proponer la siguiente ley de control $u = -\begin{bmatrix}K & K_I\end{bmatrix}\begin{bmatrix}x \\ e_i \end{bmatrix} = -Kx -K_Ie_i$, entonces tenemos que
+	\begin{equation}
+	\begin{bmatrix}\dot x \\ e_i \end{bmatrix} = \begin{bmatrix}A-BK & -K_I \\ C_2 & 0\end{bmatrix}\begin{bmatrix} x \\ e_i \end{bmatrix} + \begin{bmatrix}0 \\ -I\end{bmatrix} y_d.
+	\label{eq: xeta2}
+	\end{equation}
+
+Si los autovalores de la matriz $\begin{bmatrix}A-BK & -K_I \\ C_2 & 0\end{bmatrix}$ son estables, entonces el sistema (\ref{eq: xeta2}) es exponencialmente estable pero el equilibrio no estará en el origen ya que está forzado por el término $\begin{bmatrix}0 \\ -I\end{bmatrix} y_d$. Independientemente del nuevo equilibrio\footnote{Si $\begin{bmatrix}A-BK & -K_I \\ C_2 & 0\end{bmatrix}$ es una matriz de estabilidad, y $C_2$ es de rango máximo, el conjunto de equilibrio de (\ref{eq: xeta2}) puede demostrarse como $\mathcal{E} := \{x, e \, : \, C_2x = y_d, \, x = (A-BK)^{-1}K_Ie, \, y_d\in\mathbb{R}^l\}$, es decir $[x(t),e(t)] \to \mathcal{E}$ según $t\to\infty$.
+	} \emph{forzado}, lo que si es cierto es que en el equilibrio tenemos que $\dot e_i = 0$, por lo que $y_2 = y_d$. La salida $y_2$ ha alcanzado el valor deseado y es tolerante a errores de modelado en $A$ y $B$ ya que la dinámica de $e_i(t)$ no depende de ellos. No obstante, grandes errores de modelado, por ejemplo para $\tilde A$ y $\tilde B$ podría hacer la matriz $\begin{bmatrix}\tilde A-\tilde BK & -K_I \\ C_2 & 0\end{bmatrix}$ con autovalores con parte real positiva.
+
+¿Podemos encontrar $K = \begin{bmatrix}K & K_I\end{bmatrix}$ tal que $\begin{bmatrix}A-BK & -K_I \\ C_2 & 0\end{bmatrix}$ pueda tener los autovalores donde nosotros queramos? Para ello entonces hay que responder a la siguiente pregunta:
+
+¿Es el par $\left(\begin{bmatrix}A & 0 \\ C_2 & 0\end{bmatrix}, \begin{bmatrix}B \\ 0 \end{bmatrix}\right)$ controlable (o al menos estabilizable)? Si la respuesta es afirmativa, entonces podemos encontrar una matriz $K\in\mathbb{R}^{(n+l)\times(n+l)}$ tal que $u = -K \begin{bmatrix}x \\ e_i \end{bmatrix}$ haga el sistema (\ref{eq: xeta2}) exponencialmente estable.
+
+
+Observa que si $v_i$ es autovector de $A^T$ con autovalor $\lambda_i$, entonces $v_i^T A = v_i^T\lambda_i$, es decir $\begin{bmatrix}v_i^T & 0\end{bmatrix} \begin{bmatrix}A & 0 \\ C_2 & 0\end{bmatrix} = \begin{bmatrix}v_i^TA & 0\end{bmatrix} = \lambda_i\begin{bmatrix}v_i^T & 0\end{bmatrix}$. Es decir, $\begin{bmatrix}v_i^T & 0\end{bmatrix}$ es autovector de $\begin{bmatrix}A & 0 \\ C_2 & 0\end{bmatrix}$. Aplicando el Teorema \ref{thm: atbt} podemos comprobar que el par $\left(\begin{bmatrix}A & 0 \\ C_2 & 0\end{bmatrix}, \begin{bmatrix}B \\ 0 \end{bmatrix}\right)$ sería controlable si
+	\begin{equation}
+		\begin{bmatrix}v_i^T & 0\end{bmatrix} \begin{bmatrix}B \\ 0 \end{bmatrix} = v_i^TB \neq 0,
+	\end{equation} y eso es solo posible si el par $(A,B)$ es controlable. Es decir, el control integral no ha variado las propiedades de controlabilidad del sistema original. Podemos resumir los resultados alcanzados con el siguiente teorema
+\begin{theorem}
+	Considera el sistema lti (\ref{eq: linsys2}) con $C_1 = I$ y $C_2$ con rango máximo. Considera la señal integral $e_i(t)$ en (\ref{eq: ei}) para un valor deseado $y_d\in\mathbb{R}^l$ para $y_2(t)$. Entonces, existe una matrix $K \in\mathbb{R}^{(n+l)\times(n+l)}$ tal que la señal de entrada $u = -K \begin{bmatrix}x \\ e_i\end{bmatrix}$ ocasiona que $y_2(t) \to y_d$ asintóticamente según $t\to\infty$ si y solo si el par $(A,B)$ en (\ref{eq: linsys2}) es controlable (estabilizable).
+\end{theorem}
