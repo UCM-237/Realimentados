@@ -87,8 +87,9 @@ Hay sistemas no lineales que pueden oscilar de modo estable con una amplitud y f
 
 
  Resulta por tanto necesario, buscar herramientas específicas para el análisis de los sistemas no-lineales.
-\section{Ejemplos} \label{sec: ejem}
-\subsection{Péndulo invertido}
+\section{Ejemplos de sistemas dinámicos}\label{sec: ejem}
+A continuación se presentan algunos ejemplos clásicos de sistemas dinámicos.
+\begin{example}[Péndulo invertido]
 
 Vamos a derivar las funciones $f$ y $g$ en (\ref{eq: sigma}) para el sistema del péndulo invertido.
 
@@ -149,8 +150,10 @@ g(x(t),u(t)) =  \theta(t).
 \end{equation}
 
 %A Python simulation of this dynamics can be found at \url{https://github.com/noether/aut_course}.
+\qed 
+\end{example}
 
-\subsection{El oscilador de Van der Pol}
+\begin{example}[El oscilador de Van der Pol]
 Se trata de un oscilador, propuesto por primera vez por Balthasar Van der Pol, cuando trabajaba en Philips, para explicar las oscilaciones observadas en tubos de vacío. Podemos obtener la ecuación del oscilador, empleando el circuito de la figura \ref{fig:vdp}.
 \begin{figure}
 \centering
@@ -205,8 +208,9 @@ Podemos representarla finalmente en variables de estado, tomando $x_1=v$ y $x_2=
 \dot{x}_2 &= -\frac{1}{LC}x_1 - m\frac{1}{C}(x_1^2-1)x_2 \label{eq:vdpst2}
 \end{align}
 Podemos ahora hacer un primer análisis cualitativo. El primer término a la derecha del igual en  la ecuación (\ref{eq:vdpst2}) representa una fuerza recuperadora proporcional al desplazamiento, el segundo término, crecerá con la velocidad para $x_1 < 1$, alejando así al sistema del origen  y representará un término disipativo para $x_1 > 1$ acercándolo por tanto de nuevo al origen. Es por tanto esperable, que se alcance
-algún tipo de situación de equilibrio. Más adelante definiremos esta situación rigurosamente como un ciclo límite. 
-\subsection{Un vehículo de cuatro ruedas. }
+algún tipo de situación de equilibrio. Más adelante definiremos esta situación rigurosamente como un ciclo límite. \qed
+\end{example} 
+\begin{example}[Un vehículo de cuatro ruedas.]
 La figura \ref{fig:vehir} muestra un esquema de un vehículo terrestre de cuatro ruedas, visto desde arriba. Si consideramos que se mueve en el plano $x,y$, y que su velocidad instántanea $\vec{V}$ está siempre orientada en la dirección de avance del vehículo $\psi$ --asumimos que no derrapa, ni se mueve lateralmente--, podemos entonces definir la velocidad, en el sistema de referencia $x,y$ como,
 \begin{align}
 \dot{x} = V_x(t) = V\cos(\psi(t))\\
@@ -271,7 +275,8 @@ En resumen, podemos describir el sistema mediante tres ecuaciones de estado $x_1
 	\end{cases}
 \end{equation}
 
-Si consideramos $V=cte$, la única entrada al sistema sería el ángulo de giro de las ruedas $u(t) = \phi(t)$, controlando su valor, podemos hacer girar al vehículo en la dirección deseada. 
+Si consideramos $V=cte$, la única entrada al sistema sería el ángulo de giro de las ruedas $u(t) = \phi(t)$, controlando su valor, podemos hacer girar al vehículo en la dirección deseada. \qed
+\end{example}
 
 \section{Simulación o soluciones numéricas del sistema $\Sigma$}
 Dado un punto inicial $x(0)$, podemos predecir o calcular numéricamente $x(t)$. El método de \emph{integración de Euler} es un método numérico sencillo que puede darnos información sobre la evolución temporal de los estados y salidas de $\Sigma$. El siguiente algoritmo describe la integración numérica por Euler:
@@ -311,7 +316,7 @@ Además podemos considerar $f(x)=[f_1(x),f_2(x)]$ como un campo vectorial defini
 
 El conjunto de todas las trayectorias en el plano de fases de un sistema se denomina su diagrama de fases. de modo análogo al caso de campo vectorial, podemos obtener una representación aproximada del diagrama de fases obteniendo las trayectorias del sistemas para un conjunto suficientemente grande de condiciones iniciales en una región de interés y dibujándolas en el plano de fases.
 
-Las representaciones en el plano de fases, no ofrecen un camino sencillo para observar algunos de los fenómenos propios de los sistemas no lineales. A continuación, vamos a emplearlas con algunos de los ejemplos de la sección \ref{sec: ejem}
+Las representaciones en el plano de fases, nos ofrecen un camino sencillo para observar algunos de los fenómenos propios de los sistemas no lineales. A continuación, vamos a emplearlas con algunos de los ejemplos de la sección \ref{sec: ejem}
 
 \begin{example}[Diagrama de fases para el péndulo invertido]
 Podemos obtener un sistema autónomo para el péndulo invertido, eliminando la tensión $T$ de las ecuaciones \ref{eq: f},

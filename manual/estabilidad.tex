@@ -1,5 +1,5 @@
 \chapter{Comportamiento dinámico y estabilidad}
-El concepto de estabilidad y su análisis constituye unos de los aspectos claves para el estudio de los sistemas dinámicos. La estabilidad de un sistema esta estrechamente relacionada con su comportamiento dinámico y puede definirse de diversas maneras. En este capítulo nos centraremos en el análisis de los llamados puntos de equilibrio de un sistema y los estudiaremos de acuerdo con el concepto de estabilidad de Lyapunov. Además, incidiremos en otros aspectos de la estabilidad de los sistemas tales como la existencia de ciclos límite o el movimiento nominal. Empecemos pues por el estudio de los puntos de equlibrio.
+El concepto de estabilidad y su análisis constituye unos de los aspectos claves para el estudio de los sistemas dinámicos. La estabilidad de un sistema esta estrechamente relacionada con su comportamiento dinámico y puede definirse de diversas maneras. En este capítulo nos centraremos en el análisis de los llamados puntos de equilibrio de un sistema y los estudiaremos de acuerdo con el concepto de estabilidad de Lyapunov. Además, incidiremos en otros aspectos de la estabilidad de los sistemas tales como la existencia de ciclos límite o el movimiento nominal. Empecemos pues por el estudio de los puntos de equilibrio.
 
 \section{Sistemas autónomos}
 
@@ -17,11 +17,11 @@ donde $\mathbf{x} \in \mathbb{R}^n$, $\mathbf{u} \in \mathbb{R}^m$ e $\mathbf{y}
 \end{align}
 \end{definition}
 
-Si el vector de estados no cambia, su derivada será cero. Por tanto, mientras no se altere el valor de la entrada, el sistema permanecerá en el mismo estado y el valor del vector de salidas permanecerá tambien constante
+Si el vector de estados no cambia, su derivada será cero. Por tanto, mientras no se altere el valor de la entrada, el sistema permanecerá en el mismo estado y el valor del vector de salidas permanecerá también constante
 
 Podemos, a partir de esta definición, obtener algunas propiedades importantes de los puntos de equilibrio:
 \begin{enumerate}
-\item Una vez que un sistema alcanza un punto de equilibrio, permance en él indifinidamente. (Todas las derivadas temporales de las componentes del vector de estado son cero.
+\item Una vez que un sistema alcanza un punto de equilibrio, permanece en él indefinidamente. (Todas las derivadas temporales de las componentes del vector de estado son cero.
 \item Desde el punto de vista del control de sistemas, los puntos de equilibrio juegan un papel importante ya que representan condiciones de operación constante.
 \item Un sistema dinámico puede tener uno o más puntos de equilibrio, o no tener ninguno. 
 \end{enumerate}
@@ -64,7 +64,44 @@ Tanto para un sistema autónomo como para uno realimentado los puntos de equilib
 \mathbf{0} = \mathbf{f(x_e})
 \end{equation}
 
-\section{Lyapunov}
+\section{Estabilidad de Lyapunov}
+La teoría de la estabilidad constituye un aspecto importante dentro del estudio de los sistemas dinámicos. Puede abordarse desde diversos puntos de vista. En esta sección vamos a centrarnos en el estudio de la estabilidad de los puntos de equilibrio. 
 
+Habitualmente, cuando se trata de la estabilidad de los puntos de equilibrio se suele hablar de estabilidad en el \emph{sentido} de Lyapunov. Aleksandr Mikhailovich Lyapunov un matématico ruso, de finales del siglo XIX, que estableció los fundamentos de la teoría de la estabilidad que ahora lleva su nombre.
+
+Un punto de equilibrio de un sistema dinámico es \emph{estable} si toda  solución que comienzan cerca del punto de equilibrio permanece cercana al punto de equilibrio; en otro caso, el punto de equilibrio es inestable. Es \emph{asintóticamente estable} si toda solución que empieza próxima al punto de equilibrio no solo permanecen cerca del punto de equilibrio sino que tienden a él cuando el tiempo tiende a infinito.
+
+\subsection{Estabilidad de Lyapunov para sistemas autónomos}
+Consideremos un sistema autónomo genérico,
+\begin{equation}\label{eq: aut}
+\dot x = f(x),
+\end{equation}
+donde $f(x): D\rightarrow \mathbb{R}^n$ es una función (localmente) lipschitziana desde un domino $D \subset \mathbb{R}^n$ a $\mathbb{R}^n$. Supongamos además que $\overline x \in D$ es un punto de equilibrio; es decir, $f(\overline x) = 0$. Lo que buscamos es un método para caracterizar el tipo de estabilidad de $\overline x$. En lo que sigue, y sin perdida de generalidad, consideramos que el punto de equilibrio es es origen de coordenadas $\overline x = 0$ \footnote{Siempre es posible hacer un cambio de coordenadas de modo que si $\overline x \neq 0$, $z = x-\overline x$; $\dot z = \dot x = f(x+\overline x) := g(z)$, donde $g(0)=0$.}.
+
+\begin{definition}
+El punto de equilibrio x = 0 del sistema \ref{eq: aut} es:
+\begin{itemize}
+\item estable $\forall \epsilon > 0$ que cumpla:
+\begin{equation*}
+ \exists \delta =\delta(\epsilon)>0: \| x(0) \| < \delta \Rightarrow \| x(t)\| < \epsilon \ \forall t \ge 0
+\end{equation*}
+ 
+ \item Es inestable si no es estable.
+ \item Es asintóticamente estable si es estable y además se puede elegir $delta$ de modo que,
+\begin{equation*}
+\| x(0)\| < \delta \Leftarrow \lim_{t \to \infty} x(t) = 0
+\end{equation*}
+\end{itemize}
+\end{definition}
+
+En 1892 Lyaponov propuso un método para analizar la estabilidad de un punto de equilibrio, basado en el análisis  una función $V:D\to \mathbb{R}$, continua y diferenciable en un entorno $D \subset \mathbb{R}^n$. En concreto, el método analiza la variación de la función $V$ a lo largo de las \emph{trayectorias} del sistema cuya estabilidad se quiere analizar, Podemos representar dicha variación empleando la derivada temporal de la función $V$
+\begin{equation}
+\dot V(x) = \sum_{i=0}^{n}\frac{\partial V}{\partial x_i} \dot x_i = \sum_{i=0}^{n}\frac{\partial V}{\partial x_i} f(x) = \frac{\partial V}{\partial x}f(x)
+\end{equation}
+
+Es interesante hacer notar que, lógicamente, $dot V$ depende del sistema que se desea analizar y que Si $\phi(t;x)$ es una solución del sistema \ref{eq: aut} que tiene como condición inicial estado $x$, para $t=0$ Entonces,
+\begin{equation}
+\dot V(x) =\left. \frac{d}{dt}V(\phi (t;x))\right|_{t=0}
+\end{equation}
 \section{Principio de invarianza de LaSalle}
 

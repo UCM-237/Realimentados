@@ -40,7 +40,10 @@
 
 \theoremstyle{definition}
 \newtheorem{definition}{Definición}[section]
-\newtheorem{example}{Ejemplo}[section]
+\newtheorem{examples}{Ejemplo}[section]
+\newcommand*{\ejemplo}{Ejemplo}
+\newenvironment{example}[1][\ejemplo]{\begin{examples}[#1]\renewcommand*{\qedsymbol}{\(\maltese\)}}{\end{examples}}
+%\renewcommand{\qedsymbol}{\maltese}
 
 \theoremstyle{remark}
 \newtheorem{remark}{Atención}[section]
