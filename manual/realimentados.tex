@@ -39,7 +39,11 @@
 \newtheorem{problem}{Problema}[section]
 
 \theoremstyle{definition}
-\newtheorem{definition}{Definición}[section]
+%\newtheorem{definition}{Definición}[section]
+\newtheorem{definitions}{Definición}[section]
+\newcommand*{\definicion}{Definición}
+\newenvironment{definition}[1][\definicion]{\begin{definitions}[#1]\renewcommand*{\qedsymbol}{\(\bigtriangledown\)}}{\end{definitions}}
+
 \newtheorem{examples}{Ejemplo}[section]
 \newcommand*{\ejemplo}{Ejemplo}
 \newenvironment{example}[1][\ejemplo]{\begin{examples}[#1]\renewcommand*{\qedsymbol}{\(\maltese\)}}{\end{examples}}
