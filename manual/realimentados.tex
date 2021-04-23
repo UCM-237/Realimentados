@@ -1,7 +1,7 @@
 \documentclass[a4paper,10pt]{book}
 \usepackage[pdftex]{graphicx}
 \usepackage{epstopdf}
-\usepackage{subfigure}
+\usepackage{subcaption}
 \usepackage{amsmath,amsthm}
 \usepackage{tikz}
 \usepackage{circuitikz}
@@ -37,6 +37,10 @@
 \newtheorem{algo}{Algoritmo}[section]
 \newtheorem{theorem}{Teorema}[section]
 \newtheorem{problem}{Problema}[section]
+\newtheorem{corollary}{Corolario}[section]
+\newtheorem{lemmas}{Lema}[section]
+\newcommand*{\lema}{Lema}
+\newenvironment{lemma}[1][\lema]{\begin{lemmas}[#1]\renewcommand*{\qedsymbol}{\(\Diamond\)}}{\end{lemmas}}
 
 \theoremstyle{definition}
 %\newtheorem{definition}{Definición}[section]

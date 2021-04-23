@@ -138,7 +138,7 @@ El punto de equilibrio x = 0 del sistema \ref{eq: aut} es:
 
 En 1892 Lyapunov propuso un método para analizar la estabilidad de un punto de equilibrio, basado en el análisis  una función $V:D\to \mathbb{R}$, continua y diferenciable en un entorno $D \subset \mathbb{R}^n$. En concreto, el método analiza la variación de la función $V$ a lo largo de las \emph{trayectorias} del sistema cuya estabilidad se quiere analizar, Podemos representar dicha variación empleando la derivada temporal de la función $V$
 \begin{equation} \label{eq: dlyap}
-\dot V(x) = \sum_{i=0}^{n}\frac{\partial V}{\partial x_i} \dot x_i = \sum_{i=0}^{n}\frac{\partial V}{\partial x_i} f(x) = \frac{\partial V}{\partial x}f(x)
+\dot V(x) = \sum_{i=0}^{n}\frac{\partial V}{\partial x_i} \dot x_i = \sum_{i=0}^{n}\frac{\partial V}{\partial x_i} f(x) = \nabla V(x)\cdot f(x)
 \end{equation}
 
 Es interesante hacer notar que, lógicamente, $\dot V$ depende del sistema que se desea analizar y que Si $\phi(t;x)$ es una solución del sistema \ref{eq: aut} , que empieza, como condición inicial, en estado $x$, para $t=0$ Entonces,
@@ -147,7 +147,7 @@ Es interesante hacer notar que, lógicamente, $\dot V$ depende del sistema que s
 \end{equation}
 Por tanto, si $\dot V(x)$ es negativa, $V$ decrecerá a lo largo de la solución del sistema \ref{eq: aut}.
 
-\begin{theorem}\label{th: lyap1}
+\begin{theorem}\label{thm: lyap1}
 Sea $x=0$ un punto de equilibrio para el sistema \ref{eq: aut} y $D \subset \mathbb{R}^n$ un dominio que contiene a $x=0$. Sea $V:D 	\to \mathbb{R}$ una función continua y diferenciable tal que,
 \begin{equation}\label{eq: lyap1}
 V(0) = 0\ y\ V(x) > 0\ en\  D-\{0\},
@@ -183,10 +183,10 @@ Como $V(x)$ es continua y $V(0) = 0$,
 \exists \delta > 0\  |\  \|x\| \leq \delta \Rightarrow V(x) < \beta
 \end {equation*}
 
-la que implica que,
-\begin{equation}
+lo que implica que,
+\begin{equation*}
 B_\delta \subset \Omega_\beta \subset B_r
-\end{equation}
+\end{equation*}
 y
 \begin{equation*}
 x \in B_\delta \Rightarrow x(0) \in \Omega_\beta \Rightarrow x(t) \in B_r,
@@ -208,21 +208,153 @@ V(x(t)) = V(x(0)) + \int_0^t \dot V(x(\tau))d\tau \leq V(x(0)) -\gamma t
 \end{equation*}
 Pero la expresión a la derecha del menor o igual, terminará por hacerse negativa, por lo que $c$ no puede ser mayor que 0.
 \end{proof}
-Algunas observaciones,
+Algunas observaciones:
 \begin{itemize}
 \item Una función continua y diferenciable $V(x)$ que cumple las condiciones \ref{eq: lyap1} y \ref{eq: lyap2} recibe el nombre de función de Lyapunov.
 \item La derivada $\dot V$, definida en la ecuación (\ref{eq: dlyap}) recibe el nombre de derivada de Lyapunov o derivada de Lie.
 \item Una función $V(x)$ que satisface $V(0)=0$ y $V(x)>0$ para $x\neq 0$ en $D$, (\ref{eq: lyap1}), se dice que es definida positiva en $D$.Si la solo satisface $V(x)\geq 0$ para $x\neq 0$ en $D$, se dice que es semidefinida positiva en $D$.
-\item Una función que cumple que $-V(x)$ es definida positiva/semidefinida positiva en $D$, se dice que es definida negativa/semidefinida negativa en $D$. Podríamos por tanto reescribir el teorema \ref{th: lyap1} diciendo que el origen es un punto de equilibrio estable, para un sistema dinámico si existe una función diferenciable definida positiva $V(x)$ tal que $\dot V(x)$ es semidefinida negativa, y es asintóticamente estable si $\dot V(x)$ es definida negativa.
-\item El teorema \ref{th: lyap1} aporta condiciones suficientes para la estabilidad de un sistema; el hecho de no ser capaz de encontrar una función de Lyapunov para un sistema dado, no implica necesariamente que este sea inestable. 
+\item Una función que cumple que $-V(x)$ es definida positiva/semidefinida positiva en $D$, se dice que es definida negativa/semidefinida negativa en $D$. Podríamos por tanto reescribir el teorema \ref{thm: lyap1} diciendo que el origen es un punto de equilibrio estable, para un sistema dinámico si existe una función diferenciable definida positiva $V(x)$ tal que $\dot V(x)$ es semidefinida negativa, y es asintóticamente estable si $\dot V(x)$ es definida negativa.
+\item El teorema de Lyapunov puede aplicarse a un sistema siempre que encontremos una función $V(x)$ que satisfaga las condiciones del teorema con independencia de que conozcamos o no la solución del sistema.
+\item El teorema \ref{thm: lyap1} aporta condiciones suficientes para la estabilidad de un sistema; el hecho de no ser capaz de encontrar una función de Lyapunov para un sistema dado, no implica necesariamente que este sea inestable. Solo muestra que no se puede establecer la estabilidad del sistema mediante la función e
 \item Además, no es constructivo; indica que si existe una función de Lyapunov para el sistema, éste es estable, pero no indica cómo construir dicha función. 
 \end{itemize}
 
+El hecho de que no exista un método sistemático de determinar una función de Lyapunov para un sistema, hace que sea preciso en muchos casos probar con funciones 'candidatas' y comprobar sin cumplen las condiciones del teorema. Como idea general, en sistemas mecánicos y eléctricos una buena función candidata suele ser la energía del sistema. Una clase general de funciones para las que es fácil comprobar si son definidas positivas o no, lo constituyen las funciones cuadráticas,
+\begin{equation}
+V(x) = x^TPx = \sum_{i=1}^n \sum_{j=1}^n p_{ij}x_ix_j
+\end{equation}
+Donde $P$ es una matriz simétrica. $V(x)$ es entonces definida (semidefinida) positiva si todos los autovalores de $P$ son positivos (no negativos) o, lo que es equivalente, si todos los menores principales de $P$ son positivos.
+
+\subsection{Estabilidad asintótica global.}
+El teorema \ref{thm: lyap1}, establece la estabilidad asintótica del origen de coordenadas, para un sistemas, en un entorno local incluido en $D$, si $\dot V(x) < 0.$.  Una pregunta inmediata que podemos plantearnos es, a qué distancia puede estar del origen una trayectoria sin dejar de ser asintóticamente estable. Es decir, que la trayectoria se aproxime al origen cuando $t$ tiende a $\infty$. Esto nos lleva a la definición de la región de atracción de un punto fijo, en particular, del origen.
+\begin{definition}[Dominio de atracción.]
+Sea $\phi(t;x)$ la solución de el sistema (\ref{eq: aut}) con condición inicial $x$ en el instante $t=0$ y supongamos además que el sistema tiene un punto de equilibrio asintóticamente estable, $\overline x$. Se define como región de estabilidad asintótica, dominio de atracción o cuenca de atracción de dicho punto al conjunto de todos los puntos $\{x\}$ tales que,
+\begin{equation}
+\lim_{t \to \infty} \phi(t;x) = \overline x
+\end{equation}
+\qed
+\end{definition}
+
+Determinar con exactitud la cuenca de atracción de un sistema puede resultar una tarea muy difícil o incluso imposible. Sin embargo el teorema de Lyapunov nos permite obtener una aproximación de la región de estabilidad asintótica; si tenemos una función de Lyapunov que cumple con las condiciones de estabilidad asintótica en un dominio $D$, y si $\Omega_c =\{x \in \mathbb{R}^n \vert V(x) \leq C$ Esta acotada e incluida en $D$,  Entonces toda trayectoria que empieza en $\Omega_c$ permanece en $Omega_c$ y, además se acerca al origen asintóticamente. Por tanto, podemos considerar $\Omega_c$ como una estima de la cuenca de atracción. Por supuesto, dicha estima puede resultar muy conservadora y, por  tanto, puede ser mucho menor que la cuenca de atracción.
+
+Una segunda pregunta interesante sería determinar bajo qué condiciones un punto de equilibrio es \emph{asintóticamente estable de forma global}, es decir, cuando la cuenca de atracción de un punto de equilibrio asintóticamente estable es todo $\mathbb{R}^n$.  Para ello necesitamos imponer, en primer lugar que el dominio en que se cumplen las condiciones de la función $V(x)$ sea, $D=\mathbb{R}^n$. Además hay que imponer que   $V(x)$ sea una función no acotada radialmente:, $V(x) \to \infty$ cuando $\|x\| \to \infty$.
+
+\begin{figure}
+ \centering
+ \includegraphics[scale=0.35]{radial_bounded.eps}
+\caption{Curvas de nivel de $V(x) = \frac{x_1^2}{x_2^2+1}+x_2^2$}
+\label{fig: radunb}
+\end{figure}
 
 
+\begin{theorem}\label{thm: BK}
+Sea $x=0$ un punto de equilibrio para el sistema \ref{eq: lyap1}. Sea $V: \mathbb{R}^n \to \mathbb{R}$ una función continua y diferenciable tal que:
+\begin{equation}
+V(0) = 0\ y\ V(x) > 0\ \forall X,\  \neq 0 
+\end{equation}
+\begin{equation} \label{eq: BK2}
+\|x\| \to \infty \Rightarrow V(x) \to \infty
+\end{equation}
+\begin{equation}
+\dot V < 0, \forall x \neq 0
+\end{equation}
+Entonces $x=0$ es asintóticamente estable de forma global. 
+\end{theorem} 
+\begin{proof}
+Dado un punto cualquiera $p \in \mathbb{R}^n$, sea $c = V(c)$. La condición \ref{eq: BK2} implica que $\forall c>0,\ \exists r>0,\ \vert V(x) > c$ siempre que $\|x\| >r$. Por tanto $\Omega_c \subset B_r$, y por tanto está acotado. El resto de la prueba es igual que la del teorema \ref{thm: lyap1}.
+\end{proof}
 
+El teorema \ref{thm: BK} se conoce con el nombre de teorema de Barbashin-Krasovskii. Es fácil observar que si un sistema posee un punto de equilibrio $\overline x_1 $ asintóticamente estable de forma global, dicho punto de equilibrio es único. Efectivamente si el sistema tuviera un segundo punto de equilibrio $\overline x_2$ cualquier trayectoria que empezara en $\overline x_2$ permanecería en dicho punto $\forall t\geq 0$, contradiciendo por tanto la definición de equilibrio global para $\overline x_1$.
 
-
-
+Es importante remarcar la importancia de que $V(x)$ sea una función no acotada radialmente. La razón está en que para probar tanto el teorema de Lyapunov como el de Barbashin-Krasovskii necesitamos poder construir un entorno acotado, incluido en una bola $B_r$ en torno al origen, $\Omega_e$ en el que la función $V(x) \leq e$. El problema es que ahora necesitamos encontrar dicho entorno, cualquiera que sea $x$. Eso supone que $V(x)$ debe crecer en cualquier dirección que escojamos para alejarnos del origen $\|x\| \to \infty$. Veamos un ejemplo de una  función que no lo hace, 
+\begin{equation*}
+V(x) = \frac{x_1^2}{x_2^2+1}+x_2^2
+\end{equation*}
+ La función cumple que $V(0) = 0$ y $V(x) >0\ \forall x>0$. Sin embargo, es fácil ver que, si nos alejamos del origen a lo largo del eje$(x_1,0)$,
+ \begin{equation}
+ \lim_{x1\to\infty,x2=0} \frac{x_1^2}{x_2^2+1}+x_2^2 = 1
+ \end{equation}
+ Por tanto, como muestra la figura \ref{fig: radunb}, es imposible encontrar una curva de nivel cerrada, para la que $V(x) >1$, y por tanto no podemos emplear la función fuera de la bola $B_r(x)\ \vert\ , \|x\| \leq 1$.
+ 
+\subsection{Interpretación geométrica del teorema de Lyapunov.}
+\begin{figure}
+\centering
+\begin{subfigure}[b]{0.49\textwidth}
+\centering
+\includegraphics[scale=0.35]{lyapunov_v.eps}
+\caption{Función $V(x) = X_1^2+X_2^2$.}
+\end{subfigure}
+\begin{subfigure}[b]{0.49\textwidth}
+\centering
+\includegraphics[scale=0.3]{lyapunov_nivel.eps}
+\caption{Curvas de nivel de $V(x) = X_1^2+X_2^2$, gradiente $\nabla V(x)$ (flechas azules) y valor de $\dot x = f(x)$ en un punto (flecha roja).}
+\end{subfigure}
+\caption{Interpretación geométrica de las condiciones de Lyapunov.}
+\label{fig: lyap}
+\end{figure}
+ La figura \ref{fig: lyap} muestra un caso sencillo de las condiciones de Lyapunov. Supongamos que elegimos la función, definida positiva,  $V(x) = x_1^2 + x_2^2$ como candidata de Lyapunov para un sistema genérico $\dot x = f(x)$.  Para que el sistema sea estable, debe cumplirse que la derivada de Lie, ecuación  (\ref{eq: dlyap}), sea menor o igual que cero.  Pero esta derivada es en cada punto del espacio de fases el producto escalar del gradiente de $V$ por el valor de campo vectorial $f$ en dicho punto. Si dicho producto es negativo supone que el ángulo entre el gradiente y el valor del campo en dicho punto es mayor de $90º$, tal y como se muestra en la figura. Por tanto, la dirección del campo, lleva al sistema a acercarse al origen. Si el valor del producto es cero, indica que la dirección del campo es tangente a la curva de nivel de  $V(x)$ en el punto. Si en una región cerrada en torno al origen $\dot V \leq 0$ el sistema, una vez que entra en dicha región, no volverá a salir nunca más.
+ Podríamos generalizar el resultado a sistemas de más dimensiones. Las curvas de nivel  $V(x)=c, c \in \mathbb{R} $, pasan a ser superficies de nivel, la condición de Lypianuv impone, por tanto, que una vez cruzada una superficie de nivel de $V(x)$ el sistema no sale de la región limitada por dicha superficie.
+ 
 \section{Principio de invarianza de LaSalle}
+
+\begin{definition}[Conjunto límite positivo]
+Sea $x(t)$ una solución del sistema \ref{eq: sis1}. Un punto $p$ se dice que es un punto límite positivo de $x(t)$ si existe una secuencia $\{t_n\}$, con $t_n\to \infty$ cuando $n\to \infty$ tal que $x(t_n) \to p$ cuando $n \to \infty$.
+
+Al conjunto de todos los puntos límite positivos se le denomina el conjunto límite positivo, $L^+$ de $x(t)$
+
+\qed
+\end{definition}
+
+\begin{definition}[Conjunto invariante]
+Un conjunto $M$ se dice que es invariante respecto al sistema \ref{eq: sis1}  si,
+\begin{equation*}
+x(0) 	\in M \Rightarrow x(t) \in M,\ \forall t \in \mathbb{R}.
+\end{equation*}
+Si cumple al menos,
+\begin{equation*}
+x(0) 	\in M \Rightarrow x(t) \in M,\ \forall t \geq 0,
+\end{equation*}
+entonces se dice que el conjunto $M$ es \emph{positivamente} invariante.
+\qed
+\end{definition}
+
+Por tanto para un conjunto invariante $M$, si una solución pertenece a $M$ en un instante de tiempo, entonces también pertecenece a $M$ en todo instante pasado o futuro. Además para el caso de invarianza positiva, podemos decir que $x(t)$ se aproxima al conjunto $M$ cuando t tiende a infinito si para cada $\epsilon >0$,  hay un $T>0$ de modo que se cumple,
+\begin{equation*}
+\text{dist}(x(t),M)<\epsilon, \forall t>0,
+\end{equation*} 
+donde $\text{dist}(p,M)$ representa la distancia desde desde el punto $P$ al conjunto $M$, es decir, la distancia más corta desde $P$ a un punto cualquiera de $M$,
+\begin{equation}
+\text{dist}(p,M) = \inf_{x\in M}\|p-x\|
+\end{equation} 
+
+Esto conceptos nos permiten describir un punto de equilibrio asintóticamente estable como el conjunto límite positivo de cualquier solución suficientemente cercana a dicho punto. Un ciclo límite estable, sería el conjunto límite positivo de cualquier solución que comienza suficientemente cerca del ciclo límite. Además, el punto de equilibrio y el ciclo límite son conjuntos invariantes, ya que toda solución que empieza en ellos, permanece en ellos $\forall t \in \mathbb{R}$. El conjunto $\Omega_c =\{x \in \mathbb{R}^n\ |\ V(x)\leq c\}$ para el que se cumple $\dot V \leq c\ \forall x \in \Omega_c$ es un conjunto invariante positivo puesto que (ver teorema \ref{thm: lyap1}) puesto que cualquier solución que empieza en $\Omega_c$ permanece en $\Omega_c, \ \forall t \leq 0$.
+
+\begin{lemma}[Sin demostración]\label{lem: L+}
+Si una solución $x(t)$ de \ref{eq: aut}  está acotada, y pertenece a $D$ para $t \geq 0$ entonces su conjunto límite positivo  $L^+ \neq \emptyset$ es un conjunto invariante compacto. Además, $x(t)$ se aproxima a $L^+$ cuando $t \to \infty$.
+\qed
+\end{lemma}
+
+\begin{theorem}\label{thm: LS}
+Sea $\Omega \subset D$ un conjunto compacto positivamente invariante  con respecto al sistema \ref{eq: aut}. Sea $V:D\to \mathbb{R}$ una función continua y diferenciable tal que $\dot V \leq 0$ en $\Omega$. Sea $E$ el conjunto de todos los puntos de $\Omega$ para los cuales $\dot V = 0$. Sea $M$ el mayor conjunto invariante en $E$. Entonces, toda solución que empieza en $\Omega$ se aproxima a $M$ cuando $t\to \infty$
+\end{theorem}
+\begin{proof}
+Sea $x(t)$ una solución de \ref{eq: aut} que comienza en $\Omega$,  Puesto que $\dot V\leq 0$ en $\Omega$, $V(x(t)$ es una función decreciente de $t$. Además, dado que $V(x)$ es una función continua en en el conjunto compacto $t$, la función está acotada inferiormente en $\Omega$. Por tanto,  $V(x(t))$ tienen un límite $a$ cuando $t\to \infty$. Por último el conjunto límite positivo de $x(t)$: $L^+ \subset \Omega$, puesto que $	\Omega$ es un conjunto cerrado.  Para cualquier $p \in L^+, \exists \{t_n\}$ con $n\to \infty \ | \ x(t_n)\to p$ cuando $n\to \infty$. Pero, por continuidad de $V(x)$, $V(p)= \lim{n\to \infty }V(x(t_n)=a$. Por tanto $V(x)=A$ en $L^+$. Puesto que (por el lema \ref{lem: L+}) $L^*$ es un conjunto invariante, $\dot V(x) = 0$ en $L^+$, Así que,
+\begin{equation*}
+L^+ \subset M \subset E \subset \Omega 
+\end{equation*} 
+
+Como $x(t)$ está acotada, x(t) se aproxima a a $L^+$ cuando $t\to \infty$ (lema \ref{lem: L+}), y por tanto, $x(t)$ se aproxima a $M$ cuando $t\to \infty$. 
+\end{proof}
+
+El teorema \ref{thm: LS} se conoce con el nombre de Teorema de LaSalle. Es interesante hacer notar que el teorema no exige, como en el caso del teorema de Lyapunov que la función $V(x)$ sea definida positiva. Si imponemos esta condición, podemos obtener dos modificaciones del teorema de LaSalle que nos permiten determinar la estabilidad asintótica de un sistema.
+
+\begin{corollary}[Teorema de Barbashim-Krasovskii  I \protect\footnote{Hay tres teoremas debidos a los mismos autores, todos ellos relacionados con estabilidad asintótica. Los dos que se definen aquí, fueron demostrados por sus autores con anterioridad al teorema de LaSalle. Después de la demostración de éste último, quedaron como simples corolarios}]
+Sea $x=0$ un punto de equilibrio asintóticamente estable para el sistema \ref{eq: aut}. Sea $V:D\to 	\mathbb{R}$ una función continua, diferenciable, definida positiva en el dominio $D$, que contiene al origen $x=0$, tal que $\dot V(x) \leq 0$ en $D$. Sea el conjunto $S=\{ x \in D\ |\ \dot V(x) = 0 \}$ y supongamos que no hay ninguna solución que pueda permanecer en $S$, excepto la solución trivial $x(t)=0$. Entonces el origen es asintóticamente estable.
+\qed
+\end{corollary}
+
+\begin{corollary}[Teorema de Barbashim-Krasovskii]
+Sea $x=0$ un punto de equilibrio para el sistema \ref{eq: aut}. Sea $V:\mathbb{R}^n \to \mathbb{R}$ una función continua, diferenciable, no acotada radialmente y definida positiva, tal que $\dot V(x) \leq 0 \forall x \in \mathbb{R}^n$.  Sea el conjunto $S=\{ x \in D\ |\ \dot V(x) = 0 \}$ y supongamos que no hay ninguna solución que pueda permanecer en $S$, excepto la solución trivial $x(t)=0$. Entonces el origen es asintóticamente estable de modo global.
+\qed
+\end{corollary}
 
