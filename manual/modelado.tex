@@ -325,7 +325,7 @@ Podemos obtener un sistema autónomo para el péndulo invertido, eliminando la t
 \dot x_1 = &x_2 \label{eq: pi1} \\ 
 \dot x_2 = &\frac{g}{l}\sin x_1 - \frac{b}{ml}x_2 \label{eq: pi2}
 \end{align}
-donde $x_1 = \theta$ y $x_2 = \dot \theta$,. Una primera característica del sistema la obtenemos calculando los puntos de equilibrio, $x*=[n\pi,0]^T, n \in \mathbb{Z}$. Tenemos un conjunto infinito de posibles puntos de equilibrio, correspondiente a las posiciones verticales del péndulo.
+donde $x_1 = \theta$ y $x_2 = \dot \theta$,. Una primera característica del sistema la obtenemos calculando los puntos de equilibrio, $x^*=[n\pi,0]^T, n \in \mathbb{Z}$. Tenemos un conjunto infinito de posibles puntos de equilibrio, correspondiente a las posiciones verticales del péndulo.
 
 La figura \ref{fig:trpen} muestra una trayectoria del péndulo invertido para una realización particular; $l=g$,$ml=b$ y una condición inicial $x_0=[\pi/3,0]$. 
 
@@ -336,7 +336,10 @@ La figura \ref{fig:trpen} muestra una trayectoria del péndulo invertido para un
 
 En ese caso, es fácil analizar lo que sucede, de un modo cualitativo. Las condiciones iniciales sitúan el péndulo cerca de la vertical, formando un ángulo $\theta_0 =\pi/3$ y en reposo. El péndulo caerá y oscilará con una amplitud y velocidad cada vez menor acercándose al punto de equilibrio $\overline \theta = \pi$.
 
-Podemos obtener más información si dibujamos aproximadamente el campo vectorial definido por las ecuaciones (\ref{eq: pi1})-(\ref{eq: pi2}). La figura \ref{fig:pifield} muestra un ejemplo. La región del plano de fases $\theta \in [-3\pi/2,3\pi/2], \dot \theta \in [-3,3]$
+Podemos obtener más información si dibujamos aproximadamente el campo vectorial definido por las ecuaciones (\ref{eq: pi1})-(\ref{eq: pi2}). La figura \ref{fig:pifield} muestra un ejemplo. La región del plano de fases $\theta \in [-3\pi/2,3\pi/2], \dot \theta \in [-3,3]$. Si consideramos el origen de cada vector como una condición inicial del problema, la flecha indicaría la dirección y magnitud del cambio en el plano de fases.  Es fácil intujir, sis seguimos el eje de coordenadas $\theta$ la presencia de tres  puntos de equilibrio en la región mostrada y como el central es un puntos de equilibrio inestable, mientras que los dos laterales corresponden a puntos de equilibrio estables.
+
+Por último podemos obtener una información aún más completa si cabe, si representamos un diagramas de fases del sistema.  La figura \ref{fig:piphp} muestra un ejemplo en el que es posible ver los dos puntos de equilibrios estables (focos) y el punto de silla correspondiente al punto $(0,0)$. 
+
  
 \begin{figure}
 \centering
