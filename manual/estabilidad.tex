@@ -231,14 +231,70 @@ Volvamos de nuevo al ejemplo del péndulo invertido. Tomamos como punto de parti
 \dot x_1 = &x_2 \\ 
 \dot x_2 = &\frac{g}{l}\sin x_1 - \frac{b}{ml}x_2 
 \end{align*}
-
-Podemos emplear como función tentativa de Lyapunov la energía del sistema,
+No tiene demasiado sentido estudiar la estabilidad del punto $(0,0)$, sabemos que no es estable y por tanto será imposible encontrar para él una función de Lyapunov válida. Podemos probar con el punto $(\pi,0)$ que sabemos que sí es estable. Para poder aplicar el método de Lyapunov necesitamos desplazar el punto de equilibrio al origen; $z_1=x_1-\pi,z_2=x_2$. Con lo que las ecuaciones del sistema quedan,
+\begin{align*}
+\dot z_1 = &z_2 \\ 
+\dot z_2 = &-\frac{g}{l}\sin z_1 - \frac{b}{ml}z_2 
+\end{align*}
+Podemos emplear como función tentativa de Lyapunov la ``energía" del sistema,
 \begin{equation*}
-V(x) = m\frac{1}{2}lx_2 + 
+V(x) = \frac{1}{2}z_2^2 + \frac{g}{l}\left(1-\cos(z_1)\right)
 \end{equation*}
+Donde el término correspondiente a la ``energía potencial" se ha obtenido integrando el par de fuerza debido a la gravedad,
+\begin{equation*}
+-\int_0^{z_1}-\frac{g}{l}\sin(\zeta_1)d\zeta_1 =  \frac{g}{l}\left(1-\cos(z_1)\right)
+\end{equation*}
+
+Calculamos ahora la derivada de Lee para el péndulo invertido y la función elegida $V$,
+\begin{equation*}
+\dot V = \nabla V(x) \cdot f(x) = \begin{bmatrix}
+\frac{g}{l}\sin(z_1) & z_2
+\end{bmatrix} \cdot
+\begin{bmatrix}
+z_2\\
+ -\frac{g}{l} \sin(z_1) - \frac{b}{ml}z_2 
+\end{bmatrix}  = -\frac{b}{lm}z_2^2
+\end{equation*}
+
+Es fácil comprobar que $\dot V(z)$ es una función semidefinida negativa, $\dot V(z)=0$ a lo largo de todo el eje $z_2=0$, con independencia del valor que tome $x_1$, por tanto solo podemos afirmar que el punto de equilibrio $z=(0,0) \rightarrow x=(\pi,0)$ es estable. Sin embargo, si miramos el diagrama de fase de la figura \ref{fig:piphp} observamos que el sistema es asintóticamente estable. La función de Lyapunov elegida, no nos permite comprobarlo.
+
+Podemos probar a modificar nuestra función de Lyapunov, sustituyendo la expresión de la energía cinética, por una forma cuadrática sobre ambas variables de estado:
+\begin{equation*}
+V(z) = \frac{1}{2} z^TPz+ \frac{g}{l}\left(1-\cos(z_1)\right)
+\end{equation*}
+Donde,
+\begin{equation*}
+P = \begin{bmatrix}
+p_{11} & p_{12}\\ p_{12} & p_{22}
+\end{bmatrix},
+\end{equation*}
+es una matriz simétrica definida positiva.
+Si calculamos ahora la derivada de Lee,
+\begin{equation*}
+\dot V =\left(p_{12}-\frac{b}{lm}p_{22}\right)z_2^2+ \left(p_{11}-\frac{b}{lm}p_{12} \right) z_1z_2 + (1 -P_{22})\frac{g}{l} z_2\sin(z_1) + p_{12}\frac{g}{l} z_1\sin(z_1)
+\end{equation*}
+Podemos aprovechar la libertad que nos da poder elegir los elementos de $P$ para eliminar los téminos cruzados de la derivada de Lee, que contribuyen a que quede indefinido el signo. Si hacemos $p_{11} = \frac{b}{lm}p_{12}$ y $p_{22}=1$,
+\begin{equation*}
+\dot V =\left(p_{12}-\frac{b}{lm}\right)z_2^2-p_{12}\frac{g}{l} z_1\sin(z_1)
+\end{equation*}
+Necesitamos imponer condiciones adicionales  para asegurar que la matriz $P$ es definida positiva. Necesitamos que $p_{11}>0$ y que $\det(P) = >0$, si sustituimos por los valores que ya hemos elegido,
+
+\begin{equation*}
+P =\begin{bmatrix}
+\frac{b}{lm}p_{12} & p_{12}\\
+p_{12} & 1
+\end{bmatrix}, \ \det(p) = p_{12}\frac{b-lmp_{12}}{lm}
+\end{equation*}
+
+Debemos, por tanto, tomar $p_{12}$ en el intervalo,$0<p_{12}< \frac{b}{lm}$. Si elegimos por ejemplo $p_{12} =  \frac{b}{2lm}$, obtenemos para la derivada de Lee,
+\begin{equation*}
+\dot V =-\frac{b}{2lm}z_2^2-\frac{bg}{2l^2m}z_1 \sin(z_1)
+\end{equation*}
+
+Si tomamos un intervalo $D=\left\{x \in \mathbb{R}^2 \ | \ |x_1|<\pi \right\}$, la derivada de Lee es siempre negativa y, por tanto, podemos concluir que el origen es asintóticamente estable. Es interesante remarcar en este punto, que el teorema nos asegura no la estabilidad asintótica del origen, pero no nos dice nada de su dominio de atracción.
+
 \qed
 \end{example}
-
 
 
 \subsection{Estabilidad asintótica global.}
@@ -369,7 +425,7 @@ Sea $x=0$ un punto de equilibrio asintóticamente estable para el sistema \ref{e
 \qed
 \end{corollary}
 
-\begin{corollary}[Teorema de Barbashim-Krasovskii]
+\begin{corollary}[Teorema de Barbashim-Krasovskii II]
 Sea $x=0$ un punto de equilibrio para el sistema \ref{eq: aut}. Sea $V:\mathbb{R}^n \to \mathbb{R}$ una función continua, diferenciable, no acotada radialmente y definida positiva, tal que $\dot V(x) \leq 0 \forall x \in \mathbb{R}^n$.  Sea el conjunto $S=\{ x \in D\ |\ \dot V(x) = 0 \}$ y supongamos que no hay ninguna solución que pueda permanecer en $S$, excepto la solución trivial $x(t)=0$. Entonces el origen es asintóticamente estable de modo global.
 \qed
 \end{corollary}
