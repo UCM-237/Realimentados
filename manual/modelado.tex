@@ -47,7 +47,7 @@ Para un sistema dinámico, descrito mediante variable de estados, un punto de eq
 f(x)=0
 \end{equation} 
 
-Los puntos de equilibrio de juegan un papel muy importante en el estudio de los sistemas dinámicos, como tendremos ocasión de ver más adelante.
+Los puntos de equilibrio juegan un papel muy importante en el estudio de los sistemas dinámicos, como tendremos ocasión de ver más adelante.
 
 Un caso particular de sistema dinámicos los constituyen los sistemas lineales. Para ellos la ecuación \ref{eq: sigma} toma la forma,
 \begin{equation}
@@ -79,7 +79,7 @@ Es posible encontrar sistemas no-lineales inestables que se comportan de modo an
 \lim_{ t \to t_e} x \to \infty
 \end{equation}
 
-\paragraph{Cíclos límite.} Un sistema lineal se dice que es marginalmente estable, cuando sus variables de estado oscilan periódicamente. Sin embargo, como veremos más adelante, las circunstancias para que se de una oscilación mantenida en un sistema lineal, constituyen una condición no robusta, por lo que es casi imposible que se dé en presencia en condiciones reales. Además la amplitud de las oscilaciones depende de las condiciones iniciales del sistema.
+\paragraph{Cíclos límite.} Un sistema lineal se dice que es marginalmente estable, cuando sus variables de estado oscilan periódicamente. Sin embargo, como veremos más adelante, las circunstancias para que se de una oscilación mantenida en un sistema lineal, constituyen una condición no robusta, por lo que es en la práctica  imposible que se dé  condiciones reales. Además la amplitud de las oscilaciones depende de las condiciones iniciales del sistema.
 
 Hay sistemas no lineales que pueden oscilar de modo estable con una amplitud y frecuencia independiente de las condiciones iniciales. A este tipo de oscilaciones se les conoce con el nombre de ciclos límite. 
 
@@ -197,14 +197,14 @@ Si definimos ahora, $h(v)$,
 h(v) = m(\frac{1}{3}v^3-1)\\
 \frac{dh}{dv} = m(v^2-1)
 \end{align}
-y sustituyendo en (\ref{eq:vdp2}),
+y sustituimos en (\ref{eq:vdp2}),
 \begin{equation}
 \ddot{v} +m\frac{1}{C}(v^2-1)\dot{v}+\frac{1}{LC}v = 0
 \end{equation}
 
 Podemos representarla finalmente en variables de estado, tomando $x_1=v$ y $x_2=\dot{v}$,
 \begin{align}
-\dot{x}_1 &= x_2\\
+\dot{x}_1 &= x_2 \label{eq:vpst1} \\
 \dot{x}_2 &= -\frac{1}{LC}x_1 - m\frac{1}{C}(x_1^2-1)x_2 \label{eq:vdpst2}
 \end{align}
 Podemos ahora hacer un primer análisis cualitativo. El primer término a la derecha del igual en  la ecuación (\ref{eq:vdpst2}) representa una fuerza recuperadora proporcional al desplazamiento, el segundo término, crecerá con la velocidad para $x_1 < 1$, alejando así al sistema del origen  y representará un término disipativo para $x_1 > 1$ acercándolo por tanto de nuevo al origen. Es por tanto esperable, que se alcance
@@ -302,6 +302,8 @@ Dado un punto inicial $x(0)$, podemos predecir o calcular numéricamente $x(t)$.
 
 Este algoritmo rinde bien cuando $\Delta T$ es suficientemente pequeño en función de como de rápido varíe $f$ en el tiempo. Por ahora hemos considerado $u=0$, es decir, no hay control o interacción alguna con el sistema.
 
+Existen, métodos más robustos para obtener la solución numérica de un sistema. Entre ellos, destacan los métodos de Runge-Kutta, y en particular, el uso de los llamados 'pares encajados' de dichos métodos. Describir los detalles de cálculo de dichos métodos queda fuera del alcance de estas notas. Hay muchos paquetes de software como Matlab o Python que incluyen funciones que implementan dichos métodos. En  el apéndice \ref{apend1}. Se incluyen códigos de Matlab con ejemplos y explicaciones de como construirlos.
+
 \section{Sistemas autónomos de segundo orden}
 Los sistema autónomos de segundo orden, son especialmente atractivos para el estudio de los fenómenos no lineales porque sus soluciones se pueden representar fácilmente en el llamado plano e fases.
 En general, podemos definir un sistema autónomo de segundo orden a partir de dos ecuaciones escalares, una para la derivada temporal de cada estado,
@@ -320,6 +322,10 @@ Las representaciones en el plano de fases, nos ofrecen un camino sencillo para o
 
 \begin{example}[Diagrama de fases para el péndulo invertido]
 Podemos obtener un sistema autónomo para el péndulo invertido, eliminando la tensión $T$ de las ecuaciones \ref{eq: f},
+\begin{figure}
+\includegraphics[scale=0.8]{resp_p_inv.eps}
+\caption{Evolución temporal y trayectoria en el plano de fases para el péndulo invertido. La condición inicial, $x_0=[\pi/3,0]^T$, aparece representada con un aspa en el espacio de fases.} \label{fig:trpen}
+\end{figure}
 
 \begin{align}
 \dot x_1 = &x_2 \label{eq: pi1} \\ 
@@ -328,11 +334,6 @@ Podemos obtener un sistema autónomo para el péndulo invertido, eliminando la t
 donde $x_1 = \theta$ y $x_2 = \dot \theta$,. Una primera característica del sistema la obtenemos calculando los puntos de equilibrio, $x^*=[n\pi,0]^T, n \in \mathbb{Z}$. Tenemos un conjunto infinito de posibles puntos de equilibrio, correspondiente a las posiciones verticales del péndulo.
 
 La figura \ref{fig:trpen} muestra una trayectoria del péndulo invertido para una realización particular; $l=g$,$ml=b$ y una condición inicial $x_0=[\pi/3,0]$. 
-
-\begin{figure}
-\includegraphics[scale=0.8]{resp_p_inv.eps}
-\caption{Evolución temporal y trayectoria en el plano de fases para el péndulo invertido. La condición ininial, $x_0=[\pi/3,0]^T$, aparece representada con un aspa en el espacio de fases.} \label{fig:trpen}
-\end{figure}
 
 En ese caso, es fácil analizar lo que sucede, de un modo cualitativo. Las condiciones iniciales sitúan el péndulo cerca de la vertical, formando un ángulo $\theta_0 =\pi/3$ y en reposo. El péndulo caerá y oscilará con una amplitud y velocidad cada vez menor acercándose al punto de equilibrio $\overline \theta = \pi$.
 
@@ -355,4 +356,23 @@ Por último podemos obtener una información aún más completa si cabe, si repr
 \qed
 \end{example}
 
+\begin{example}[Ciclo límite del oscilador de Van der Pol]. De modo análogo a lo que hemos hecho en el ejemplo anterior, empezamos por determinar los puntos de equilibrio del sistema. Para ello igualamos a cero las ecuaciones del sistema (\ref{eq:vdpst2}, \ref{eq:vdpst2})y resolvemos el sistema resultante,
+\begin{align}
+0 &= x_2\\
+0 &= -\frac{1}{LC}x_1 - m\frac{1}{C}(x_1^2-1)x_2 
+\end{align}
+La única solución es el origen $x^*=[0,0]^T$. La figura \ref{fig:vandesol}, muestra la evolución temporal de las soluciones y su trayectoria en el espacio de fases para una realización particular: $m = 0.5, L=1,C=1$. Un aspecto destacable es el carácter periódico de las soluciones alcanzadas. Ambas variables presentan una oscilación mantenida, tras un primer cruzar un primer periodo de respuesta transitoria. Si observamos la trayectoria en el espacio de fases, vemos como esta converge desde la posición inicial $x(0)$ a una trayectoria cerrada y estable. Se trata de un ciclo límite. 
 
+\begin{figure}
+\centering
+\includegraphics[scale=0.4]{VdPsol.eps}
+\caption{Evolución temporal y trayectoria en el plano de fases para el Oscilador de Van der Pol. La condición inicial, $x(0)=[3,-1]^T$, aparece representada con un aspa en el espacio de fases.} \label{fig:vandesol}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.4]{fasesvdp.eps}
+\caption{Evolución temporal y trayectoria en el plano de fases para el Oscilador de Van der Pol. La condición inicial, $x(0)=[3,-1]^T$, aparece representada con un aspa en el espacio de fases.} \label{fig:fasesvdp}
+\end{figure}
+\qed
+\end{example}
