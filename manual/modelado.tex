@@ -318,12 +318,53 @@ Además podemos considerar $f(x)=[f_1(x),f_2(x)]$ como un campo vectorial defini
 
 El conjunto de todas las trayectorias en el plano de fases de un sistema se denomina su diagrama de fases. de modo análogo al caso de campo vectorial, podemos obtener una representación aproximada del diagrama de fases obteniendo las trayectorias del sistemas para un conjunto suficientemente grande de condiciones iniciales en una región de interés y dibujándolas en el plano de fases.
 
-Las representaciones en el plano de fases, nos ofrecen un camino sencillo para observar algunos de los fenómenos propios de los sistemas no lineales. A continuación, vamos a emplearlas con algunos de los ejemplos de la sección \ref{sec: ejem}
+\subsection{Sistemas lti\protect\footnote{Los detalles y demostraciones se incluyen en el capítulo \ref{5:lti}}. }
+ Como se ha indicado anteriormente, una primera aproximación al estudio de los sistemas dinámicos es obtener sus puntos de equilibrio, linealizar el sistema en torno a ellos, y estudiar el comportamiento del sistema linealizado. Aunque todo esto, se explicará en detalle en el tema \ref{5:lti}, Vamos a adelantar aquí algunos resultados, especialmente útiles para el estudio del plano de fases de sistemas no lineales. 
+Tomando como partida las ecuaciones (\ref{eq: sysa1}) - (\ref{eq: sysa2}), y suponiendo que el sistema tiene un punto de equilibrio $x^*= [x_1^*,x_2^*]$. Podemos linealizar el sistema en torno al punto de equilibrio,
+\begin{align}
+\left.\begin{cases}
+	\dot x_1 =& f_1(x_1,x_2) \\ \dot x_2 =& f_2(x_1,x_2)
+	\end{cases}\right|_{x\approx x^*, u\approx u^*} \approx
+	\begin{cases}
+		x_1(t) &= x^* + \delta x_1(t) \\
+		x_2(t) &= x^* + \delta x_2(t) \\
+	\delta \dot x(t) &= A(t)\delta x(t)  \\
+	\end{cases}, \nonumber
+\end{align}
+\begin{align}
+	A(t) &= \left. \begin{bmatrix}
+		\frac{\partial f_1}{\partial x_1} &  \frac{\partial f_1}{\partial x_2} \\
+		\ \\
+		\frac{\partial f_2}{\partial x_1} & \frac{\partial f_2}{\partial x_2}
+	\end{bmatrix} \right |_{x=x^*, u=u^*} \quad
+\end{align}
 
-\begin{example}[Diagrama de fases para el péndulo invertido]
+El comportamiento del sistema original, en la proximidades del punto de equilibrio $x^*$, es comparable al del sistema $\delta \dot x(t) = A(t)\delta x(t)$ en torno al origen. Se trata de un sistema autónomo lineal e invariante en el tiempo (lti), cuya solución es,
+
+\begin{equation}
+\delta x(t) = P\exp(J_rt)P^{-1}x_0 
+\end{equation}
+
+donde  $J_r$ es la forma de Jordan real de la matriz A y $P,\ J_r=P^{-1}AP$ es una matriz formada por los autovalores de $A$. La matriz de Jordan, en este caso bidimensional, puede tomar una de las siguientes formas,
+\begin{equation}
+\begin{bmatrix}
+\lambda_1 & 0\\ 0 & \lambda_2
+\end{bmatrix},\ \begin{bmatrix}
+\lambda & k\\ 0 & \lambda
+\end{bmatrix},\ \begin{bmatrix}
+\alpha & -\beta\\ \beta & \alpha
+\end{bmatrix}
+\end{equation}
+
+
+
+
+\subsection{Algunos ejemplos}
+Las representaciones en el plano de fases, nos ofrecen un camino sencillo para observar algunos de los fenómenos propios de los sistemas no lineales. A continuación, vamos a emplearlas con algunos de los ejemplos de la sección \ref{sec: ejem}
+\begin{example}[Diagrama de fases para el péndulo invertido \ref{Apinv}]
 Podemos obtener un sistema autónomo para el péndulo invertido, eliminando la tensión $T$ de las ecuaciones \ref{eq: f},
 \begin{figure}
-\includegraphics[scale=0.8]{resp_p_inv.eps}
+\includegraphics[scale=0.8]{resp_inv.eps}
 \caption{Evolución temporal y trayectoria en el plano de fases para el péndulo invertido. La condición inicial, $x_0=[\pi/3,0]^T$, aparece representada con un aspa en el espacio de fases.} \label{fig:trpen}
 \end{figure}
 
@@ -356,12 +397,13 @@ Por último podemos obtener una información aún más completa si cabe, si repr
 \qed
 \end{example}
 
-\begin{example}[Ciclo límite del oscilador de Van der Pol]. De modo análogo a lo que hemos hecho en el ejemplo anterior, empezamos por determinar los puntos de equilibrio del sistema. Para ello igualamos a cero las ecuaciones del sistema (\ref{eq:vdpst2}, \ref{eq:vdpst2})y resolvemos el sistema resultante,
+\begin{example}[Ciclo límite del oscilador de Van der Pol \ref{AVdP}.] De modo análogo a lo que hemos hecho en el ejemplo anterior, empezamos por determinar los puntos de equilibrio del sistema. Para ello igualamos a cero las ecuaciones del sistema (\ref{eq:vdpst2}, \ref{eq:vdpst2})y resolvemos el sistema resultante,
 \begin{align}
 0 &= x_2\\
 0 &= -\frac{1}{LC}x_1 - m\frac{1}{C}(x_1^2-1)x_2 
 \end{align}
-La única solución es el origen $x^*=[0,0]^T$. La figura \ref{fig:vandesol}, muestra la evolución temporal de las soluciones y su trayectoria en el espacio de fases para una realización particular: $m = 0.5, L=1,C=1$. Un aspecto destacable es el carácter periódico de las soluciones alcanzadas. Ambas variables presentan una oscilación mantenida, tras un primer cruzar un primer periodo de respuesta transitoria. Si observamos la trayectoria en el espacio de fases, vemos como esta converge desde la posición inicial $x(0)$ a una trayectoria cerrada y estable. Se trata de un ciclo límite. 
+La única solución es el origen $x^*=[0,0]^T$. La figura \ref{fig:vandesol}, muestra la evolución temporal de las soluciones y su trayectoria en el espacio de fases para una realización particular: $m = 0.5, L=1,C=1$. Un aspecto destacable es el carácter periódico de las soluciones alcanzadas. Ambas variables presentan una oscilación mantenida, tras un primer periodo de respuesta transitoria. Si observamos la trayectoria en el espacio de fases, vemos como esta converge desde la posición inicial $x(0)$ a una trayectoria cerrada y estable. Se trata de un ciclo límite. 
+
 
 \begin{figure}
 \centering
@@ -372,7 +414,7 @@ La única solución es el origen $x^*=[0,0]^T$. La figura \ref{fig:vandesol}, mu
 \begin{figure}
 \centering
 \includegraphics[scale=0.4]{fasesvdp.eps}
-\caption{Evolución temporal y trayectoria en el plano de fases para el Oscilador de Van der Pol. La condición inicial, $x(0)=[3,-1]^T$, aparece representada con un aspa en el espacio de fases.} \label{fig:fasesvdp}
+\caption{Diagrama de Fases para el oscilador de Van der Pol. Las trayectorias obtenidas desde distintas condiciones iniciales, convergen a un ciclo límite.} \label{fig:fasesvdp}
 \end{figure}
 \qed
 \end{example}
