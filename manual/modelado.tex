@@ -342,10 +342,10 @@ Tomando como partida las ecuaciones (\ref{eq: sysa1}) - (\ref{eq: sysa2}), y sup
 El comportamiento del sistema original, en la proximidades del punto de equilibrio $x^*$, es comparable al del sistema $\delta \dot x(t) = A(t)\delta x(t)$ en torno al origen. Se trata de un sistema autónomo lineal e invariante en el tiempo (lti), cuya solución es,
 
 \begin{equation}
-\delta x(t) = P\exp(J_rt)P^{-1}x_0 
+\delta x(t) = P\exp(J_rt)P^{-1}\delta x_0 
 \end{equation}
 
-donde  $J_r$ es la forma de Jordan real de la matriz A y $P,\ J_r=P^{-1}AP$ es una matriz formada por los autovalores de $A$. La matriz de Jordan, en este caso bidimensional, puede tomar una de las siguientes formas,
+donde  $J_r$ es la forma de Jordan \emph{real} de la matriz A y $P,\ J_r=P^{-1}AP$ es una matriz formada por los autovalores de $A$. La matriz de Jordan, en este caso bidimensional, puede tomar una de las siguientes formas,
 \begin{equation}
 \begin{bmatrix}
 \lambda_1 & 0\\ 0 & \lambda_2
@@ -356,6 +356,33 @@ donde  $J_r$ es la forma de Jordan real de la matriz A y $P,\ J_r=P^{-1}AP$ es u
 \end{bmatrix}
 \end{equation}
 
+Comencemos por analizar el primer caso, que corresponde a dos autovalores reales y distintos. En este caso,las soluciones del sistema corresponde a la combinación de dos exponenciales,
+\begin{equation}
+\exp\begin{pmatrix}
+\lambda_1t &0 \\
+0& \lambda_2t
+\end{pmatrix}=\begin{pmatrix}
+e^{\lambda_1t} &0 \\
+0& e^{\lambda_2t} 
+\end{pmatrix}
+\end{equation}
+
+\begin{figure}
+\subfigure[Nodo estable]{
+\includegraphics[width=0.31\linewidth]{lineal_lr.eps}}
+\subfigure[Foco estable]{
+\includegraphics[width=0.31\linewidth]{lineal_lc.eps}}
+\subfigure[Centro]{
+\includegraphics[width=0.31\linewidth]{lineal_imaginario.eps}}\\
+\subfigure[Nodo inestable]{
+\includegraphics[width=0.31\linewidth]{lineal_mr.eps}}
+\subfigure[Foco inestable]{
+\includegraphics[width=0.31\linewidth]{lineal_mc.eps}}
+\subfigure[Punto de silla (inestable)]{
+\includegraphics[width=0.31\linewidth]{lineal_silla.eps}}
+\end{figure}
+
+Tenemos entonces tres posibilidades distintas. Si los dos autovalores son negativos, ambas exponenciales tienden a cero cuando el tiempos tiende a infinito. Se dice entonces que el sistema es asintóticamente (exponecialmente) estable y el origen es un nodo estable. Si ambos autovalores son positivos, las soluciones tienden a infinito, el sistema es inestable y el origen es  inestable. Si uno de los autovalores es positivo y el otro negativo, es sistema resulta igualmente inestable, una solución tiende a cero y la otra a infinito. El origen es en este caso un punto de silla.
 
 
 
@@ -364,7 +391,7 @@ Las representaciones en el plano de fases, nos ofrecen un camino sencillo para o
 \begin{example}[Diagrama de fases para el péndulo invertido \ref{Apinv}]
 Podemos obtener un sistema autónomo para el péndulo invertido, eliminando la tensión $T$ de las ecuaciones \ref{eq: f},
 \begin{figure}
-\includegraphics[scale=0.8]{resp_inv.eps}
+\includegraphics[scale=0.8]{resp_p_inv.eps}
 \caption{Evolución temporal y trayectoria en el plano de fases para el péndulo invertido. La condición inicial, $x_0=[\pi/3,0]^T$, aparece representada con un aspa en el espacio de fases.} \label{fig:trpen}
 \end{figure}
 
