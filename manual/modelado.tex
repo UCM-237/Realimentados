@@ -318,74 +318,6 @@ Además podemos considerar $f(x)=[f_1(x),f_2(x)]$ como un campo vectorial defini
 
 El conjunto de todas las trayectorias en el plano de fases de un sistema se denomina su diagrama de fases. de modo análogo al caso de campo vectorial, podemos obtener una representación aproximada del diagrama de fases obteniendo las trayectorias del sistemas para un conjunto suficientemente grande de condiciones iniciales en una región de interés y dibujándolas en el plano de fases.
 
-\subsection{Sistemas lti\protect\footnote{Los detalles y demostraciones se incluyen en el capítulo \ref{5:lti}}. }
- Como se ha indicado anteriormente, una primera aproximación al estudio de los sistemas dinámicos es obtener sus puntos de equilibrio, linealizar el sistema en torno a ellos, y estudiar el comportamiento del sistema linealizado. Aunque todo esto, se explicará en detalle en el tema \ref{5:lti}, Vamos a adelantar aquí algunos resultados, especialmente útiles para el estudio del plano de fases de sistemas no lineales. 
-Tomando como partida las ecuaciones (\ref{eq: sysa1}) - (\ref{eq: sysa2}), y suponiendo que el sistema tiene un punto de equilibrio $x^*= [x_1^*,x_2^*]$. Podemos linealizar el sistema en torno al punto de equilibrio,
-\begin{align}
-\left.\begin{cases}
-	\dot x_1 =& f_1(x_1,x_2) \\ \dot x_2 =& f_2(x_1,x_2)
-	\end{cases}\right|_{x\approx x^*, u\approx u^*} \approx
-	\begin{cases}
-		x_1(t) &= x^* + \delta x_1(t) \\
-		x_2(t) &= x^* + \delta x_2(t) \\
-	\delta \dot x(t) &= A(t)\delta x(t)  \\
-	\end{cases}, \nonumber
-\end{align}
-\begin{align}
-	A(t) &= \left. \begin{bmatrix}
-		\frac{\partial f_1}{\partial x_1} &  \frac{\partial f_1}{\partial x_2} \\
-		\ \\
-		\frac{\partial f_2}{\partial x_1} & \frac{\partial f_2}{\partial x_2}
-	\end{bmatrix} \right |_{x=x^*, u=u^*} \quad
-\end{align}
-
-El comportamiento del sistema original, en la proximidades del punto de equilibrio $x^*$, es comparable al del sistema $\delta \dot x(t) = A(t)\delta x(t)$ en torno al origen. Se trata de un sistema autónomo lineal e invariante en el tiempo (lti), cuya solución es,
-
-\begin{equation}
-\delta x(t) = P\exp(J_rt)P^{-1}\delta x_0 
-\end{equation}
-
-donde  $J_r$ es la forma de Jordan \emph{real} de la matriz A y $P,\ J_r=P^{-1}AP$ es una matriz formada por los autovalores de $A$. La matriz de Jordan, en este caso bidimensional, puede tomar una de las siguientes formas,
-\begin{equation}
-\begin{bmatrix}
-\lambda_1 & 0\\ 0 & \lambda_2
-\end{bmatrix},\ \begin{bmatrix}
-\lambda & k\\ 0 & \lambda
-\end{bmatrix},\ \begin{bmatrix}
-\alpha & -\beta\\ \beta & \alpha
-\end{bmatrix}
-\end{equation}
-
-Comencemos por analizar el primer caso, que corresponde a dos autovalores reales y distintos. En este caso,las soluciones del sistema corresponde a la combinación de dos exponenciales,
-\begin{equation}
-\exp\begin{pmatrix}
-\lambda_1t &0 \\
-0& \lambda_2t
-\end{pmatrix}=\begin{pmatrix}
-e^{\lambda_1t} &0 \\
-0& e^{\lambda_2t} 
-\end{pmatrix}
-\end{equation}
-
-\begin{figure}
-\subfigure[Nodo estable]{
-\includegraphics[width=0.31\linewidth]{lineal_lr.eps}}
-\subfigure[Foco estable]{
-\includegraphics[width=0.31\linewidth]{lineal_lc.eps}}
-\subfigure[Centro]{
-\includegraphics[width=0.31\linewidth]{lineal_imaginario.eps}}\\
-\subfigure[Nodo inestable]{
-\includegraphics[width=0.31\linewidth]{lineal_mr.eps}}
-\subfigure[Foco inestable]{
-\includegraphics[width=0.31\linewidth]{lineal_mc.eps}}
-\subfigure[Punto de silla (inestable)]{
-\includegraphics[width=0.31\linewidth]{lineal_silla.eps}}
-\end{figure}
-
-Tenemos entonces tres posibilidades distintas. Si los dos autovalores son negativos, ambas exponenciales tienden a cero cuando el tiempos tiende a infinito. Se dice entonces que el sistema es asintóticamente (exponecialmente) estable y el origen es un nodo estable. Si ambos autovalores son positivos, las soluciones tienden a infinito, el sistema es inestable y el origen es  inestable. Si uno de los autovalores es positivo y el otro negativo, es sistema resulta igualmente inestable, una solución tiende a cero y la otra a infinito. El origen es en este caso un punto de silla.
-
-
-
 \subsection{Algunos ejemplos}
 Las representaciones en el plano de fases, nos ofrecen un camino sencillo para observar algunos de los fenómenos propios de los sistemas no lineales. A continuación, vamos a emplearlas con algunos de los ejemplos de la sección \ref{sec: ejem}
 \begin{example}[Diagrama de fases para el péndulo invertido \ref{Apinv}]
@@ -445,3 +377,155 @@ La única solución es el origen $x^*=[0,0]^T$. La figura \ref{fig:vandesol}, mu
 \end{figure}
 \qed
 \end{example}
+
+\subsection{Sistemas lti\protect\footnote{Los detalles y demostraciones se incluyen en el capítulo \ref{5:lti}}. }
+
+\begin{figure}[h] 
+\subfigure[Nodo estable]{
+\includegraphics[width=0.31\linewidth]{lineal_lr.eps}}
+\subfigure[Foco estable]{
+\includegraphics[width=0.31\linewidth]{lineal_lc.eps}}
+\subfigure[Centro]{
+\includegraphics[width=0.31\linewidth]{lineal_imaginario.eps}}\\
+\subfigure[Nodo inestable]{
+\includegraphics[width=0.31\linewidth]{lineal_mr.eps}}
+\subfigure[Foco inestable]{
+\includegraphics[width=0.31\linewidth]{lineal_mc.eps}}
+\subfigure[Punto de silla (inestable)]{
+\includegraphics[width=0.31\linewidth]{lineal_silla.eps}}
+\caption{Diagrama de fases para sistemas lineales con autovalores distintos no nulos, reales o complejos conjugados}\label{fig:lin1}
+\end{figure}
+
+ Como se ha indicado anteriormente, una primera aproximación al estudio de los sistemas dinámicos es obtener sus puntos de equilibrio, linealizar el sistema en torno a ellos, y estudiar el comportamiento del sistema linealizado. Aunque todo esto, se explicará en detalle en el tema \ref{5:lti}, Vamos a adelantar aquí algunos resultados, especialmente útiles para el estudio del plano de fases de sistemas no lineales. 
+Tomando como partida las ecuaciones (\ref{eq: sysa1}) - (\ref{eq: sysa2}), y suponiendo que el sistema tiene un punto de equilibrio $x^*= [x_1^*,x_2^*]$. Podemos linealizar el sistema en torno al punto de equilibrio,
+\begin{align}
+\left.\begin{cases}
+	\dot x_1 =& f_1(x_1,x_2) \\ \dot x_2 =& f_2(x_1,x_2)
+	\end{cases}\right|_{x\approx x^*, u\approx u^*} \approx
+	\begin{cases}
+		x_1(t) &= x^* + \delta x_1(t) \\
+		x_2(t) &= x^* + \delta x_2(t) \\
+	\delta \dot x(t) &= A(t)\delta x(t)  \\
+	\end{cases}, \nonumber
+\end{align}
+\begin{align}
+	A &= \left. \begin{bmatrix}
+		\frac{\partial f_1}{\partial x_1} &  \frac{\partial f_1}{\partial x_2} \\
+		\ \\
+		\frac{\partial f_2}{\partial x_1} & \frac{\partial f_2}{\partial x_2}
+	\end{bmatrix} \right |_{x=x^*, u=u^*} \quad
+\end{align}
+
+El comportamiento del sistema original, en la proximidades del punto de equilibrio $x^*$, es comparable al del sistema $\delta \dot x(t) = A\delta x(t)$ en torno al origen. Se trata de un sistema autónomo lineal e invariante en el tiempo (lti), cuya solución es,
+
+\begin{equation}
+\delta x(t) = P\exp(J_rt)P^{-1}\delta x_0 
+\end{equation}
+
+donde  $J_r$ es la forma de Jordan \emph{real} de la matriz A y $P=[v_1,v_2]$,$\ J_r=P^{-1}AP$ es una matriz formada por los autovectores de $A$. La matriz de Jordan, en este caso bidimensional, puede tomar una de las siguientes formas,
+\begin{equation}\label{eq:240}
+\begin{bmatrix}
+\lambda_1 & 0\\ 0 & \lambda_2
+\end{bmatrix},\ \begin{bmatrix}
+\lambda & k\\ 0 & \lambda
+\end{bmatrix},\ \begin{bmatrix}
+\alpha & -\beta\\ \beta & \alpha
+\end{bmatrix},
+\end{equation}
+donde $k$ es 0 ó 1.
+Comencemos por analizar el primer caso, donde $\lambda_1 \ne \lambda_2 \ne 0$. En este caso,las soluciones del sistema corresponde a la combinación de dos exponenciales,
+\begin{equation}
+\exp\begin{bmatrix}
+\lambda_1t &0 \\
+0& \lambda_2t
+\end{bmatrix}=\begin{bmatrix}
+e^{\lambda_1t} &0 \\
+0& e^{\lambda_2t} 
+\end{bmatrix}
+\end{equation}
+
+
+
+Tenemos entonces tres posibilidades distintas. Si los dos autovalores son negativos, ambas exponenciales tienden a cero cuando el tiempos tiende a infinito. Se dice entonces que el sistema es asintóticamente (exponencialmente) estable y el origen es un nodo estable. Si ambos autovalores son positivos, las soluciones tienden a infinito, el sistema es inestable y el origen es  inestable. Si uno de los autovalores es positivo y el otro negativo, es sistema resulta igualmente inestable, una solución tiende a cero y la otra a infinito. El origen es en este caso un punto de silla.
+
+El tercer caso mostrado en la ecuación \ref{eq:240} corresponde a un par de autovalores complejos conjugados,
+$\lambda_1 = \alpha + j \beta, \lambda_2 =\alpha -j\beta$.  Las soluciones tomarían la forma,
+
+\begin{equation}
+\exp\begin{bmatrix}
+\alpha t & -\beta t\\ \beta t & \alpha t
+\end{bmatrix} = 
+\begin{bmatrix}
+e^{\alpha t}\cos(\beta t) & e^{\alpha t}\sin(\beta t)\\
+-e^{\alpha t}\sin(\beta t) & e^{\alpha t}\cos(\beta t)
+\end{bmatrix}
+\end{equation}
+
+De nuevo. Podemos distinguir varios casos atendiendo a la forma que tome la parte real del autovalor. Si $\alpha < 0$, el sistema tenderá asintóticamente a 0, describiendo una espiral. Se dice entonces que el origen es un foco atractivo. Sí $\alpha > 0$ las soluciones divergen, y se alejan del origen describiendo una espirar. Se dice entonces que el origen es un foco repulsivo. Por último, si $\alpha = 0$, los autovalores son número imaginarios. Las soluciones son trayectorias elípticas cerradas en torno al origen que se denomina centro. La figura \ref{fig:lin1} muestra diagramas de fases correspondientes a ejemplos de los casos descritos hasta ahora.
+
+\begin{figure}
+\centering
+\subfigure[Nodo inestable. $\lambda_1 = \lambda_2 \ge 0$\label{fig:lin2a}]{
+\includegraphics[width=0.31\linewidth]{lineal_ji.eps}}
+\subfigure[Nodo estable. $\lambda_1 = \lambda_2 \le 0$\label{fig:lin2b}]{
+\includegraphics[width=0.31\linewidth]{lineal_je.eps}}\\
+\subfigure[$\lambda_1=0,\ \lambda_2 \ge 0$\label{fig:lin2c}]{
+\includegraphics[width=0.31\linewidth]{lineal_0i.eps}}
+\subfigure[$\lambda_1 = 0,\ \lambda_2 \le 0$\label{fig:lin2d}]{
+\includegraphics[width=0.31\linewidth]{lineal_0e.eps}}
+\subfigure[$\lambda_1 = 0,\ \lambda_2 = 0$\label{fig:lin2e}]{
+\includegraphics[width=0.31\linewidth]{lineal_doblecero.eps}}
+\caption{Diagrama de fases para sistemas lineales con autovalores iguales y autovalores nulos. En este último caso, figuras (c), (d) y (e) se ha mercado con un aspa el final de las simulaciones para mostrar la recta de equilibrio y el sentido del movimiento de las trayectorias. }\label{fig:lin2}
+\end{figure}
+
+En cuanto al segundo caso, si $\lambda_1 = \lambda_2 \ne 0$, las soluciones tomarán la forma,
+\begin{equation}
+\exp\begin{bmatrix}
+\lambda t& kt\\ 0 & \lambda t
+\end{bmatrix} = 
+\begin{bmatrix}
+e^{\lambda t} & e^{\lambda t}kt\\
+0 & e^{\lambda t}
+\end{bmatrix}
+\end{equation}
+
+Cualitativamente las soluciones son parecidas a la de los nodos descritos en el caso en el que ambos autovalores son distintos: dependiendo del signo de $\lambda$ tendremos un nodo repulsivo o un nodo atractivo. Las figuras \ref{fig:lin2a} y \ref{fig:lin2b} muestran un ejemplo de cada caso. 
+
+Quedan por analizar los casos en que los autovalores son nulos. Así, por ejemplo, para $\lambda_1 = 0, \lambda_2 \ne 0$,  
+
+\begin{equation}
+\exp\begin{bmatrix}
+0 & 0\\ 0 & \lambda_2 t
+\end{bmatrix} = 
+\begin{bmatrix}
+1 & 0\\
+0 & e^{\lambda_2 t}
+\end{bmatrix}
+\end{equation}
+
+En este caso tenemos que el autovector $v_1$ correspondiente al autovalor $\lambda_1=0$ pertenece al kernel de la matriz $A$, $Av_1 = 0\cdot v_1 = 0$. Tenemos por tanto, que todos puntos de la recta, definida por el vector $v_1$ son puntos de equilibrio. Si $\lambda_2 >0$ todas las trayectorias serán perpendiculares a dicha recta y tenderán alejarse de ella, El sistema será inestable. Si por el contrario $\lambda_2 < 0 $ el sistema será estable y las trayectorias serán perpendiculares y terminarán en la recta definida por $v_1$. Las figuras \ref{fig:lin2c} y \ref{fig:lin2d} muestran un ejemplo de cada caso en el que es fácil observar la recta de equilibrio, señalada mediante aspas.
+
+Por último, para el caso en que ambos autovalores son nulos. Si la matriz del sistema es la matriz cero, estamos ante un caso trivial en que todos los puntos del plano son puntos de equilibrio, En otro caso, las soluciones tomarían la forma,
+
+\begin{equation}
+\exp\begin{bmatrix}
+0 & t\\ 0 & 0
+\end{bmatrix} = 
+\begin{bmatrix}
+1 & t\\
+0 & 1
+\end{bmatrix}
+\end{equation}
+
+De nuevo, la recta definida por el autovector $v_1$ define los puntos de equilibrio del sistema. Las trayectorias en el espacio de las fases serán líneas rectas paralelas a dicha línea. La dirección del movimiento dependerá de las condiciones iniciales. La figura \ref{fig:lin2e} muestra un ejemplo.
+
+Como se decía la principio de esta sección, estudiar el comportamiento de los sistemas lineales cerca de su punto de equilibrio $x=0$, tiene interés para los sistemas no lineales, ya que en muchos casos es posible conocer cual sera el comportamiento \emph{local} de un sistema no lineal cerca de un punto de equilibrio, linealizando el sistema en torno a dicho punto de equilibrio. Hasta qué punto los resultados de la linealización son válidos, va a depender en cómo de robustos son los sistemas lineales obtenidos frente a pequeñas perturbaciones. 
+
+En general, para sistemas lineales cuyos autovalores tiene parte real distinta de cero, Pequeñas perturbaciones en la estructura del sistema no cambiarán significativamente el valor de la parte real de los autovalores , por tanto conservarán su signo positivo o negativo y el sistema seguirá siendo inestable o estable. De estos sistemas se dice que son estructuralmente inestables o estructuralmente estables, y su punto de equilibrio $x=0$ se dice que es hiperbólico. 
+
+Si el sistema resultante de linealizar un sistema no lineal es da como resultado un sistema lineal estructuralmente estable o inestable, el sistema no lineal será también inestable o estable en las proximidades del punto de equilibrio. Este resultado es generalizable a sistemas de dimensiones mayores que 2.
+
+Para  sistemas lineales cuyos autovalores nulos, cualquier perturbación, por pequeña que sea, modificará el valor de la parte real de los autovalores, haciéndolos positivos o negativos. Como resultado, si al linealizar un sistema no lineal se obtien como resultado un sistema con autolores con parte real nula, no es posible concluir nada sobre el comportamiento del sistema no lineal en las proximidades del punto de equilibrio.
+
+   
+
