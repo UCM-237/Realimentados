@@ -5,10 +5,10 @@ Nos vamos a centrar en sistemas que puedan ser descritos por características cu
 
 Vamos a definir $x(t)\in\mathbb{R}^n$, $y(t)\in\mathbb{R}^m$ y $u(t)\in\mathbb{R}^k$ como el vector apilado de estados, la salida, y la entrada a un sistema $\Sigma$ respectivamente. En particular, son señales, e.g., $x :[0,\infty) \to \mathbb{R}^n$.
 
-El sistema $\Sigma$ es un modelo que predice el valor de los estados y la salida a lo largo del tiempo. Esta predicción incorpora la interacción de la entrada en los estados y la salida. En particular, vamos a emplear ecuaciones diferenciales como herramienta para predecir la evolución en el tiempo de los estados del sistema $\Sigma$ como se muestra a continuación
+El sistema $\Sigma$ es un modelo que predice el valor de los estados y la salida a lo largo del tiempo. Esta predicción incorpora la interacción de la entrada con los estados y la salida. En particular, vamos a emplear ecuaciones diferenciales como herramienta para predecir la evolución en el tiempo de los estados del sistema $\Sigma$ como se muestra a continuación
 \begin{equation}
 	\Sigma := \begin{cases}
-		\dot x(t) =& f(x(t),u(t)) \\ y(t) =& g(x(t),u(t))
+		\dot x(t) =& f(t,x(t),u(t)) \\ y(t) =& g(t,x(t),u(t))
 	\end{cases}, 
 \label{eq: sigma}
 \end{equation}
@@ -29,8 +29,67 @@ Podemos representar el sistema $\Sigma$ como un bloque con puertos de entrada y 
 	\label{fig: sigma}
 \end{figure}
 
-\section{Ejemplos}
-\subsection{Péndulo invertido}
+Dado que el sistema viene descrito por las variables de estado,  con frecuencia es posible prescindir de la salida y centrar el estudio en la primera de las dos ecuaciones anteriores.
+
+ En ocasiones podemos emplear para describir un sistema ecuaciones de estado en las que no aparece explícitamente la entrada,
+\begin{equation}
+\dot x = f(t,x)
+\end{equation}\label{eq: for}
+En este caso se, se habla de una ecuación de estado no forzada. Esto no quiere decir necesariamente que la entrada al sistema sea cero. Puede aparecer representada directamente como una función del tiempo, $u=\rho(t)$,  como una función (\emph{realimentación}) de los estados $u = \rho(x)$ o como una función de ambos $u=\rho(t,x)$.
+Un caso especialmente interesante de (\ref{eq: for}) se obtiene cuando $f$ no depende explícitamente del tiempo,
+\begin{equation}
+\dot x = f(x)
+\end{equation}
+Se trata entonces de un sistema \emph{autónomo} o \emph{invariante en el tiempo}. Es decir, el comportamiento del sistema es invariante bajo traslaciones del origen de tiempos; si cambiamos la variable tiempo de $t$ a $t-a$, la parte derecha de la ecuación de estado no experimenta cambio.
+
+Para un sistema dinámico, descrito mediante variable de estados, un punto de equilibrio $\overline x$  tiene la propiedad de que si el sistema se encuentra en $\overline x$ en un instante de tiempo $t_0$, permanecerá en ese  mismo punto para todo instante de tiempo posterior $t>t_0$. En el caso de un sistema autónomo, los puntos de equilibrio son las raíces reales de la ecuación,
+\begin{equation}
+f(x)=0
+\end{equation} 
+
+Los puntos de equilibrio juegan un papel muy importante en el estudio de los sistemas dinámicos, como tendremos ocasión de ver más adelante.
+
+Un caso particular de sistema dinámicos los constituyen los sistemas lineales. Para ellos la ecuación \ref{eq: sigma} toma la forma,
+\begin{equation}
+	\Sigma := \begin{cases}
+		\dot x(t) =& A(t)x(t)+B(t)u(t) \\ y(t) =& C(t)x(t)+D(t)u(t)
+	\end{cases}, 
+\label{eq: sigmaL}
+\end{equation}
+
+En el capítulo 5 se estudiarán en detalle los sistemas lineales, cuyas propiedades permiten emplear herramientas de análisis precisas y potentes para su estudio y caracterización. En el caso del resto de los sistemas, es decir todos aquellos que son no-lineales, el análisis resulta más complejo.
+
+Una primera aproximación al estudio de los sistemas no-lineales es linealizarlos en torno a punto de trabajo y estudiar el sistema lineal resultante. Esta aproximación es muy valiosa, como  veremos en la sección (\ref{sec: linear}), sin embargo, solo es válida en las proximidades del punto de trabajo, por tanto no es posible predecir a partir de ella el comportamiento del sistema cuando nos alejamos de dicho punto. Por otro lado, los sistemas no-lineales presentan una dinámica mucho mas rica, con fenómenos que no se dan en los sistemas lineales y, por tanto no pueden describirse con un modelo linealizado del sistema no-lineal. Algunos de éstos fenómenos son:
+
+\paragraph{Múltiples puntos de equilibrio aislados.} Para un sistema lineal solo es posible encontrar un punto de equilibrio.  Un sistema lineal es asintóticamente estable cuando, partiendo de valores iniciales arbitrarios, sus variables de estado se aproximan al punto de equilibrio con el tiempo. 
+
+\begin{equation}
+\lim_{ t \to \infty} x \to \overline x
+\end{equation}
+
+
+Un sistema no lineal puede presentar más de un punto de equilibrio y aproximarse a uno u otro dependiendo de las condiciones iniciales.
+
+\paragraph{Tiempo de escape finito (\emph{Finite escape time}).} Un sistema lineal es inestable cuando, partiendo de valores arbitrarios, sus variables de estado divergen --se van a infinito-- con el tiempo.
+\begin{equation}
+\lim_{ t \to \infty} x \to \infty
+\end{equation}
+Es posible encontrar sistemas no-lineales inestables que se comportan de modo análogo a los lineal pero además, algunos sistemas lineales divergen, se van a infinito, en un tiempo finito. 
+\begin{equation}
+\lim_{ t \to t_e} x \to \infty
+\end{equation}
+
+\paragraph{Cíclos límite.} Un sistema lineal se dice que es marginalmente estable, cuando sus variables de estado oscilan periódicamente. Sin embargo, como veremos más adelante, las circunstancias para que se de una oscilación mantenida en un sistema lineal, constituyen una condición no robusta, por lo que es en la práctica  imposible que se dé  condiciones reales. Además la amplitud de las oscilaciones depende de las condiciones iniciales del sistema.
+
+Hay sistemas no lineales que pueden oscilar de modo estable con una amplitud y frecuencia independiente de las condiciones iniciales. A este tipo de oscilaciones se les conoce con el nombre de ciclos límite. 
+
+\paragraph{Caos.} Algunos sistemas no-lineales exhiben comportamientos aún más complicados. No alcanzan un punto de equilibrio, no presentan oscilaciones periódicas, ni tampoco son inestable. A este comportamiento se le denomina caótico. Alguno sistemas presentan incluso un comportamiento aleatorio, a pesar de la naturaleza determinista de las ecuaciones diferenciales que lo definen.
+
+
+ Resulta por tanto necesario, buscar herramientas específicas para el análisis de los sistemas no-lineales.
+\section{Ejemplos de sistemas dinámicos}\label{sec: ejem}
+A continuación se presentan algunos ejemplos clásicos de sistemas dinámicos.
+\begin{example}[Péndulo invertido]
 
 Vamos a derivar las funciones $f$ y $g$ en (\ref{eq: sigma}) para el sistema del péndulo invertido.
 
@@ -58,7 +117,7 @@ Primero, vamos a hallar la ecuación diferencial que describe la dinámica de un
 
     \pic [draw, <-, "$\theta$", angle eccentricity=1.5] {angle = bob--origo--mary};
 \end{tikzpicture}
-\caption{Inverted pendulum}
+\caption{Péndulo Invertido}
 \label{fig: invpen}
 \end{figure}
 
@@ -91,8 +150,10 @@ g(x(t),u(t)) =  \theta(t).
 \end{equation}
 
 %A Python simulation of this dynamics can be found at \url{https://github.com/noether/aut_course}.
+\qed 
+\end{example}
 
-\subsection{El oscilador de Van der Pol}
+\begin{example}[El oscilador de Van der Pol]
 Se trata de un oscilador, propuesto por primera vez por Balthasar Van der Pol, cuando trabajaba en Philips, para explicar las oscilaciones observadas en tubos de vacío. Podemos obtener la ecuación del oscilador, empleando el circuito de la figura \ref{fig:vdp}.
 \begin{figure}
 \centering
@@ -136,23 +197,24 @@ Si definimos ahora, $h(v)$,
 h(v) = m(\frac{1}{3}v^3-1)\\
 \frac{dh}{dv} = m(v^2-1)
 \end{align}
-y sustituyendo en (\ref{eq:vdp2}),
+y sustituimos en (\ref{eq:vdp2}),
 \begin{equation}
 \ddot{v} +m\frac{1}{C}(v^2-1)\dot{v}+\frac{1}{LC}v = 0
 \end{equation}
 
 Podemos representarla finalmente en variables de estado, tomando $x_1=v$ y $x_2=\dot{v}$,
 \begin{align}
-\dot{x}_1 &= x_2\\
+\dot{x}_1 &= x_2 \label{eq:vpst1} \\
 \dot{x}_2 &= -\frac{1}{LC}x_1 - m\frac{1}{C}(x_1^2-1)x_2 \label{eq:vdpst2}
 \end{align}
 Podemos ahora hacer un primer análisis cualitativo. El primer término a la derecha del igual en  la ecuación (\ref{eq:vdpst2}) representa una fuerza recuperadora proporcional al desplazamiento, el segundo término, crecerá con la velocidad para $x_1 < 1$, alejando así al sistema del origen  y representará un término disipativo para $x_1 > 1$ acercándolo por tanto de nuevo al origen. Es por tanto esperable, que se alcance
-algún tipo de situación de equilibrio. Más adelante definiremos esta situación rigurosamente como un ciclo límite. 
-\subsection{Un vehículo de cuatro ruedas. }
+algún tipo de situación de equilibrio. Más adelante definiremos esta situación rigurosamente como un ciclo límite. \qed
+\end{example} 
+\begin{example}[Un vehículo de cuatro ruedas.]
 La figura \ref{fig:vehir} muestra un esquema de un vehículo terrestre de cuatro ruedas, visto desde arriba. Si consideramos que se mueve en el plano $x,y$, y que su velocidad instántanea $\vec{V}$ está siempre orientada en la dirección de avance del vehículo $\psi$ --asumimos que no derrapa, ni se mueve lateralmente--, podemos entonces definir la velocidad, en el sistema de referencia $x,y$ como,
 \begin{align}
 \dot{x} = V_x(t) = V\cos(\psi(t))\\
-\dot{y} = V_y(t) = V\sin(\psi(t))\\
+\dot{y} = V_y(t) = V\sin(\psi(t)).
 \end{align}
 
 \begin{figure}
@@ -180,7 +242,7 @@ La figura \ref{fig:vehir} muestra un esquema de un vehículo terrestre de cuatro
 \label{fig:vehir}
 \end{figure}
 
-Además el vehículo girará, siempre que las ruedas delanteras no estén alineadas con las ruedas traseras, cambiando así su dirección de avance . Podemos relacionar la velocidad de giro del vehículo $\dot{\psi}$ con el ángulo de orientación de las ruedas delanteras $\phi$, y la velocidad a la que avanzan $\vec{v'}$.  podemos obtener las componetes de dicha velocidad en ejes cuerpo (paralela y perpendicular a la dirección de avance del vehículo),
+Además el vehículo girará, siempre que las ruedas delanteras no estén alineadas con las ruedas traseras, cambiando así su dirección de avance . Podemos relacionar la velocidad de giro del vehículo $\dot{\psi}$ con el ángulo de orientación de las ruedas delanteras $\phi$, y la velocidad a la que avanzan $\vec{v}'$.  podemos obtener las componentes de dicha velocidad en ejes cuerpo (paralela y perpendicular a la dirección de avance del vehículo),
 
 \begin{align}
 v_{P} = v'\cos(\phi(t))\\
@@ -198,13 +260,13 @@ Si tomamos como centro de giro del vehículo el centro de su eje trasero, y la b
 \end{equation}
 
 En resumen, podemos describir el sistema mediante tres ecuaciones de estado $x_1 \equiv x, x_2\equiv	y, x_3 \equiv \psi$:
-<<<<<<< HEAD:manual/modelado.tex
-\begin{align}
-\dot{x}_1 =  V\cos(x_3)\\  
-\dot{x}_2 =  V\sin(x_3)\\
-\dot{x}_3 = \frac{V}{l}\tan(\phi)
-\end{align}
-=======
+
+%\begin{align}
+%\dot{x}_1 =  V\cos(x_3)\\  
+%\dot{x}_2 =  V\sin(x_3)\\
+%\dot{x}_3 = \frac{V}{l}\tan(\phi)
+%\end{align}
+
 \begin{equation}
 	\begin{cases}
 		\dot x_1 &=  V\cos(x_3)\\  
@@ -212,9 +274,9 @@ En resumen, podemos describir el sistema mediante tres ecuaciones de estado $x_1
 		\dot x_3 &= \frac{V}{l}\tan(\phi)
 	\end{cases}
 \end{equation}
->>>>>>> 2aa5508cddde52e40909a7c802b24529eb27dd55:modelado.tex
 
-Si consideramos $V=cte$, la única entrada al sistema sería el ángulo de giro de las ruedas $u(t) = \phi(t)$, controlando su valor, podemos hacer girar al vehículo en la dirección deseada. 
+Si consideramos $V=cte$, la única entrada al sistema sería el ángulo de giro de las ruedas $u(t) = \phi(t)$, controlando su valor, podemos hacer girar al vehículo en la dirección deseada. \qed
+\end{example}
 
 \section{Simulación o soluciones numéricas del sistema $\Sigma$}
 Dado un punto inicial $x(0)$, podemos predecir o calcular numéricamente $x(t)$. El método de \emph{integración de Euler} es un método numérico sencillo que puede darnos información sobre la evolución temporal de los estados y salidas de $\Sigma$. El siguiente algoritmo describe la integración numérica por Euler:
@@ -239,3 +301,252 @@ Dado un punto inicial $x(0)$, podemos predecir o calcular numéricamente $x(t)$.
 \end{algo}
 
 Este algoritmo rinde bien cuando $\Delta T$ es suficientemente pequeño en función de como de rápido varíe $f$ en el tiempo. Por ahora hemos considerado $u=0$, es decir, no hay control o interacción alguna con el sistema.
+
+Existen, métodos más robustos para obtener la solución numérica de un sistema. Entre ellos, destacan los métodos de Runge-Kutta, y en particular, el uso de los llamados 'pares encajados' de dichos métodos. Describir los detalles de cálculo de dichos métodos queda fuera del alcance de estas notas. Hay muchos paquetes de software como Matlab o Python que incluyen funciones que implementan dichos métodos. En  el apéndice \ref{apend1}. Se incluyen códigos de Matlab con ejemplos y explicaciones de como construirlos.
+
+\section{Sistemas autónomos de segundo orden}
+Los sistema autónomos de segundo orden, son especialmente atractivos para el estudio de los fenómenos no lineales porque sus soluciones se pueden representar fácilmente en el llamado plano de fases.
+En general, podemos definir un sistema autónomo de segundo orden a partir de dos ecuaciones escalares, una para la derivada temporal de cada estado,
+\begin{align}
+\dot x_1 &= f_1(x_1,x_2) \label{eq: sysa1}\\
+\dot x_2 &= f_2(x_1,x_2) \label{eq: sysa2}
+\end{align}
+
+Supongamos que conocemos una solución al sistema $x(t) = [x_1(t),x_2(t)]^T$, que pasa por el punto $x(0) = x_0$. La solución describe una curva sobre el plano $x_1-x_2$ que pasa por el punto $x_0$. Esta curva recibe el nombre de trayectoria u órbita, desde $x_0$, del sistema. El plano $x_1-x_2$ recibe el nombre de plano de fases. La ecuaciones (\ref{eq: sysa1}) - (\ref{eq: sysa2}) representa un vector tangente $\dot x(t) = [\dot x_1(t),\dot x_2(t)]$ a la trayectoria en el punto $x(t)$ .
+
+Además podemos considerar $f(x)=[f_1(x),f_2(x)]$ como un campo vectorial definido sobre el plano de fases., es decir asignamos a cada punto $x$ en el espacio de fases el vector $f(x)$. Es posible obtener una representación aproximada del campo vectorial asociado a un sistema si definimos una región de interés del plano de fase, por ejemplo, una región que contenga sus puntos de equilibrio. Seleccionamos un conjunto de puntos $x$ en posiciones equiespaciadas dentro de la región de interés, y representamos en cada punto $x$ el campo asociado $f(x)$ mediante una flecha que apunte en la dirección de $f(x)$ y cuya longitud sea proporcional al módulo de $f(x)$.
+
+El conjunto de todas las trayectorias en el plano de fases de un sistema se denomina su diagrama de fases. de modo análogo al caso de campo vectorial, podemos obtener una representación aproximada del diagrama de fases obteniendo las trayectorias del sistemas para un conjunto suficientemente grande de condiciones iniciales en una región de interés y dibujándolas en el plano de fases.
+
+\subsection{Algunos ejemplos}
+Las representaciones en el plano de fases, nos ofrecen un camino sencillo para observar algunos de los fenómenos propios de los sistemas no lineales. A continuación, vamos a emplearlas con algunos de los ejemplos de la sección \ref{sec: ejem}
+\begin{example}[Diagrama de fases para el péndulo invertido \ref{Apinv}]
+Podemos obtener un sistema autónomo para el péndulo invertido, eliminando la tensión $T$ de las ecuaciones \ref{eq: f},
+\begin{figure}
+\includegraphics[scale=0.8]{resp_p_inv.eps}
+\caption{Evolución temporal y trayectoria en el plano de fases para el péndulo invertido. La condición inicial, $x_0=[\pi/3,0]^T$, aparece representada con un aspa en el espacio de fases.} \label{fig:trpen}
+\end{figure}
+
+\begin{align}
+\dot x_1 = &x_2 \label{eq: pi1} \\ 
+\dot x_2 = &\frac{g}{l}\sin x_1 - \frac{b}{ml}x_2 \label{eq: pi2}
+\end{align}
+donde $x_1 = \theta$ y $x_2 = \dot \theta$,. Una primera característica del sistema la obtenemos calculando los puntos de equilibrio, $x^*=[n\pi,0]^T, n \in \mathbb{Z}$. Tenemos un conjunto infinito de posibles puntos de equilibrio, correspondiente a las posiciones verticales del péndulo.
+
+La figura \ref{fig:trpen} muestra una trayectoria del péndulo invertido para una realización particular; $l=g$,$ml=b$ y una condición inicial $x_0=[\pi/3,0]$. 
+
+En ese caso, es fácil analizar lo que sucede, de un modo cualitativo. Las condiciones iniciales sitúan el péndulo cerca de la vertical, formando un ángulo $\theta_0 =\pi/3$ y en reposo. El péndulo caerá y oscilará con una amplitud y velocidad cada vez menor acercándose al punto de equilibrio $\overline \theta = \pi$.
+
+Podemos obtener más información si dibujamos aproximadamente el campo vectorial definido por las ecuaciones (\ref{eq: pi1})-(\ref{eq: pi2}). La figura \ref{fig:pifield} muestra un ejemplo. La región del plano de fases $\theta \in [-3\pi/2,3\pi/2], \dot \theta \in [-3,3]$. Si consideramos el origen de cada vector como una condición inicial del problema, la flecha indicaría la dirección y magnitud del cambio en el plano de fases.  Es fácil intujir, sis seguimos el eje de coordenadas $\theta$ la presencia de tres  puntos de equilibrio en la región mostrada y como el central es un puntos de equilibrio inestable, mientras que los dos laterales corresponden a puntos de equilibrio estables.
+
+Por último podemos obtener una información aún más completa si cabe, si representamos un diagramas de fases del sistema.  La figura \ref{fig:piphp} muestra un ejemplo en el que es posible ver los dos puntos de equilibrios estables (focos) y el punto de silla correspondiente al punto $(0,0)$. 
+
+ 
+\begin{figure}
+\centering
+\includegraphics[scale=0.8]{pi_field.eps}
+\caption{Evolución temporal y trayectoria en el plano de fases para el péndulo invertido. La condición inicial, $x_0=[\pi/3,0]^T$, aparece representada con un aspa en el espacio de fases.} \label{fig:pifield}
+\end{figure}
+
+ \begin{figure}
+\centering
+\includegraphics[scale=0.8]{pi_php.eps}
+\caption{diagrama de fase para el péndulo invertido, cada aspa representa una condición inicial distinta} \label{fig:piphp}
+\end{figure}
+\qed
+\end{example}
+
+\begin{example}[Ciclo límite del oscilador de Van der Pol \ref{AVdP}.] De modo análogo a lo que hemos hecho en el ejemplo anterior, empezamos por determinar los puntos de equilibrio del sistema. Para ello igualamos a cero las ecuaciones del sistema (\ref{eq:vdpst2}, \ref{eq:vdpst2})y resolvemos el sistema resultante,
+\begin{align}
+0 &= x_2\\
+0 &= -\frac{1}{LC}x_1 - m\frac{1}{C}(x_1^2-1)x_2 
+\end{align}
+La única solución es el origen $x^*=[0,0]^T$. La figura \ref{fig:vandesol}, muestra la evolución temporal de las soluciones y su trayectoria en el espacio de fases para una realización particular: $m = 0.5, L=1,C=1$. Un aspecto destacable es el carácter periódico de las soluciones alcanzadas. Ambas variables presentan una oscilación mantenida, tras un primer periodo de respuesta transitoria. Si observamos la trayectoria en el espacio de fases, vemos como esta converge desde la posición inicial $x(0)$ a una trayectoria cerrada y estable. Se trata de un ciclo límite. 
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.4]{VdPsol.eps}
+\caption{Evolución temporal y trayectoria en el plano de fases para el Oscilador de Van der Pol. La condición inicial, $x(0)=[3,-1]^T$, aparece representada con un aspa en el espacio de fases.} \label{fig:vandesol}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.4]{fasesvdp.eps}
+\caption{Diagrama de Fases para el oscilador de Van der Pol. Las trayectorias obtenidas desde distintas condiciones iniciales, convergen a un ciclo límite.} \label{fig:fasesvdp}
+\end{figure}
+\qed
+\end{example}
+
+\subsection{Ciclos límite}
+Los ciclos límites son un tipo de solución específica de algunos sistemas no lineales. Se trata de una solución periódica $x(t+T) =x(t), \forall t>0$ para un determinado periodo  $T>0$. 
+
+Tienen dos características fundamentales, la primera es que corresponde a soluciones de sistemas estructuralmente estables, es decir, el sistema no cambia su comportamiento bajo pequeñas perturbaciones. La segunda es que la amplitud de la oscilación no depende de las condiciones iniciales, o dicho  de otra manera, todas las condiciones iniciales convergen al o divergen del mismo ciclo límite. Podemos, por tanto, encontrar cíclos límites estables o inestables. En el caso de los inestable, solo permanecen en el cíclo límite las soluciones que empiezan en él,mientrsa que toda solución que cuyas condiciones iniciales estén próximas al ciclo límite se alejarán de él. . Una manera sencilla de observar un ciclo límite inestable, se obtiene integrando el oscilador del Van der Pol, co el tiempo invertido $T\to -\infty$.
+
+
+
+
+
+\subsection{Sistemas lti\protect\footnote{Los detalles y demostraciones se incluyen en el capítulo \ref{5:lti}}. }
+
+\begin{figure}[h] 
+\subfigure[Nodo estable]{
+\includegraphics[width=0.31\linewidth]{lineal_lr.eps}}
+\subfigure[Foco estable]{
+\includegraphics[width=0.31\linewidth]{lineal_lc.eps}}
+\subfigure[Centro]{
+\includegraphics[width=0.31\linewidth]{lineal_imaginario.eps}}\\
+\subfigure[Nodo inestable]{
+\includegraphics[width=0.31\linewidth]{lineal_mr.eps}}
+\subfigure[Foco inestable]{
+\includegraphics[width=0.31\linewidth]{lineal_mc.eps}}
+\subfigure[Punto de silla (inestable)]{
+\includegraphics[width=0.31\linewidth]{lineal_silla.eps}}
+\caption{Diagrama de fases para sistemas lineales con autovalores distintos no nulos, reales o complejos conjugados}\label{fig:lin1}
+\end{figure}
+
+ Como se ha indicado anteriormente, una primera aproximación al estudio de los sistemas dinámicos es obtener sus puntos de equilibrio, linealizar el sistema en torno a ellos, y estudiar el comportamiento del sistema linealizado. Aunque todo esto, se explicará en detalle en el tema \ref{5:lti}, Vamos a adelantar aquí algunos resultados, especialmente útiles para el estudio del plano de fases de sistemas no lineales. 
+Tomando como partida las ecuaciones (\ref{eq: sysa1}) - (\ref{eq: sysa2}), y suponiendo que el sistema tiene un punto de equilibrio $x^*= [x_1^*,x_2^*]$. Podemos linealizar el sistema en torno al punto de equilibrio,
+\begin{align}
+\left.\begin{cases}
+	\dot x_1 =& f_1(x_1,x_2) \\ \dot x_2 =& f_2(x_1,x_2)
+	\end{cases}\right|_{x\approx x^*, u\approx u^*} \approx
+	\begin{cases}
+		x_1(t) &= x^* + \delta x_1(t) \\
+		x_2(t) &= x^* + \delta x_2(t) \\
+	\delta \dot x(t) &= A(t)\delta x(t)  \\
+	\end{cases}, \nonumber
+\end{align}
+\begin{align}
+	A &= \left. \begin{bmatrix}
+		\frac{\partial f_1}{\partial x_1} &  \frac{\partial f_1}{\partial x_2} \\
+		\ \\
+		\frac{\partial f_2}{\partial x_1} & \frac{\partial f_2}{\partial x_2}
+	\end{bmatrix} \right |_{x=x^*, u=u^*} \quad
+\end{align}
+
+El comportamiento del sistema original, en la proximidades del punto de equilibrio $x^*$, es comparable al del sistema $\delta \dot x(t) = A\delta x(t)$ en torno al origen. Se trata de un sistema autónomo lineal e invariante en el tiempo (lti), cuya solución es,
+
+\begin{equation}
+\delta x(t) = P\exp(J_rt)P^{-1}\delta x_0 
+\end{equation}
+
+donde  $J_r$ es la forma de Jordan \emph{real} de la matriz A y $P=[v_1,v_2]$,$\ J_r=P^{-1}AP$ es una matriz formada por los autovectores de $A$. La matriz de Jordan, en este caso bidimensional, puede tomar una de las siguientes formas,
+\begin{equation}\label{eq:240}
+\begin{bmatrix}
+\lambda_1 & 0\\ 0 & \lambda_2
+\end{bmatrix},\ \begin{bmatrix}
+\lambda & k\\ 0 & \lambda
+\end{bmatrix},\ \begin{bmatrix}
+\alpha & -\beta\\ \beta & \alpha
+\end{bmatrix},
+\end{equation}
+donde $k$ es 0 ó 1.
+Comencemos por analizar el primer caso, donde $\lambda_1 \ne \lambda_2 \ne 0$. En este caso,las soluciones del sistema corresponde a la combinación de dos exponenciales,
+\begin{equation}
+\exp\begin{bmatrix}
+\lambda_1t &0 \\
+0& \lambda_2t
+\end{bmatrix}=\begin{bmatrix}
+e^{\lambda_1t} &0 \\
+0& e^{\lambda_2t} 
+\end{bmatrix}
+\end{equation}
+
+
+
+Tenemos entonces tres posibilidades distintas. Si los dos autovalores son negativos, ambas exponenciales tienden a cero cuando el tiempos tiende a infinito. Se dice entonces que el sistema es asintóticamente (exponencialmente) estable y el origen es un nodo estable. Si ambos autovalores son positivos, las soluciones tienden a infinito, el sistema es inestable y el origen es  inestable. Si uno de los autovalores es positivo y el otro negativo, es sistema resulta igualmente inestable, una solución tiende a cero y la otra a infinito. El origen es en este caso un punto de silla.
+
+El tercer caso mostrado en la ecuación \ref{eq:240} corresponde a un par de autovalores complejos conjugados,
+$\lambda_1 = \alpha + j \beta, \lambda_2 =\alpha -j\beta$.  Las soluciones tomarían la forma,
+
+\begin{equation}
+\exp\begin{bmatrix}
+\alpha t & -\beta t\\ \beta t & \alpha t
+\end{bmatrix} = 
+\begin{bmatrix}
+e^{\alpha t}\cos(\beta t) & e^{\alpha t}\sin(\beta t)\\
+-e^{\alpha t}\sin(\beta t) & e^{\alpha t}\cos(\beta t)
+\end{bmatrix}
+\end{equation}
+
+De nuevo. Podemos distinguir varios casos atendiendo a la forma que tome la parte real del autovalor. Si $\alpha < 0$, el sistema tenderá asintóticamente a 0, describiendo una espiral. Se dice entonces que el origen es un foco atractivo. Sí $\alpha > 0$ las soluciones divergen, y se alejan del origen describiendo una espirar. Se dice entonces que el origen es un foco repulsivo. Por último, si $\alpha = 0$, los autovalores son número imaginarios. Las soluciones son trayectorias elípticas cerradas en torno al origen que se denomina centro. La figura \ref{fig:lin1} muestra diagramas de fases correspondientes a ejemplos de los casos descritos hasta ahora.
+
+\begin{figure}
+\centering
+\subfigure[Nodo inestable. $\lambda_1 = \lambda_2 \ge 0$\label{fig:lin2a}]{
+\includegraphics[width=0.31\linewidth]{lineal_ji.eps}}
+\subfigure[Nodo estable. $\lambda_1 = \lambda_2 \le 0$\label{fig:lin2b}]{
+\includegraphics[width=0.31\linewidth]{lineal_je.eps}}\\
+\subfigure[$\lambda_1=0,\ \lambda_2 \ge 0$\label{fig:lin2c}]{
+\includegraphics[width=0.31\linewidth]{lineal_0i.eps}}
+\subfigure[$\lambda_1 = 0,\ \lambda_2 \le 0$\label{fig:lin2d}]{
+\includegraphics[width=0.31\linewidth]{lineal_0e.eps}}
+\subfigure[$\lambda_1 = 0,\ \lambda_2 = 0$\label{fig:lin2e}]{
+\includegraphics[width=0.31\linewidth]{lineal_doblecero.eps}}
+\caption{Diagrama de fases para sistemas lineales con autovalores iguales y autovalores nulos. En este último caso, figuras (c), (d) y (e) se ha mercado con un aspa el final de las simulaciones para mostrar la recta de equilibrio y el sentido del movimiento de las trayectorias. }\label{fig:lin2}
+\end{figure}
+
+En cuanto al segundo caso, si $\lambda_1 = \lambda_2 \ne 0$, las soluciones tomarán la forma,
+\begin{equation}
+\exp\begin{bmatrix}
+\lambda t& kt\\ 0 & \lambda t
+\end{bmatrix} = 
+\begin{bmatrix}
+e^{\lambda t} & e^{\lambda t}kt\\
+0 & e^{\lambda t}
+\end{bmatrix}
+\end{equation}
+
+Cualitativamente las soluciones son parecidas a la de los nodos descritos en el caso en el que ambos autovalores son distintos: dependiendo del signo de $\lambda$ tendremos un nodo repulsivo o un nodo atractivo. Las figuras \ref{fig:lin2a} y \ref{fig:lin2b} muestran un ejemplo de cada caso. 
+
+Quedan por analizar los casos en que los autovalores son nulos. Así, por ejemplo, para $\lambda_1 = 0, \lambda_2 \ne 0$,  
+
+\begin{equation}
+\exp\begin{bmatrix}
+0 & 0\\ 0 & \lambda_2 t
+\end{bmatrix} = 
+\begin{bmatrix}
+1 & 0\\
+0 & e^{\lambda_2 t}
+\end{bmatrix}
+\end{equation}
+
+En este caso tenemos que el autovector $v_1$ correspondiente al autovalor $\lambda_1=0$ pertenece al kernel de la matriz $A$, $Av_1 = 0\cdot v_1 = 0$. Tenemos por tanto, que todos puntos de la recta, definida por el vector $v_1$ son puntos de equilibrio. Si $\lambda_2 >0$ todas las trayectorias serán perpendiculares a dicha recta y tenderán alejarse de ella, El sistema será inestable. Si por el contrario $\lambda_2 < 0 $ el sistema será estable y las trayectorias serán perpendiculares y terminarán en la recta definida por $v_1$. Las figuras \ref{fig:lin2c} y \ref{fig:lin2d} muestran un ejemplo de cada caso en el que es fácil observar la recta de equilibrio, señalada mediante aspas.
+
+Por último, para el caso en que ambos autovalores son nulos. Si la matriz del sistema es la matriz cero, estamos ante un caso trivial en que todos los puntos del plano son puntos de equilibrio, En otro caso, las soluciones tomarían la forma,
+
+\begin{equation}
+\exp\begin{bmatrix}
+0 & t\\ 0 & 0
+\end{bmatrix} = 
+\begin{bmatrix}
+1 & t\\
+0 & 1
+\end{bmatrix}
+\end{equation}
+
+De nuevo, la recta definida por el autovector $v_1$ define los puntos de equilibrio del sistema. Las trayectorias en el espacio de las fases serán líneas rectas paralelas a dicha línea. La dirección del movimiento dependerá de las condiciones iniciales. La figura \ref{fig:lin2e} muestra un ejemplo.
+
+Como se decía la principio de esta sección, estudiar el comportamiento de los sistemas lineales cerca de su punto de equilibrio $x=0$, tiene interés para los sistemas no lineales, ya que en muchos casos es posible conocer cual sera el comportamiento \emph{local} de un sistema no lineal cerca de un punto de equilibrio, linealizando el sistema en torno a dicho punto de equilibrio. Hasta qué punto los resultados de la linealización son válidos, va a depender en cómo de robustos son los sistemas lineales obtenidos frente a pequeñas perturbaciones. 
+
+En general, para sistemas lineales cuyos autovalores tiene parte real distinta de cero, Pequeñas perturbaciones en la estructura del sistema no cambiarán significativamente el valor de la parte real de los autovalores , por tanto conservarán su signo positivo o negativo y el sistema seguirá siendo inestable o estable. De estos sistemas se dice que son estructuralmente inestables o estructuralmente estables, y su punto de equilibrio $x=0$ se dice que es hiperbólico. 
+
+Si el sistema resultante de linealizar un sistema no lineal da como resultado un sistema lineal estructuralmente estable o inestable, el sistema no lineal será también inestable o estable en las proximidades del punto de equilibrio. Este resultado es generalizable a sistemas de dimensiones mayores que 2.
+
+Para  sistemas lineales cuyos autovalores son nulos, cualquier perturbación, por pequeña que sea, modificará el valor de la parte real de los autovalores, haciéndolos positivos o negativos. Como resultado, si al linealizar un sistema no lineal se obtien como resultado un sistema con autolores con parte real nula, no es posible concluir nada sobre el comportamiento del sistema no lineal en las proximidades del punto de equilibrio.
+
+\subsection{Bifurcaciones}
+
+Como hemos visto, en las secciones anteriores, el comportamiento de un sistema de segundo orden podría determinarse por las características de sus puntos de equilibrios, la existencia de ciclos límites o, en general, órbitas periodicas y por su estabilidad.
+Un aspecto interesante que ha salido de pasada, es el estudio de la estabilidad estructural; cuando un sistema mantiene el mismo comportamiento bajo pequeñas perturbaciones.
+
+\begin{figure}
+\subfigure[Función $\mu < 0$.]{\includegraphics[scale=0.35]{hopfsub.eps}}
+\subfigure[$\mu >0$]{\includegraphics[scale=0.35]{hopfsuper.eps}}
+\caption{Diagramas de fase de para una bifurcación de Hopf supercrítica}
+\label{fig: hopf}
+\end{figure}
+
+
+   
+
