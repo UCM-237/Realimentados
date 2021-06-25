@@ -404,24 +404,24 @@ Tienen dos características fundamentales, la primera es que corresponde a soluc
 \caption{Diagrama de fases para sistemas lineales con autovalores distintos no nulos, reales o complejos conjugados}\label{fig:lin1}
 \end{figure}
 
- Como se ha indicado anteriormente, una primera aproximación al estudio de los sistemas dinámicos es obtener sus puntos de equilibrio, linealizar el sistema en torno a ellos, y estudiar el comportamiento del sistema linealizado. Aunque todo esto, se explicará en detalle en el tema \ref{5:lti}, Vamos a adelantar aquí algunos resultados, especialmente útiles para el estudio del plano de fases de sistemas no lineales. 
+ Como se ha indicado anteriormente, una primera aproximación al estudio de los sistemas dinámicos es obtener sus puntos de equilibrio, linealizar el sistema en torno a ellos, y estudiar el comportamiento del sistema linealizado. Aunque todo esto, se explicará en detalle en el tema \ref{5:lti}, vamos a adelantar aquí algunos resultados, especialmente útiles para el estudio del plano de fases de sistemas no lineales. 
 Tomando como partida las ecuaciones (\ref{eq: sysa1}) - (\ref{eq: sysa2}), y suponiendo que el sistema tiene un punto de equilibrio $x^*= [x_1^*,x_2^*]$. Podemos linealizar el sistema en torno al punto de equilibrio,
 \begin{align}
 \left.\begin{cases}
 	\dot x_1 =& f_1(x_1,x_2) \\ \dot x_2 =& f_2(x_1,x_2)
-	\end{cases}\right|_{x\approx x^*, u\approx u^*} \approx
+	\end{cases}\right|_{x\approx x^*} \approx
 	\begin{cases}
 		x_1(t) &= x^* + \delta x_1(t) \\
 		x_2(t) &= x^* + \delta x_2(t) \\
 	\delta \dot x(t) &= A(t)\delta x(t)  \\
-	\end{cases}, \nonumber
+	\end{cases},
 \end{align}
-\begin{align}
-	A &= \left. \begin{bmatrix}
+\begin{align}\label{eq:A}
+	A = D_xf(x^*) &= \left. \begin{bmatrix}
 		\frac{\partial f_1}{\partial x_1} &  \frac{\partial f_1}{\partial x_2} \\
 		\ \\
 		\frac{\partial f_2}{\partial x_1} & \frac{\partial f_2}{\partial x_2}
-	\end{bmatrix} \right |_{x=x^*, u=u^*} \quad
+	\end{bmatrix} \right |_{x=x^*} \quad
 \end{align}
 
 El comportamiento del sistema original, en la proximidades del punto de equilibrio $x^*$, es comparable al del sistema $\delta \dot x(t) = A\delta x(t)$ en torno al origen. Se trata de un sistema autónomo lineal e invariante en el tiempo (lti), cuya solución es,
@@ -538,7 +538,59 @@ Para  sistemas lineales cuyos autovalores son nulos, cualquier perturbación, po
 \subsection{Bifurcaciones}
 
 Como hemos visto, en las secciones anteriores, el comportamiento de un sistema de segundo orden podría determinarse por las características de sus puntos de equilibrios, la existencia de ciclos límites o, en general, órbitas periodicas y por su estabilidad.
-Un aspecto interesante que ha salido de pasada, es el estudio de la estabilidad estructural; cuando un sistema mantiene el mismo comportamiento bajo pequeñas perturbaciones.
+Un aspecto interesante que ha salido de pasada, es el estudio de la estabilidad estructural, es decir,  cuando un sistema mantiene el mismo comportamiento bajo pequeñas perturbaciones.
+
+Supongamos que tenemos un sistema dinámico que depende de un parámetro $\lambda$,
+
+\begin{equation}
+\dot x = g(x,\lambda), y \in \ \mathbb{R}^n, \lambda \in \ \mathbb{R}^p,
+\end{equation}
+
+donde $g$ es una función diferenciable $\mathcal{C}^r$ en algún conjunto abierto en $ \mathbb{R}^n \times  \mathbb{R}^p$.
+
+supongamos además que que tenemos sistema tiene un punto de equilibrio $x^*$ para un determinado valor del parámetro $\lambda = \lambda^*$,
+
+\begin{equation}
+g(x^*,\lambda^*) = 0
+\end{equation}
+
+En primer lugar, estudiar la estabilidad del punto de equilibrio, linealizando el sistema en torno al punto de equilibrio y estudiando la estabilidad del sistema linealizado. En segundo lugar, podríamos plantearnos cómo afectan a la estabilidad del sistema pequeñas variaciones en el valor del parámetro $\lambda^*$.
+
+Si linealizamos,
+\begin{equation}
+\delta\dot x = A \delta x
+\end{equation}
+Donde ahora, el jacobiano en el punto de equilibrio depende también del parámetro $\lambda$
+
+\begin{equation}
+A = D_x(x^*,\lambda^*)
+\end{equation}
+
+Tendremos que si el punto de equilibrio es hiperbólico --no hay ningún autovalor de $A$ sobre el eje imaginario-- El sistema será estable o inestable sengún el signo de la parte real de los autovalores de $A$. Esto nos resuelve también la cuestión del efecto de las pequeñas variaciones de $\lambda$. En principio, éstas variaciones no cambiarán la naturaleza del punto de equilibrio.
+
+Sin embargo, si la matriz $A$ tiene autovalores en el eje, pequeños variaciones de $\lambda$ pueden cambiar completamente el comportamiento del sistema. Dando lugar a la creación y/o destrucción de puntos fijos, la aparición de ciclos límite e incluso comportamiento caótico.
+
+El tema es bastante complejo, y nos vamos a limitar a ilustrarlo con algunos casos y ejemplos en una dimensión.
+
+\begin{example}
+Consideremos el sistema,
+
+\begin{equation*}
+\dot x_1 &= \mu - x_1^2\\
+\end{equation*}
+
+Es fácil comprobar, que para $\mu =0$ el punto $(0)$ es el único punto de equilibrio. Si linealizamos en torno a cero, obtenemos que el autovalor correspondiente sería cero.  No podemos por tanto determinar la estabilidad del sistema no lineal. Supongamos que tomamos ahora $\mu > 0$. Para cada valor de $\mu$, tendremos que los puntos de equilibrio toman valores $x^* = ( \pm \sqrt(\mu),0)$. Es decir, el sistema pasaría de tener un punto de equilibrio a tener dos. Si linealizamos el sistema en torno a los puntos de equilibrio, tendremos, que para uno de los puntos 
+
+\qed
+\end{example}
+
+
+ 
+
+ 
+
+ 
+
 
 \begin{figure}
 \subfigure[Función $\mu < 0$.]{\includegraphics[scale=0.35]{hopfsub.eps}}
