@@ -558,7 +558,7 @@ En primer lugar, estudiar la estabilidad del punto de equilibrio, linealizando e
 
 Si linealizamos,
 \begin{equation}
-\delta\dot x = A \delta x
+\dot {\delta x} = A \delta x
 \end{equation}
 Donde ahora, el jacobiano en el punto de equilibrio depende también del parámetro $\lambda$
 
@@ -570,35 +570,134 @@ Tendremos que si el punto de equilibrio es hiperbólico --no hay ningún autoval
 
 Sin embargo, si la matriz $A$ tiene autovalores en el eje, pequeños variaciones de $\lambda$ pueden cambiar completamente el comportamiento del sistema. Dando lugar a la creación y/o destrucción de puntos fijos, la aparición de ciclos límite e incluso comportamiento caótico.
 
-El tema es bastante complejo, y nos vamos a limitar a ilustrarlo con algunos casos y ejemplos en una dimensión.
+El tema es bastante complejo, y nos vamos a limitar a ilustrarlo con algunos casos y ejemplos. Empecemos con sistemas en una dimensión en los que el sistema linealizado tiene un autovalor cero, cuando el parámetro toma el valor cero.
 
-\begin{example}
+\begin{example}[Bifurcación silla-nodo]
+\begin{figure}
+\subfigure[Silla-nodo]{\includegraphics[scale=0.35]{sadlenode.eps}}
+\label{fig:saddlenode}
+\subfigure[Transcrítica]{\includegraphics[scale=0.35]{trans.eps}}
+\label{fig:trans}
+\caption{Ejemplos de bifurcaciones silla-nodo y transcrítica}
+\end{figure}
 Consideremos el sistema,
 
 \begin{equation*}
-\dot x_1 &= \mu - x_1^2\\
+\dot x = \mu - x^2,\  x, \mu \in \mathbb{R},  
 \end{equation*}
 
-Es fácil comprobar, que para $\mu =0$ el punto $(0)$ es el único punto de equilibrio. Si linealizamos en torno a cero, obtenemos que el autovalor correspondiente sería cero.  No podemos por tanto determinar la estabilidad del sistema no lineal. Supongamos que tomamos ahora $\mu > 0$. Para cada valor de $\mu$, tendremos que los puntos de equilibrio toman valores $x^* = ( \pm \sqrt(\mu),0)$. Es decir, el sistema pasaría de tener un punto de equilibrio a tener dos. Si linealizamos el sistema en torno a los puntos de equilibrio, tendremos, que para uno de los puntos 
+Es fácil comprobar, que para $\mu =0$ el punto $(x = 0)$ es el único punto de equilibrio. Si linealizamos en torno a cero, obtenemos que el autovalor correspondiente sería cero.  No podemos por tanto determinar la estabilidad del sistema no lineal. Supongamos que tomamos ahora $\mu > 0$. Para cada valor de $\mu$, tendremos que los puntos de equilibrio toman valores $x^* = ( \pm \sqrt{\mu})$. Es decir, el sistema pasaría de tener un punto de equilibrio a tener dos. Si linealizamos el sistema en torno a los puntos de equilibrio, tendremos, que para uno de los puntos $x^*=+\sqrt{\mu}$ el sistema linealizado es asintóticamente estable: $ \dot{ \delta x} = 2-\sqrt{\mu}\delta x$. Para el otro punto, $x^*=-\sqrt{\mu}$, el sistema es asintóticamente inestable $ \dot{ \delta x} = +2\sqrt{\mu}\delta x$.
+Para el caso en 	que $\mu<0$ no existen en el sistema puntos de equilibrio.
+
+El sistema descrito muestra un ejemplo de \emph{bifurcación}. El punto $(x,\mu)=(0,0)$ recibe el nombre de punto de bifurcación y el valor del parámetro $\mu = 0$ es un valor de bifurcación. Por último la figura \ref{fig:saddlenode} muestra el \emph{diagrama de bifurcación} de este sistema. En él, se ha representado la parábola $x=\pm \sqrt{\mu}$ correspondiente a la posición de los puntos de equilibrio del sistema en función de $\mu$. La rama representada con línea continua, corresponde a los nodos estables, mientras que la rama representada con una línea discontinua, corresponde a los nodos inestable. Sobre el diagrama, se han representado también las trayectorias que seguiría el sistema para diferentes valores iniciales de la variable $x$, las  aspas representan posiciones iniciales y los círculos las posiciones finales para el tiempo de simulación empleado. Es fácil ver cómo, para valores positivos de $\mu$  las trayectorias se alejan de la rama negativa de la parábola y, en su caso, tienden a converger en la positiva que contiene los puntos de equilibrio estables. Para $\mu =0$ los dos nodos colapsan en un único punto de equilibrio; condiciones iniciales negativas produce trayectorias que se alejan del origen, mientras que para condiciones iniciales positivas, las trayectorias convergen al origen. Para valores de $\mu<0$ no hay puntos de equilibrio y $x\to -\infty$ cuando $t\to \infty$.
+
+Este tipo de bifurcaciones en las que a un lado de un valor del parámetro ($\mu$) no hay puntos fijos y en el otro lado hay dos puntos fijos, se conocen con el nombre de bifurcación silla-node (\emph{saddle-node}).  
 
 \qed
 \end{example}
 
+\begin{example}[Bifurcación transcrítica] Consideremos ahora el sistema,
 
+\begin{equation*}
+\dot x = \mu x - x^2,\  x, \mu \in \mathbb{R},  
+\end{equation*}
+Al igual que en el ejemplo anterior, si hacemos $\mu=0$, el único punto de equilibrio es $x=0$ y de nuevo en este caso, el autovalor del sistema lineal vale cero. Si dejamos que $\mu$ tome valores distintos de cero, el sistema tiene dos puntos críticos para cada valor de $mu$, $x^*=0$ y $x^*=\mu$. No es difícil comprobar que para el sistema linealizado tendremos dos situaciones distintas. SI $\mu>0$., el punto de equilibrio $x^*=mu$ es estable y el punto de equilibrio $x^*=0$ es inestable. Para $\mu<0$ el carácter de los puntos críticos se invierte. La figura \ref{fig:trans} muestra el diagrama de bifurcación para este sistema.  Es fácil ver cómo para $\mu<0$ las trayectorias divergen de la recta $x=\mu$ y convergen, en su caso, a la recta $x=0$. Para $\mu>0$ la situación se invierte y ahora las trayectorias convergen a $x=\mu$ y divergen de $x=0$. Para $\mu=0$ los puntos de equilibrio colapsas en $x=0$. Este tipo de bifurcación se conoce con el nombre de bifurcación transcrítica
+\qed
+\end{example}
  
-
- 
-
- 
-
-
+\begin{example}[Bifurcación en horquilla\footnote{en inglés: \emph{pichtfork}, la traducción es nuestra.}]
+Para el sistema,
+\begin{equation*}
+\dot x = \mu x - x^3,\  x, \mu \in \mathbb{R},  
+\end{equation*}
+Se cumple de nuevo la condición de los ejemplos anteriores para $\mu=0$. Para $\mu>0$, se obtienen tres puntos críticos $x^*=0$ inestable, y $x^*=\pm\sqrt{\mu}$, ambos estables (compruébalo). Para $mu<0$ solo tenemos un punto crítico $x^*=0$ que resulta ser estable. La figura \ref{fig:horquilla} muestra el diagrama de bifurcación para este sistema. La interpretación es similar a la de los dos ejemplos anteriores.
 \begin{figure}
-\subfigure[Función $\mu < 0$.]{\includegraphics[scale=0.35]{hopfsub.eps}}
+\subfigure[Horquilla]{\includegraphics[scale=0.35]{pitchfork.eps}}
+\label{fig:horquilla}
+\subfigure[No existe bifurcación]{\includegraphics[scale=0.35]{nobif.eps}}
+\label{fig:nobif}
+\caption{Ejemplo de bifurcación en horquilla y un caso en que no hay bifurcación}
+\end{figure}
+
+\qed
+\end{example}
+ 
+\begin{example}[No bifurcación] Para el sistema,
+\begin{equation*}
+\dot x = \mu - x^3,\  x, \mu \in \mathbb{R},  
+\end{equation*}
+
+Se cumple la misma condición que en los casos anteriores para $\mu=0$. Es fácil comprobar que para $\mu \neq 0$, el sistema sigue teniendo un único punto crítico $x^*=\sqrt[3]{\mu}$. No hay cambio por tanto, en el número de puntos críticos, ni tampoco en en el carácter del único punto crítico, que es siempre un nodo estable.  Podemos afirmar que en este caso no se da una bifurcación.
+
+\qed
+\end{example}
+Veamos por último un ejemplo del caso en que un sistema de segundo orden tiene dos autovalores imaginarios puros.
+
+ El término bifurcación no es fácil de definir. Una definición cualitativa e informal sería decir que una bifurcación para un punto fijo de un sistema dinámico se produce cuando el cambio de un parámetro modifica el comportamiento del sistema en las proximidades del punto crítico.
+ 
+\begin{figure}
+\centering
+\subfigure[Diagrama de bifurcación]{\includegraphics[scale=0.7]{hopf2.eps}}\\
+\subfigure[$\mu < 0$.]{\includegraphics[scale=0.35]{hopfsub.eps}}
 \subfigure[$\mu >0$]{\includegraphics[scale=0.35]{hopfsuper.eps}}
-\caption{Diagramas de fase de para una bifurcación de Hopf supercrítica}
+\caption{Ejemplo de bifurcación de Hopf}
 \label{fig: hopf}
 \end{figure}
 
+\begin{example}[Bifurcación de Hopf]
+Consideremos el sistema,
+\begin{align*}
+\dot x_1 = x_1(\mu-x_1^2-x_2^2)-x_2\\
+\dot x_2 = x_2(\mu-x_1^2-x_2^2) +x_1
+\end{align*}
+
+El único punto de equilibrio del sistema es $x^*= (0,0)$. Si linealizamos el sistema obtenemos en torno a dicho punto, obtenemos que el jacobiano vale,
+\begin{align*}
+	A = D_xf(x^*) &=  \begin{bmatrix}
+		\mu &  1 \\
+		-1 & 0
+	\end{bmatrix}
+\end{align*}
+Que tiene autovalores $\mu\pm j$. Estos autovalores son imaginarios puros para $\mu=0$ y cruzan el eje imaginario cuando $\mu$ pasa de negativo a positivo. Para $\mu<0$ el origen es un foco atractivo, para $mu>0$ se convierte en un foco repulsivo.
+Podemos analizarlo más fácilmente si transformamos el sistema a coordenadas polares, $x_1= r\cos(\theta), x_2 = r\sin(theta)$,
+\begin{align*}
+\dot r = \mu r - r^3\\
+\dot \theta = 1
+\end{align*}
+
+En esta representación las variables aparecen desacopladas. El valor r=0, corresponde con el punto crítico del sistema. Para el caso en que $\mu>0$, tenemos que $r=\sqrt{\mu}$ hace nula la ecuación  $\dot r = \mu r - r^3$. Esta curva corresponde a un ciclo límite; en torno al origen de radio $\sqrt{\mu}$. Por tanto, para este caso, aunque el origen sea un punto inestable, el sistema converge al ciclo límite y es estable. La figura \ref{fig:hopf} Muestra el diagrama de bifurcación de este sistema.  En este caso, el punto de equilibrio, $x^*=(0,0)$ coincide con el eje $\mu$. Para $mu$ negativo es atractivo y el sistema converge para cualquier condición inicial. Para mu positivo se ha representado ---junto al eje $\mu$ que ahora representa un punto de equilibrio inestable--   la forma del ciclo límite como un paraboloide. En este caso, el sistema converge, para cualquier condición inicial,  a la sección del paraboloide correspondiente al valor de $\mu$ del sistema.
+\qed
+\end{example}
+
+Para terminar, reiterar que aquí solo se muestran algunos ejemplos de bifurcaciones. Un estudio completa del tema queda fuera de los objetivos de estos apuntes.
+
+\section*{Ejercicios}
+\begin{enumerate}
+\item El modelo de Volterra-Lotka estudia la evolución de un sistema formado por dos poblaciones una de depredadores y otra de presas que conforman un ecosistema cerrado.
+\begin{align*}
+&\dot x_1 = ax_1-cx_1x_2\\
+&\dot x_2 =-bx_2 + dx_1x_2\\
+&a,b,c,d \in \mathbb{R}^+,
+\end{align*}
+donde $x_1$ representa la población de presas; $x_2$ la de depredadores; $a$ la tasa de nacimiento de las presas, que es función de la cantidad de alimento que reciben; b es la tasa de defunción de los depredadores; c y d modelan la interacción entre los depredadores y las presas.
+
+\begin{enumerate}
+\item Simular el modelo de Volterra-Lotke para parámetros fijos, por ejemplo $a=b=c=d=1$. Emplear para ello tanta Matlab como simulink. Emplear distintas condiciones iniciales. Obtener tanto un gráfico de la evolución temporal de los estados como el diagrama de fases.
+\item Modificar el modelo, de modo que el parámetro $a$ pase a ser un una función periódica $a = \frac{a_0}{2}\sin(\omega t)+\frac{a_0}{2}$. Estudiar el efecto de la frecuencia en el modelo.
+\end{enumerate}
+\item El modelo de Lorenz, fue propuesto en 1963 por Edward Lorenz  como un modelo simplificado de convección atmosférica.
+\begin{align*}
+&\dot x_1 = \sigma (x_2 -x_1)\\
+&\dot x_2 = x_1 (\rho -x_3) - x_2\\
+&\dot x_3 = x_1x_2 -\beta x_3\\
+& \sigma, \rho, \beta \in \mathbb{R}^+
+\end{align*}
+Para los valores $\sigma  = 10$, $\beta = 8/3, \rho = 28$ el sistema exhibe soluciones caóticas; para casi todas las condiciones iniciales el sistema converge a un conjunto invariante conocido con el nombre de Atractor de Lorentz.
+\begin{enumerate}
+\item Utilizar tanto Matlab como  Simulink para simular el modelo de Lorenz. Emplear para ello los parámetros indicados más arriba.
+\item Comprobar mediante simulación,  que para el $sigma < 1$, el sistema converge a su único  punto de equilibrio. Para $\sigma = 1$ el sistema sufre una bifurcación de horquilla, Obtener los puntos de equilibrio del sistema y comprobarlo.
+ \end{enumerate}
+\end{enumerate}
 
    
 
