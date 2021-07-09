@@ -328,8 +328,8 @@ Podemos obtener un sistema autónomo para el péndulo invertido, eliminando la t
 \end{figure}
 
 \begin{align}
-\dot x_1 = &x_2 \label{eq: pi1} \\ 
-\dot x_2 = &\frac{g}{l}\sin x_1 - \frac{b}{ml}x_2 \label{eq: pi2}
+\dot x_1 = &x_2 \label{eq:pi1} \\ 
+\dot x_2 = &\frac{g}{l}\sin x_1 - \frac{b}{ml}x_2 \label{eq:pi2}
 \end{align}
 donde $x_1 = \theta$ y $x_2 = \dot \theta$,. Una primera característica del sistema la obtenemos calculando los puntos de equilibrio, $x^*=[n\pi,0]^T, n \in \mathbb{Z}$. Tenemos un conjunto infinito de posibles puntos de equilibrio, correspondiente a las posiciones verticales del péndulo.
 
@@ -337,7 +337,7 @@ La figura \ref{fig:trpen} muestra una trayectoria del péndulo invertido para un
 
 En ese caso, es fácil analizar lo que sucede, de un modo cualitativo. Las condiciones iniciales sitúan el péndulo cerca de la vertical, formando un ángulo $\theta_0 =\pi/3$ y en reposo. El péndulo caerá y oscilará con una amplitud y velocidad cada vez menor acercándose al punto de equilibrio $\overline \theta = \pi$.
 
-Podemos obtener más información si dibujamos aproximadamente el campo vectorial definido por las ecuaciones (\ref{eq: pi1})-(\ref{eq: pi2}). La figura \ref{fig:pifield} muestra un ejemplo. La región del plano de fases $\theta \in [-3\pi/2,3\pi/2], \dot \theta \in [-3,3]$. Si consideramos el origen de cada vector como una condición inicial del problema, la flecha indicaría la dirección y magnitud del cambio en el plano de fases.  Es fácil intujir, sis seguimos el eje de coordenadas $\theta$ la presencia de tres  puntos de equilibrio en la región mostrada y como el central es un puntos de equilibrio inestable, mientras que los dos laterales corresponden a puntos de equilibrio estables.
+Podemos obtener más información si dibujamos aproximadamente el campo vectorial definido por las ecuaciones (\ref{eq:pi1})-(\ref{eq:pi2}). La figura \ref{fig:pifield} muestra un ejemplo. La región del plano de fases $\theta \in [-3\pi/2,3\pi/2], \dot \theta \in [-3,3]$. Si consideramos el origen de cada vector como una condición inicial del problema, la flecha indicaría la dirección y magnitud del cambio en el plano de fases.  Es fácil intujir, sis seguimos el eje de coordenadas $\theta$ la presencia de tres  puntos de equilibrio en la región mostrada y como el central es un puntos de equilibrio inestable, mientras que los dos laterales corresponden a puntos de equilibrio estables.
 
 Por último podemos obtener una información aún más completa si cabe, si representamos un diagramas de fases del sistema.  La figura \ref{fig:piphp} muestra un ejemplo en el que es posible ver los dos puntos de equilibrios estables (focos) y el punto de silla correspondiente al punto $(0,0)$. 
 
@@ -644,7 +644,7 @@ Veamos por último un ejemplo del caso en que un sistema de segundo orden tiene 
 \label{fig: hopf}
 \end{figure}
 
-\begin{example}[Bifurcación de Hopf]
+\begin{example}[Bifurcación de Hopf]\label{ex:hopf}
 Consideremos el sistema,
 \begin{align*}
 \dot x_1 = x_1(\mu-x_1^2-x_2^2)-x_2\\
@@ -670,7 +670,7 @@ En esta representación las variables aparecen desacopladas. El valor r=0, corre
 \end{example}
 
 Para terminar, reiterar que aquí solo se muestran algunos ejemplos de bifurcaciones. Un estudio completa del tema queda fuera de los objetivos de estos apuntes.
-
+\newpage
 \section*{Ejercicios}
 \begin{enumerate}
 \item El modelo de Volterra-Lotka estudia la evolución de un sistema formado por dos poblaciones una de depredadores y otra de presas que conforman un ecosistema cerrado.
@@ -695,8 +695,42 @@ donde $x_1$ representa la población de presas; $x_2$ la de depredadores; $a$ la
 Para los valores $\sigma  = 10$, $\beta = 8/3, \rho = 28$ el sistema exhibe soluciones caóticas; para casi todas las condiciones iniciales el sistema converge a un conjunto invariante conocido con el nombre de Atractor de Lorentz.
 \begin{enumerate}
 \item Utilizar tanto Matlab como  Simulink para simular el modelo de Lorenz. Emplear para ello los parámetros indicados más arriba.
-\item Comprobar mediante simulación,  que para el $sigma < 1$, el sistema converge a su único  punto de equilibrio. Para $\sigma = 1$ el sistema sufre una bifurcación de horquilla, Obtener los puntos de equilibrio del sistema y comprobarlo.
+\item Comprobar mediante simulación,  que para $\sigma < 1$, el sistema converge a su único  punto de equilibrio. Para $\sigma = 1$ el sistema sufre una bifurcación de horquilla, Obtener los puntos de equilibrio del sistema y comprobarlo.
  \end{enumerate}
+ 
+\item La siguiente ecuación diferencial, define un modelo lineal, conocido a veces como el modelo Masa-Muelle-Amortiguador,
+\begin{equation*}
+m\ddot y + c \dot y + k y = F(t),
+\end{equation*}
+
+donde $y$ es la posición del sistema, $m$ representa la masa, $c$ es un coeficiente de amortiguamiento, y es una constante recuperadora, $F(t)$ representa una fuerza externa. El modelo es genérico en el sentido de que reproduce el símil mecánico de sistemas de muy diverso tipo.
+\begin{enumerate}
+\item Obtener el modelo equivalente en variable de estados, de modo que una variable de estado sea la posición del sistema $y$ y la otra la velocidad $\dot y$
+\item Simular el modelo para valores $m=2.5Kg$, $c=0.6Ns/m$ y $k=0.4N/m$, empelando Matlab. Considerar los siguientes casos,
+\item La señal de entrada $F$ es nula. Probar para distintos valores de las condiciones iniciales: $y(0) = 1$, $ \dot y(0) =0$; $y(0) = 0$, $\dot y(0) = 1$; $y(0) = 1$, $ \dot y(0) = 1$. Representar la evolución temporal de los estado durante un intervalo de $50s$.
+\item La señal de entrada es una fuerza constante de $1N$.
+\item \label{c} La señal de entrada  es una sinusoide de frecuencia $0.1 rad/s$. Representar en un mismo gráfico la evolución temporal de la señal de entrada y de la señal de salida en un intervalo de $200s$. ¿Qué desfase se observa entre la entrada y la salida para un tiempo mayor a $50s$? ¿Está estabilizada la señal de salida?
+\item \label{d} repetir el apartado \ref{c}), para señales sinusoidales de frecuencias, $0.4 rad/s$ y $1 rad/s$ ¿Cuánto tarda en estabilizarse la señal en estos casos? ¿Qué conclusión se puede extraer del análisis de los resultados de estos dos últimos ejercicios?
+\end{enumerate}
+
+\item Empleando las ecuaciones \ref{eq:pi1} y \ref{eq:pi2} para el modelo de un péndulo invertido sin par externo,
+\begin{enumerate}
+\item Linealizar el sistema en torno al punto de equilibrio $\theta = \pi$.
+\item simular mediante matlab tanto el sistema original como el linealizado. Emplear para ello $m = g = l = b = 1$. Considerar como condiciones iniciales para $X_1$ distintos ángulos cada vez más alejados de $pi$ y p $x_2 = 0$ en todos los casos. Representar en un mismo gráfico la evolución temporal de $x_1$ para el sistema original y el linealizado. Discutir la validez de la aproximación lineal  en función del las condiciones iniciales empleadas.
+\end{enumerate}
+
+\item Dado el sistema,
+\begin{align*}
+\dot x_1 = -x_1(1-x_1^2-x_2^2)+x_2\\
+\dot x_2 = -x_2(1-x_1^2-x_2^2) -x_1
+\end{align*}
+
+\begin{itemize}
+\item Obtener un diagrama de fases del sistema, empleando para ello Matlab. Comprobar gráficamente que el círculo $x_1^2+x_2^2 = 1$  marca el límite de la región de estabilidad del punto de equilibrio del sistema $(0,0)$. Pista: una manera clara de obtener el resultado es integrar para un intervalo de tiempo negativo, en ese caso, el límite de estabilidad se convierte en un ciclo límite.
+\item Comprobar que el resultado de integrar el sistema para un tiempo negativo es idéntico a obtener las soluciones del sistema presentado en ejemplo \ref{ex:hopf}, tomando $\mu=1$.
+\end{itemize}
+
+
 \end{enumerate}
 
    
