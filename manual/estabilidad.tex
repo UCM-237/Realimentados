@@ -226,7 +226,7 @@ V(x) = x^TPx = \sum_{i=1}^n \sum_{j=1}^n p_{ij}x_ix_j
 Donde $P$ es una matriz simétrica. $V(x)$ es entonces definida (semidefinida) positiva si todos los autovalores de $P$ son positivos (no negativos) o, lo que es equivalente, si todos los menores principales de $P$ son positivos.
 
 \begin{example}[El péndulo invertido]
-Volvamos de nuevo al ejemplo del péndulo invertido. Tomamos como punto de partida las ecuaciones (\ref{eq: pi1}), (\ref{eq: pi2}) propuestas en el capítulo anterior,
+Volvamos de nuevo al ejemplo del péndulo invertido. Tomamos como punto de partida las ecuaciones (\ref{eq:pi1}), (\ref{eq:pi2}) propuestas en el capítulo anterior,
 \begin{align*}
 \dot x_1 = &x_2 \\ 
 \dot x_2 = &\frac{g}{l}\sin x_1 - \frac{b}{ml}x_2 
@@ -277,7 +277,7 @@ Podemos aprovechar la libertad que nos da poder elegir los elementos de $P$ para
 \begin{equation*}
 \dot V =\left(p_{12}-\frac{b}{lm}\right)z_2^2-p_{12}\frac{g}{l} z_1\sin(z_1)
 \end{equation*}
-Necesitamos imponer condiciones adicionales  para asegurar que la matriz $P$ es definida positiva. Necesitamos que $p_{11}>0$ y que $\det(P) = >0$, si sustituimos por los valores que ya hemos elegido,
+Necesitamos imponer condiciones adicionales  para asegurar que la matriz $P$ es definida positiva. Necesitamos que $p_{11}>0$ y que $\det(P)>0$, si sustituimos por los valores que ya hemos elegido,
 
 \begin{equation*}
 P =\begin{bmatrix}
@@ -422,3 +422,55 @@ Sea $x=0$ un punto de equilibrio para el sistema \ref{eq: aut}. Sea $V:\mathbb{R
 \qed
 \end{corollary}
 
+\section*{Ejercicios}
+\begin{enumerate}
+\item Encontrar los puntos singulares de los siguientes sistemas. Linealizar las ecuaciones en su entorno y determinar la naturaleza de dichos puntos singulares.
+\begin{enumerate}
+\item \begin{align*}
+\dot x_1 &= x_2\\
+\dot x_2 &= -x_1 + x_2(1 - x_2^2)
+\end{align*}
+\item \begin{align*}
+\dot x_1 &= x_2 - x_1\vert x_1\vert \\
+\dot x_2 &= 1 - x_1
+\end{align*}
+\item \begin{align*}
+\dot x_1 &= x_1(1-x_2)
+\dot x_2 &= x_2(x_1-1)
+\end{align*}
+\end{enumerate}
+
+\item El modelo de Volterra-Lotka puede alterarse de la siguiente forma,
+\begin{align*}
+\dot x_1 &= x_1 -x_1x_2 - \mu x_1^2\\
+\dot x_2 &= x_1x_2 - x_2 -\tau x_2 \dot x_1
+\end{align*}
+Donde $\mu>0$ representa el efecto de las enfermedades y de la superpoblación de las presas y el término $\tau>0$ modela el efecto que tiene la alimentación sobre los depredadores. Encontrar los puntos de equilibrio, linealizar en torno a aquel cuyas dos variables de estado son distintas de cero y mostrar como su estabilidad o inestabilidad dependen de $\mu$ y $\tau$. Discutir la posibilidad de la existencia de un ciclo límite.
+\item El modelo caótico de Rössler viene descrito por las siguientes ecuaciones,
+\begin{align*}
+\dot x_1 &= x_1 -x_1x_2 -x_3\\
+\dot x_2 &= x_1^2-ax_2\\
+\dot x_3 &= bx_1 -cx_3
+\end{align*}
+Encontrar sus puntos de equilibrio, linealizar en torno a ellos. Para $a=0.1,\ b=0.1,\ c= 14$ discutir la estabilidad o inestabilidad de los puntos de equilibrio. Simular el comportamiento del sistema para distintas condiciones iniciales. Representar la evolución de las variables de estado en el tiempo y el diagrama de fases. 
+
+\item Dado el sistema,
+\begin{align*}
+\dot x_1 &= x_2\\
+\dot x_2 &= -x_1+x_2(x_1^2-1)
+\end{align*}
+Encontrar el dominio de atracción de su punto de equilibrio
+\item Demostrar la estabilidad asintótica global del sistema,
+\begin{align*}
+\dot x_1 &= x_2\\
+\dot x_2 &= -x_1^3 - \gamma x_2, \gamma > 0
+\end{align*}
+(Usar $\frac{x_1^4}{4}+\frac{x_2^2}{2}$ como función candidata de Liapunov)
+
+\item Dado el sistema,
+\begin{align*}
+\dot x_1 &= x_2 + 2x_1^2 +x_1x_2\\
+\dot x_2 &= -x_1-x_2+x_1x_2+3x_2^2
+\end{align*}
+  
+\end{enumerate}
