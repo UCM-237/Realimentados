@@ -11,7 +11,7 @@ Partimos de las ecuaciones del movimiento en variables de estado,
 En primer lugar creamos una función, que reproduzca las ecuaciones de estado, 
 \begin{lstlisting}
 function xdot = pendulo_inv(t,x,m,l,g,b)
-%VARIABLES DE ENTRADA:
+% VARIABLES DE ENTRADA:
 % t tiempo (s). Este sistema es autonomo, no depende del tiempo. 
 % Evidentemente luego no se emplea el tiempo para nada.
 % x Vector (columna) de estados: 
@@ -19,9 +19,9 @@ function xdot = pendulo_inv(t,x,m,l,g,b)
 % x((1,1) angulo de pendulo con la vertical (semieje positivo) (rad);
 % x(2,1) velocidad angular radianes por segundo;
 
-%Las variables t y x deben pasarse en el orden que aparecen en la cabecera
-%de la funcion: primero el tiempo y despues el vector de estados
-%Este orden es necesario para que el integrador de matlab encuentre las variables
+% Las variables t y x deben pasarse en el orden que aparecen en la cabecera
+% de la funcion: primero el tiempo y despues el vector de estados
+% Este orden es necesario para que el integrador de matlab encuentre las variables
 
 % parametros del sistema
 % m Masa del pendulo (Kg)
@@ -29,7 +29,7 @@ function xdot = pendulo_inv(t,x,m,l,g,b)
 % g Aceleracion de la gravedad (m/s^2)
 % b coeficiente de friccion (Kg.m/s)
 
-%VARIABLES DE SALIDA:
+% VARIABLES DE SALIDA:
 % xdot vector de velocidades 
 % xdot(1,1) velocidad angular (derivada temporal del angulo)
 % xdot(2,1) aceleracion angular (derivada temporal de la velocidad angular)
@@ -67,7 +67,7 @@ x0 = [pi/3; 0]; %Siempre vector columna.
 % ademas se pasa a la funcion ode45 el intervalo de tiempo
 % de integracion y las condiciones iniciales  
 % pedimos a la funcion que nos devuelva los valores de tiempo (t) para 
-%los que ha calculado las soluciones
+% los que ha calculado las soluciones
 % y una matriz (x) de dimensiones dim(t)  x dim(x) 
 % Cada columna de esta matriz representa los valores del vector
 % de estados para cada valor del tiempo contenido en el vector t
@@ -80,7 +80,7 @@ plot(t,x)
 title('Evolucion temporal de los estados')
 xlabel('tiempo(s)')
 legend('$\theta$','$\dot{\theta}$','interpreter','latex')
-%y la trayectoria del sistema en el espacio de fases (Solo posible si 
+% y la trayectoria del sistema en el espacio de fases (Solo posible si 
 % la dimension del vector de estados es 3 o menor)
 subplot(2,1,2)
 plot(x(:,1),x(:,2))
@@ -157,5 +157,82 @@ xlabel('$\theta$','interpreter','latex')
 ylabel('$\dot{\theta}$','interpreter','latex')
 
 \end{lstlisting}
-\chapter{}
-Mucha caca
+\chapter{Ejemplo de uso de cálculo simbólico en Matlab para el estudio de la estabilidad}
+Este ejemplo muestra el uso de los comandos más utilizados de matlab para apoyar el análisis de estabilidad de sistemas.
+
+\begin{lstlisting}
+%creamos unas variables simbolicas
+
+syms x1 x2 real %real no es una variable. Sino que define x1 y x2 como
+                %variable reales. 
+syms s
+
+
+% definimos las ecuaciones del sistema
+f(1,1) =  x2
+f(2,1) = -x1 -x2 + x1*x2 
+%la funcion solve obtendra las soluciones de la ecuacion f(x1,x2) =(0,0) y
+%por tanto los puntos de equilibrio del sistema
+[X01 X02] = solve(f,x1,x2)
+X0 = [X01, X02]
+
+% Calculamos el Jacobiano
+J = jacobian(f,[x1 x2])
+% sustituimos en los puntos en que se anulan las ecuaciones de estado, ya que
+% dichos puntos son precisamente los puntos de equilibrio. 
+
+% uso un bucle para obtener la matriz del sistema linealizado y los
+% autovalores en todos los puntos de equilibrio obtenidos. (en realidad en
+% este caso solo esta el x= (0,0)
+for i = 1:size(X0,1)
+    Je = subs(J,{x1,x2},[X01(i),X02(i)])
+    E = double(eig(Je))
+    % En algunos casos, sobre todo si el sistema depende de parametros, es
+    % mas facil analizar la estabilidad a partir del polinomio carateristico
+    % de la matriz del sistema (Je) y emplear el metodo de Routh-Hurwitz
+    % para estudiar la estabilidad a partir de los coeficientes del
+    % polinomio caracteristico.
+    C = det(Je - s*eye(size(Je)))
+end
+
+% funcion de liapunov para el linealizado,
+% en este caso, solo hay un punto de equilibrio que es el origen. Podemos
+% obtener una funcion de Lyapunov para el sistema lineal,resolviendo la
+% ecuacion de lyapunov, obtenemos una funcion cuadratica V(x) = x'*P*x. 
+% Despues empleamos dicha funcion como candidata de Lyapunov para estudiar
+% el sistema no lineal
+P =lyap(double(Je'),[1 0;0 1])
+V = [x1 x2]*P*[x1;x2]
+% calculamos el gradiente de la funcion de liapunov y multiplicamos por f de
+% este modo obtenemos la derivada de Lee, El comando simplify, simplifica el
+% resultado.
+grV = gradient(V)
+dotV = simplify(grV'*f)
+
+% por supuesto, estudiar si la derivada de Lee, cumple las condiciones del
+% teorema de Lyapunov o encontrar el dominio de atraccion es algo que matlab
+% no puede hacer por nosotros. Hay que usar la cabeza, normal, de pensar ;)
+
+% Empleo los metodos ya vistos en otros ejemplos para resolver el sistema
+% numericamente y representar el diagrama de fases.
+
+% ode45 va a mostrar un warning por pantalla, debido a que hay soluciones
+% que divergen. Para evitarlo, anulo los warning
+warning('off')
+for i =-3:0.5:3
+    for j = -3:0.2:3
+        [t,x] = ode45(@ej11,[0 10],[i;j]);
+        plot(x(:,1),x(:,2))
+        hold on
+        plot(i,j,'or')
+    end
+end
+axis([-5 5 -5 5])
+%r ecupero los warnings
+warning('on')
+% funcion f para emplear con ode45
+function dotx = ej11(t,x)
+dotx(1,1) = x(2,1);
+dotx(2,1) = -x(1,1) - x(2,1) + x(1,1)*x(2,1);
+end
+\end{lstlisting}
