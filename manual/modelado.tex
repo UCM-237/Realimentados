@@ -35,7 +35,7 @@ Dado que el sistema viene descrito por las variables de estado,  con frecuencia 
 \begin{equation}
 \dot x = f(t,x)
 \end{equation}\label{eq: for}
-En este caso se, se habla de una ecuación de estado no forzada. Esto no quiere decir necesariamente que la entrada al sistema sea cero. Puede aparecer representada directamente como una función del tiempo, $u=\rho(t)$,  como una función (\emph{realimentación}) de los estados $u = \rho(x)$ o como una función de ambos $u=\rho(t,x)$.
+En este caso, se habla de una ecuación de estado no forzada. Esto no quiere decir necesariamente que la entrada al sistema sea cero. Puede aparecer representada directamente como una función del tiempo, $u=\rho(t)$,  como una función (\emph{realimentación}) de los estados $u = \rho(x)$ o como una función de ambos $u=\rho(t,x)$.
 Un caso especialmente interesante de (\ref{eq: for}) se obtiene cuando $f$ no depende explícitamente del tiempo,
 \begin{equation}
 \dot x = f(x)
@@ -74,12 +74,12 @@ Un sistema no lineal puede presentar más de un punto de equilibrio y aproximars
 \begin{equation}
 \lim_{ t \to \infty} x \to \infty
 \end{equation}
-Es posible encontrar sistemas no-lineales inestables que se comportan de modo análogo a los lineal pero además, algunos sistemas lineales divergen, se van a infinito, en un tiempo finito. 
+Es posible encontrar sistemas no-lineales inestables que se comportan de modo análogo a los lineales pero además, algunos sistemas lineales divergen, se van a infinito, en un tiempo finito. 
 \begin{equation}
 \lim_{ t \to t_e} x \to \infty
 \end{equation}
 
-\paragraph{Cíclos límite.} Un sistema lineal se dice que es marginalmente estable, cuando sus variables de estado oscilan periódicamente. Sin embargo, como veremos más adelante, las circunstancias para que se de una oscilación mantenida en un sistema lineal, constituyen una condición no robusta, por lo que es en la práctica  imposible que se dé  condiciones reales. Además la amplitud de las oscilaciones depende de las condiciones iniciales del sistema.
+\paragraph{Cíclos límite.} Un sistema lineal se dice que es marginalmente estable, cuando sus variables de estado oscilan periódicamente. Sin embargo, como veremos más adelante, las circunstancias para que se de una oscilación mantenida en un sistema lineal, constituyen una condición no robusta, por lo que es en la práctica  imposible que se dé en condiciones reales. Además, la amplitud de las oscilaciones depende de las condiciones iniciales del sistema.
 
 Hay sistemas no lineales que pueden oscilar de modo estable con una amplitud y frecuencia independiente de las condiciones iniciales. A este tipo de oscilaciones se les conoce con el nombre de ciclos límite. 
 
@@ -121,7 +121,7 @@ Primero, vamos a hallar la ecuación diferencial que describe la dinámica de un
 \label{fig: invpen}
 \end{figure}
 
-Define $g = 9.8$ y $I\in\mathbb{R}_+$ como la aceleración gravitatoria y el momento de inercia del péndulo respectivamente. Es sencillo comprobar que $I = ml^2$, y explotaremos que $I \ddot\theta = \text{suma de torques}$. De hecho, tenemos que considerar tres torques: 1. Torque $T$ ejercido por nosotros en la base del péndulo; 2. Torque $-bl\dot\theta$ ejercido por la fricción en la masa; 3. Torque $mgl \sin\theta$ ejercido por la atracción gravitatoria. Por lo que la ecuación diferencial que modela el comportamiento del péndulo invertido es
+Define $g = 9.8$ e $I\in\mathbb{R}_+$ como la aceleración gravitatoria y el momento de inercia del péndulo respectivamente. Es sencillo comprobar que $I = ml^2$, y explotaremos que $I \ddot\theta = \text{suma de torques}$. De hecho, tenemos que considerar tres torques: 1. Torque $T$ ejercido por nosotros en la base del péndulo; 2. Torque $-bl\dot\theta$ ejercido por la fricción en la masa; 3. Torque $mgl \sin\theta$ ejercido por la atracción gravitatoria. Por lo que la ecuación diferencial que modela el comportamiento del péndulo invertido es
 \begin{equation}
 \ddot\theta = \frac{1}{ml^2}\left(mgl\sin{\theta}-bl\dot\theta + T\right).
 \label{eq: dyn}
@@ -131,7 +131,7 @@ Parece razonable escoger $\theta$ como uno de los estados para construir $x(t)$ 
 \begin{equation}
 x := \begin{bmatrix}\theta \\ \dot\theta \end{bmatrix},
 \end{equation}
-y como el torque $T$ es como interactuamos con el sistema, escogemos como entrada $u(t) = T(t)$.
+y dado que mediante el torque $T$ es como interactuamos con el sistema, escogemos como entrada $u(t) = T(t)$.
 
 Ahora estamos listos para construir las funciones $f$ and $g$ en (\ref{eq: sigma}) para el péndulo invertido. Atención a que $f$ y $g$ solo toma como argumentos los vectores de estados $x$ y de entradas $u$. En el lado izquierdo de (\ref{eq: sigma}) tenemos la derivada temporal de $x(t)$, por lo que
 
@@ -280,7 +280,7 @@ Si consideramos $V=cte$, la única entrada al sistema sería el ángulo de giro 
 
 \section{Simulación o soluciones numéricas del sistema $\Sigma$}
 Dado un punto inicial $x(0)$, podemos predecir o calcular numéricamente $x(t)$. El método de \emph{integración de Euler} es un método numérico sencillo que puede darnos información sobre la evolución temporal de los estados y salidas de $\Sigma$. El siguiente algoritmo describe la integración numérica por Euler:
-\begin{algo}
+\begin{algo}   \ \\
 	\begin{enumerate}
 		\item Define el paso de tiempo $\Delta T$
 		\item Define $x = x(0)$
@@ -312,7 +312,7 @@ En general, podemos definir un sistema autónomo de segundo orden a partir de do
 \dot x_2 &= f_2(x_1,x_2) \label{eq: sysa2}
 \end{align}
 
-Supongamos que conocemos una solución al sistema $x(t) = [x_1(t),x_2(t)]^T$, que pasa por el punto $x(0) = x_0$. La solución describe una curva sobre el plano $x_1-x_2$ que pasa por el punto $x_0$. Esta curva recibe el nombre de trayectoria u órbita, desde $x_0$, del sistema. El plano $x_1-x_2$ recibe el nombre de plano de fases. La ecuaciones (\ref{eq: sysa1}) - (\ref{eq: sysa2}) representa un vector tangente $\dot x(t) = [\dot x_1(t),\dot x_2(t)]$ a la trayectoria en el punto $x(t)$ .
+Supongamos que conocemos una solución al sistema $x(t) = [x_1(t),x_2(t)]^T$, que pasa por el punto $x(0) = x_0$. La solución describe una curva sobre el plano $x_1-x_2$ que pasa por el punto $x_0$. Esta curva recibe el nombre de trayectoria u órbita, desde $x_0$, del sistema. El plano $x_1-x_2$ recibe el nombre de plano de fases. La ecuaciones (\ref{eq: sysa1}) - (\ref{eq: sysa2}) representan un vector tangente $\dot x(t) = [\dot x_1(t),\dot x_2(t)]$ a la trayectoria en el punto $x(t)$ .
 
 Además podemos considerar $f(x)=[f_1(x),f_2(x)]$ como un campo vectorial definido sobre el plano de fases., es decir asignamos a cada punto $x$ en el espacio de fases el vector $f(x)$. Es posible obtener una representación aproximada del campo vectorial asociado a un sistema si definimos una región de interés del plano de fase, por ejemplo, una región que contenga sus puntos de equilibrio. Seleccionamos un conjunto de puntos $x$ en posiciones equiespaciadas dentro de la región de interés, y representamos en cada punto $x$ el campo asociado $f(x)$ mediante una flecha que apunte en la dirección de $f(x)$ y cuya longitud sea proporcional al módulo de $f(x)$.
 
@@ -331,13 +331,13 @@ Podemos obtener un sistema autónomo para el péndulo invertido, eliminando la t
 \dot x_1 = &x_2 \label{eq:pi1} \\ 
 \dot x_2 = &\frac{g}{l}\sin x_1 - \frac{b}{ml}x_2 \label{eq:pi2}
 \end{align}
-donde $x_1 = \theta$ y $x_2 = \dot \theta$,. Una primera característica del sistema la obtenemos calculando los puntos de equilibrio, $x^*=[n\pi,0]^T, n \in \mathbb{Z}$. Tenemos un conjunto infinito de posibles puntos de equilibrio, correspondiente a las posiciones verticales del péndulo.
+donde $x_1 = \theta$ y $x_2 = \dot \theta$,. Una primera característica del sistema la obtenemos calculando los puntos de equilibrio, $\overline x=[n\pi,0]^T, n \in \mathbb{Z}$. Tenemos un conjunto infinito de posibles puntos de equilibrio, correspondiente a las posiciones verticales del péndulo.
 
 La figura \ref{fig:trpen} muestra una trayectoria del péndulo invertido para una realización particular; $l=g$,$ml=b$ y una condición inicial $x_0=[\pi/3,0]$. 
 
 En ese caso, es fácil analizar lo que sucede, de un modo cualitativo. Las condiciones iniciales sitúan el péndulo cerca de la vertical, formando un ángulo $\theta_0 =\pi/3$ y en reposo. El péndulo caerá y oscilará con una amplitud y velocidad cada vez menor acercándose al punto de equilibrio $\overline \theta = \pi$.
 
-Podemos obtener más información si dibujamos aproximadamente el campo vectorial definido por las ecuaciones (\ref{eq:pi1})-(\ref{eq:pi2}). La figura \ref{fig:pifield} muestra un ejemplo. La región del plano de fases $\theta \in [-3\pi/2,3\pi/2], \dot \theta \in [-3,3]$. Si consideramos el origen de cada vector como una condición inicial del problema, la flecha indicaría la dirección y magnitud del cambio en el plano de fases.  Es fácil intujir, sis seguimos el eje de coordenadas $\theta$ la presencia de tres  puntos de equilibrio en la región mostrada y como el central es un puntos de equilibrio inestable, mientras que los dos laterales corresponden a puntos de equilibrio estables.
+Podemos obtener más información si dibujamos aproximadamente el campo vectorial definido por las ecuaciones (\ref{eq:pi1})-(\ref{eq:pi2}). La figura \ref{fig:pifield} muestra un ejemplo. La región del plano de fases $\theta \in [-3\pi/2,3\pi/2], \dot \theta \in [-3,3]$. Si consideramos el origen de cada vector como una condición inicial del problema, la flecha indicaría la dirección y magnitud del cambio en el plano de fases.  Es fácil intuir, si seguimos el eje de coordenadas $\theta$, la presencia de tres  puntos de equilibrio en la región mostrada y como el central es un puntos de equilibrio inestable, mientras que los dos laterales corresponden a puntos de equilibrio estables.
 
 Por último podemos obtener una información aún más completa si cabe, si representamos un diagramas de fases del sistema.  La figura \ref{fig:piphp} muestra un ejemplo en el que es posible ver los dos puntos de equilibrios estables (focos) y el punto de silla correspondiente al punto $(0,0)$. 
 
@@ -345,7 +345,7 @@ Por último podemos obtener una información aún más completa si cabe, si repr
 \begin{figure}
 \centering
 \includegraphics[scale=0.8]{pi_field.eps}
-\caption{Evolución temporal y trayectoria en el plano de fases para el péndulo invertido. La condición inicial, $x_0=[\pi/3,0]^T$, aparece representada con un aspa en el espacio de fases.} \label{fig:pifield}
+\caption{Campo vectorial definido sobre la región  $\theta \in [-3\pi/2,3\pi/2], \dot \theta \in [-3,3]$ del plano de fases para el péndulo invertido. } \label{fig:pifield}
 \end{figure}
 
  \begin{figure}
@@ -361,7 +361,7 @@ Por último podemos obtener una información aún más completa si cabe, si repr
 0 &= x_2\\
 0 &= -\frac{1}{LC}x_1 - m\frac{1}{C}(x_1^2-1)x_2 
 \end{align}
-La única solución es el origen $x^*=[0,0]^T$. La figura \ref{fig:vandesol}, muestra la evolución temporal de las soluciones y su trayectoria en el espacio de fases para una realización particular: $m = 0.5, L=1,C=1$. Un aspecto destacable es el carácter periódico de las soluciones alcanzadas. Ambas variables presentan una oscilación mantenida, tras un primer periodo de respuesta transitoria. Si observamos la trayectoria en el espacio de fases, vemos como esta converge desde la posición inicial $x(0)$ a una trayectoria cerrada y estable. Se trata de un ciclo límite. 
+La única solución es el origen $x^*=[0,0]^T$. La figura \ref{fig:vandesol}, muestra la evolución temporal de las soluciones y su trayectoria en el espacio de fases para una realización particular: $m = 0.5, L=1,C=1$. Un aspecto destacable es el carácter periódico de las soluciones alcanzadas. Ambas variables presentan una oscilación mantenida, tras un primer periodo de respuesta transitoria. Si observamos la trayectoria en el espacio de fases, vemos como ésta converge desde la posición inicial $x(0)$ a una trayectoria cerrada y estable. Se trata de un ciclo límite. 
 
 \begin{figure}
 \centering
@@ -380,7 +380,7 @@ La única solución es el origen $x^*=[0,0]^T$. La figura \ref{fig:vandesol}, mu
 \subsection{Ciclos límite}
 Los ciclos límites son un tipo de solución específica de algunos sistemas no lineales. Se trata de una solución periódica $x(t+T) =x(t), \forall t>0$ para un determinado periodo  $T>0$. 
 
-Tienen dos características fundamentales, la primera es que corresponde a soluciones de sistemas estructuralmente estables, es decir, el sistema no cambia su comportamiento bajo pequeñas perturbaciones. La segunda es que la amplitud de la oscilación no depende de las condiciones iniciales, o dicho  de otra manera, todas las condiciones iniciales convergen al o divergen del mismo ciclo límite. Podemos, por tanto, encontrar cíclos límites estables o inestables. En el caso de los inestable, solo permanecen en el cíclo límite las soluciones que empiezan en él,mientrsa que toda solución que cuyas condiciones iniciales estén próximas al ciclo límite se alejarán de él. . Una manera sencilla de observar un ciclo límite inestable, se obtiene integrando el oscilador del Van der Pol, co el tiempo invertido $T\to -\infty$.
+Tienen dos características fundamentales, la primera es que corresponde a soluciones de sistemas estructuralmente estables, es decir, el sistema no cambia su comportamiento bajo pequeñas perturbaciones. La segunda es que la amplitud de la oscilación no depende de las condiciones iniciales, o dicho  de otra manera, todas las condiciones iniciales convergen al o divergen del mismo ciclo límite. Podemos, por tanto, encontrar cíclos límites estables o inestables. En el caso de los inestable, solo permanecen en el cíclo límite las soluciones que empiezan en él,mientrsa que toda solución que cuyas condiciones iniciales estén próximas al ciclo límite se alejarán de él. . Una manera sencilla de observar un ciclo límite inestable, se obtiene integrando el oscilador del Van der Pol, con el tiempo invertido $T\to -\infty$.
 
 
 
