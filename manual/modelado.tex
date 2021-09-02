@@ -12,7 +12,7 @@ El sistema $\Sigma$ es un modelo que predice el valor de los estados y la salida
 	\end{cases}, 
 \label{eq: sigma}
 \end{equation}
-en donde $\dot x := \frac{\mathrm{d}}{\mathrm{dt}}(x(t))$ es la notación para la derivada total con respecto del tiempo, y $f: \mathbb{R}^n \times \mathbb{R}^k \to \mathbb{R}^n$ y $g: \mathbb{R}^n \times \mathbb{R}^k \to \mathbb{R}^m$ son funciones.
+en donde $\dot x := \frac{\mathrm{d}}{\mathrm{dt}}(x(t))$ es la notación para la derivada total con respecto del tiempo, y $f:\mathbb{R} \times \mathbb{R}^n \times \mathbb{R}^k \to \mathbb{R}^n$ y $g: \mathbb{R} \times \mathbb{R}^n \times \mathbb{R}^k \to \mathbb{R}^m$ son funciones.
 
 Podemos representar el sistema $\Sigma$ como un bloque con puertos de entrada y de salida como se muestra en la figura \ref{fig: sigma}.
 
@@ -380,7 +380,7 @@ La única solución es el origen $x^*=[0,0]^T$. La figura \ref{fig:vandesol}, mu
 \subsection{Ciclos límite}
 Los ciclos límites son un tipo de solución específica de algunos sistemas no lineales. Se trata de una solución periódica $x(t+T) =x(t), \forall t>0$ para un determinado periodo  $T>0$. 
 
-Tienen dos características fundamentales, la primera es que corresponde a soluciones de sistemas estructuralmente estables, es decir, el sistema no cambia su comportamiento bajo pequeñas perturbaciones. La segunda es que la amplitud de la oscilación no depende de las condiciones iniciales, o dicho  de otra manera, todas las condiciones iniciales convergen al o divergen del mismo ciclo límite. Podemos, por tanto, encontrar cíclos límites estables o inestables. En el caso de los inestable, solo permanecen en el cíclo límite las soluciones que empiezan en él,mientrsa que toda solución que cuyas condiciones iniciales estén próximas al ciclo límite se alejarán de él. . Una manera sencilla de observar un ciclo límite inestable, se obtiene integrando el oscilador del Van der Pol, con el tiempo invertido $T\to -\infty$.
+Tienen dos características fundamentales, la primera es que corresponde a soluciones de sistemas estructuralmente estables, es decir, el sistema no cambia su comportamiento bajo pequeñas perturbaciones. La segunda es que la amplitud de la oscilación no depende de las condiciones iniciales, o dicho  de otra manera, todas las condiciones iniciales convergen al o divergen del mismo ciclo límite. Podemos, por tanto, encontrar cíclos límites estables o inestables. En el caso de los inestable, solo permanecen en el cíclo límite las soluciones que empiezan en él,mientrsa que toda solución que cuyas condiciones iniciales estén próximas al ciclo límite se alejarán de él. . Una manera sencilla de observar un ciclo límite inestable, se obtiene integrando el oscilador del Van der Pol, con el tiempo invertido $t\to -\infty$.
 
 
 
@@ -441,7 +441,7 @@ donde  $J_r$ es la forma de Jordan \emph{real} de la matriz A y $P=[v_1,v_2]$,$\
 \end{bmatrix},
 \end{equation}
 donde $k$ es 0 ó 1.
-Comencemos por analizar el primer caso, donde $\lambda_1 \ne \lambda_2 \ne 0$. En este caso,las soluciones del sistema corresponde a la combinación de dos exponenciales,
+Comencemos por analizar el primer caso, donde $\lambda_1 \ne \lambda_2 \ne 0$. En este caso, las soluciones del sistema corresponde a la combinación de dos exponenciales,
 \begin{equation}
 \exp\begin{bmatrix}
 \lambda_1t &0 \\
@@ -469,7 +469,7 @@ e^{\alpha t}\cos(\beta t) & e^{\alpha t}\sin(\beta t)\\
 \end{bmatrix}
 \end{equation}
 
-De nuevo. Podemos distinguir varios casos atendiendo a la forma que tome la parte real del autovalor. Si $\alpha < 0$, el sistema tenderá asintóticamente a 0, describiendo una espiral. Se dice entonces que el origen es un foco atractivo. Sí $\alpha > 0$ las soluciones divergen, y se alejan del origen describiendo una espirar. Se dice entonces que el origen es un foco repulsivo. Por último, si $\alpha = 0$, los autovalores son número imaginarios. Las soluciones son trayectorias elípticas cerradas en torno al origen que se denomina centro. La figura \ref{fig:lin1} muestra diagramas de fases correspondientes a ejemplos de los casos descritos hasta ahora.
+De nuevo. Podemos distinguir varios casos atendiendo a la forma que tome la parte real del autovalor. Si $\alpha < 0$, el sistema tenderá asintóticamente a 0, describiendo una espiral. Se dice entonces que el origen es un foco atractivo. Si $\alpha > 0$ las soluciones divergen, y se alejan del origen describiendo una espiral. Se dice entonces que el origen es un foco repulsivo. Por último, si $\alpha = 0$, los autovalores son números imaginarios. Las soluciones son trayectorias elípticas cerradas en torno al origen que se denomina centro. La figura \ref{fig:lin1} muestra diagramas de fases correspondientes a ejemplos de los casos descritos hasta ahora.
 
 \begin{figure}
 \centering
@@ -527,17 +527,17 @@ Por último, para el caso en que ambos autovalores son nulos. Si la matriz del s
 
 De nuevo, la recta definida por el autovector $v_1$ define los puntos de equilibrio del sistema. Las trayectorias en el espacio de las fases serán líneas rectas paralelas a dicha línea. La dirección del movimiento dependerá de las condiciones iniciales. La figura \ref{fig:lin2e} muestra un ejemplo.
 
-Como se decía la principio de esta sección, estudiar el comportamiento de los sistemas lineales cerca de su punto de equilibrio $x=0$, tiene interés para los sistemas no lineales, ya que en muchos casos es posible conocer cual sera el comportamiento \emph{local} de un sistema no lineal cerca de un punto de equilibrio, linealizando el sistema en torno a dicho punto de equilibrio. Hasta qué punto los resultados de la linealización son válidos, va a depender en cómo de robustos son los sistemas lineales obtenidos frente a pequeñas perturbaciones. 
+Como se decía al principio de esta sección, estudiar el comportamiento de los sistemas lineales cerca de su punto de equilibrio $x=0$, tiene interés para los sistemas no lineales, ya que en muchos casos es posible conocer cual sera el comportamiento \emph{local} de un sistema no lineal cerca de un punto de equilibrio, linealizando el sistema en torno a dicho punto de equilibrio. Hasta qué punto los resultados de la linealización son válidos, va a depender en cómo de robustos son los sistemas lineales obtenidos frente a pequeñas perturbaciones. 
 
 En general, para sistemas lineales cuyos autovalores tiene parte real distinta de cero, Pequeñas perturbaciones en la estructura del sistema no cambiarán significativamente el valor de la parte real de los autovalores , por tanto conservarán su signo positivo o negativo y el sistema seguirá siendo inestable o estable. De estos sistemas se dice que son estructuralmente inestables o estructuralmente estables, y su punto de equilibrio $x=0$ se dice que es hiperbólico. 
 
 Si el sistema resultante de linealizar un sistema no lineal da como resultado un sistema lineal estructuralmente estable o inestable, el sistema no lineal será también inestable o estable en las proximidades del punto de equilibrio. Este resultado es generalizable a sistemas de dimensiones mayores que 2.
 
-Para  sistemas lineales cuyos autovalores son nulos, cualquier perturbación, por pequeña que sea, modificará el valor de la parte real de los autovalores, haciéndolos positivos o negativos. Como resultado, si al linealizar un sistema no lineal se obtien como resultado un sistema con autolores con parte real nula, no es posible concluir nada sobre el comportamiento del sistema no lineal en las proximidades del punto de equilibrio.
+Para  sistemas lineales cuyos autovalores son nulos, cualquier perturbación, por pequeña que sea, modificará el valor de la parte real de los autovalores, haciéndolos positivos o negativos. Como resultado, si al linealizar un sistema no lineal se obtiene como resultado un sistema con autolores con parte real nula, no es posible concluir nada sobre el comportamiento del sistema no lineal en las proximidades del punto de equilibrio.
 
 \subsection{Bifurcaciones}
 
-Como hemos visto, en las secciones anteriores, el comportamiento de un sistema de segundo orden podría determinarse por las características de sus puntos de equilibrios, la existencia de ciclos límites o, en general, órbitas periodicas y por su estabilidad.
+Como hemos visto, en las secciones anteriores, el comportamiento de un sistema de segundo orden podría determinarse por las características de sus puntos de equilibrio, la existencia de ciclos límites o, en general, órbitas periódicas y por su estabilidad.
 Un aspecto interesante que ha salido de pasada, es el estudio de la estabilidad estructural, es decir,  cuando un sistema mantiene el mismo comportamiento bajo pequeñas perturbaciones.
 
 Supongamos que tenemos un sistema dinámico que depende de un parámetro $\lambda$,
@@ -545,16 +545,15 @@ Supongamos que tenemos un sistema dinámico que depende de un parámetro $\lambd
 \begin{equation}
 \dot x = g(x,\lambda), y \in \ \mathbb{R}^n, \lambda \in \ \mathbb{R}^p,
 \end{equation}
-
 donde $g$ es una función diferenciable $\mathcal{C}^r$ en algún conjunto abierto en $ \mathbb{R}^n \times  \mathbb{R}^p$.
 
-supongamos además que que tenemos sistema tiene un punto de equilibrio $x^*$ para un determinado valor del parámetro $\lambda = \lambda^*$,
+supongamos además que el sistema tiene un punto de equilibrio $x^*$ para un determinado valor del parámetro $\lambda = \lambda^*$,
 
 \begin{equation}
 g(x^*,\lambda^*) = 0
 \end{equation}
 
-En primer lugar, estudiar la estabilidad del punto de equilibrio, linealizando el sistema en torno al punto de equilibrio y estudiando la estabilidad del sistema linealizado. En segundo lugar, podríamos plantearnos cómo afectan a la estabilidad del sistema pequeñas variaciones en el valor del parámetro $\lambda^*$.
+En primer lugar, podemos estudiar la estabilidad del punto de equilibrio, linealizando el sistema en torno al punto de equilibrio y estudiando la estabilidad del sistema linealizado. En segundo lugar, podríamos plantearnos cómo afectan a la estabilidad del sistema pequeñas variaciones en el valor del parámetro $\lambda^*$.
 
 Si linealizamos,
 \begin{equation}
@@ -566,7 +565,7 @@ Donde ahora, el jacobiano en el punto de equilibrio depende también del paráme
 A = D_x(x^*,\lambda^*)
 \end{equation}
 
-Tendremos que si el punto de equilibrio es hiperbólico --no hay ningún autovalor de $A$ sobre el eje imaginario-- El sistema será estable o inestable sengún el signo de la parte real de los autovalores de $A$. Esto nos resuelve también la cuestión del efecto de las pequeñas variaciones de $\lambda$. En principio, éstas variaciones no cambiarán la naturaleza del punto de equilibrio.
+Tendremos que si el punto de equilibrio es hiperbólico --no hay ningún autovalor de $A$ sobre el eje imaginario-- El sistema será estable o inestable según el signo de la parte real de los autovalores de $A$. Esto nos resuelve también la cuestión del efecto de las pequeñas variaciones de $\lambda$. En principio, éstas variaciones no cambiarán la naturaleza del punto de equilibrio.
 
 Sin embargo, si la matriz $A$ tiene autovalores en el eje, pequeños variaciones de $\lambda$ pueden cambiar completamente el comportamiento del sistema. Dando lugar a la creación y/o destrucción de puntos fijos, la aparición de ciclos límite e incluso comportamiento caótico.
 
@@ -586,12 +585,12 @@ Consideremos el sistema,
 \dot x = \mu - x^2,\  x, \mu \in \mathbb{R},  
 \end{equation*}
 
-Es fácil comprobar, que para $\mu =0$ el punto $(x = 0)$ es el único punto de equilibrio. Si linealizamos en torno a cero, obtenemos que el autovalor correspondiente sería cero.  No podemos por tanto determinar la estabilidad del sistema no lineal. Supongamos que tomamos ahora $\mu > 0$. Para cada valor de $\mu$, tendremos que los puntos de equilibrio toman valores $x^* = ( \pm \sqrt{\mu})$. Es decir, el sistema pasaría de tener un punto de equilibrio a tener dos. Si linealizamos el sistema en torno a los puntos de equilibrio, tendremos, que para uno de los puntos $x^*=+\sqrt{\mu}$ el sistema linealizado es asintóticamente estable: $ \dot{ \delta x} = 2-\sqrt{\mu}\delta x$. Para el otro punto, $x^*=-\sqrt{\mu}$, el sistema es asintóticamente inestable $ \dot{ \delta x} = +2\sqrt{\mu}\delta x$.
+Es fácil comprobar, que para $\mu =0$ el punto $(x = 0)$ es el único punto de equilibrio. Si linealizamos en torno a cero, obtenemos que el autovalor correspondiente sería cero.  No podemos por tanto determinar la estabilidad del sistema no lineal. Supongamos que tomamos ahora $\mu > 0$. Para cada valor de $\mu$, tendremos que los puntos de equilibrio toman valores $x^* = ( \pm \sqrt{\mu})$. Es decir, el sistema pasaría de tener un punto de equilibrio a tener dos. Si linealizamos el sistema en torno a los puntos de equilibrio, tendremos, que para uno de los puntos $x^*=+\sqrt{\mu}$ el sistema linealizado es asintóticamente estable: $ \delta\dot{x} = -2\sqrt{\mu}\delta x$. Para el otro punto, $x^*=-\sqrt{\mu}$, el sistema es asintóticamente inestable $ \delta \dot{x} = +2\sqrt{\mu}\delta x$.
 Para el caso en 	que $\mu<0$ no existen en el sistema puntos de equilibrio.
 
 El sistema descrito muestra un ejemplo de \emph{bifurcación}. El punto $(x,\mu)=(0,0)$ recibe el nombre de punto de bifurcación y el valor del parámetro $\mu = 0$ es un valor de bifurcación. Por último la figura \ref{fig:saddlenode} muestra el \emph{diagrama de bifurcación} de este sistema. En él, se ha representado la parábola $x=\pm \sqrt{\mu}$ correspondiente a la posición de los puntos de equilibrio del sistema en función de $\mu$. La rama representada con línea continua, corresponde a los nodos estables, mientras que la rama representada con una línea discontinua, corresponde a los nodos inestable. Sobre el diagrama, se han representado también las trayectorias que seguiría el sistema para diferentes valores iniciales de la variable $x$, las  aspas representan posiciones iniciales y los círculos las posiciones finales para el tiempo de simulación empleado. Es fácil ver cómo, para valores positivos de $\mu$  las trayectorias se alejan de la rama negativa de la parábola y, en su caso, tienden a converger en la positiva que contiene los puntos de equilibrio estables. Para $\mu =0$ los dos nodos colapsan en un único punto de equilibrio; condiciones iniciales negativas produce trayectorias que se alejan del origen, mientras que para condiciones iniciales positivas, las trayectorias convergen al origen. Para valores de $\mu<0$ no hay puntos de equilibrio y $x\to -\infty$ cuando $t\to \infty$.
 
-Este tipo de bifurcaciones en las que a un lado de un valor del parámetro ($\mu$) no hay puntos fijos y en el otro lado hay dos puntos fijos, se conocen con el nombre de bifurcación silla-node (\emph{saddle-node}).  
+Este tipo de bifurcaciones en las que a un lado de un valor del parámetro ($\mu$) no hay puntos de equilibrio y en el otro lado hay dos puntos de equilibrio, se conocen con el nombre de bifurcación silla-node (\emph{saddle-node}).  
 
 \qed
 \end{example}
@@ -601,7 +600,7 @@ Este tipo de bifurcaciones en las que a un lado de un valor del parámetro ($\mu
 \begin{equation*}
 \dot x = \mu x - x^2,\  x, \mu \in \mathbb{R},  
 \end{equation*}
-Al igual que en el ejemplo anterior, si hacemos $\mu=0$, el único punto de equilibrio es $x=0$ y de nuevo en este caso, el autovalor del sistema lineal vale cero. Si dejamos que $\mu$ tome valores distintos de cero, el sistema tiene dos puntos críticos para cada valor de $mu$, $x^*=0$ y $x^*=\mu$. No es difícil comprobar que para el sistema linealizado tendremos dos situaciones distintas. SI $\mu>0$., el punto de equilibrio $x^*=mu$ es estable y el punto de equilibrio $x^*=0$ es inestable. Para $\mu<0$ el carácter de los puntos críticos se invierte. La figura \ref{fig:trans} muestra el diagrama de bifurcación para este sistema.  Es fácil ver cómo para $\mu<0$ las trayectorias divergen de la recta $x=\mu$ y convergen, en su caso, a la recta $x=0$. Para $\mu>0$ la situación se invierte y ahora las trayectorias convergen a $x=\mu$ y divergen de $x=0$. Para $\mu=0$ los puntos de equilibrio colapsas en $x=0$. Este tipo de bifurcación se conoce con el nombre de bifurcación transcrítica
+Al igual que en el ejemplo anterior, si hacemos $\mu=0$, el único punto de equilibrio es $x=0$ y de nuevo en este caso, el autovalor del sistema lineal vale cero. Si dejamos que $\mu$ tome valores distintos de cero, el sistema tiene dos puntos críticos para cada valor de $mu$, $x^*=0$ y $x^*=\mu$. No es difícil comprobar que para el sistema linealizado tendremos dos situaciones distintas. Si $\mu>0$., el punto de equilibrio $x^*=\mu$ es estable y el punto de equilibrio $x^*=0$ es inestable. Para $\mu<0$ el carácter de los puntos críticos se invierte. La figura \ref{fig:trans} muestra el diagrama de bifurcación para este sistema.  Es fácil ver cómo para $\mu<0$ las trayectorias divergen de la recta $x=\mu$ y convergen, en su caso, a la recta $x=0$. Para $\mu>0$ la situación se invierte y ahora las trayectorias convergen a $x=\mu$ y divergen de $x=0$. Para $\mu=0$ los puntos de equilibrio colapsas en $x=0$. Este tipo de bifurcación se conoce con el nombre de bifurcación transcrítica
 \qed
 \end{example}
  
@@ -610,7 +609,7 @@ Para el sistema,
 \begin{equation*}
 \dot x = \mu x - x^3,\  x, \mu \in \mathbb{R},  
 \end{equation*}
-Se cumple de nuevo la condición de los ejemplos anteriores para $\mu=0$. Para $\mu>0$, se obtienen tres puntos críticos $x^*=0$ inestable, y $x^*=\pm\sqrt{\mu}$, ambos estables (compruébalo). Para $mu<0$ solo tenemos un punto crítico $x^*=0$ que resulta ser estable. La figura \ref{fig:horquilla} muestra el diagrama de bifurcación para este sistema. La interpretación es similar a la de los dos ejemplos anteriores.
+Se cumple de nuevo la condición de los ejemplos anteriores para $\mu=0$. Para $\mu>0$, se obtienen tres puntos críticos $x^*=0$ inestable, y $x^*=\pm\sqrt{\mu}$, ambos estables (compruébalo). Para $\mu<0$ solo tenemos un punto crítico $x^*=0$ que resulta ser estable. La figura \ref{fig:horquilla} muestra el diagrama de bifurcación para este sistema. La interpretación es similar a la de los dos ejemplos anteriores.
 \begin{figure}
 \subfigure[Horquilla]{\includegraphics[scale=0.35]{pitchfork.eps}}
 \label{fig:horquilla}
@@ -633,7 +632,7 @@ Se cumple la misma condición que en los casos anteriores para $\mu=0$. Es fáci
 \end{example}
 Veamos por último un ejemplo del caso en que un sistema de segundo orden tiene dos autovalores imaginarios puros.
 
- El término bifurcación no es fácil de definir. Una definición cualitativa e informal sería decir que una bifurcación para un punto fijo de un sistema dinámico se produce cuando el cambio de un parámetro modifica el comportamiento del sistema en las proximidades del punto crítico.
+ El término bifurcación no es fácil de definir. Una definición cualitativa e informal sería decir que una bifurcación para un punto de equilibrio de un sistema dinámico se produce cuando el cambio de un parámetro modifica el comportamiento del sistema en las proximidades del punto crítico.
  
 \begin{figure}
 \centering
@@ -641,7 +640,7 @@ Veamos por último un ejemplo del caso en que un sistema de segundo orden tiene 
 \subfigure[$\mu < 0$.]{\includegraphics[scale=0.35]{hopfsub.eps}}
 \subfigure[$\mu >0$]{\includegraphics[scale=0.35]{hopfsuper.eps}}
 \caption{Ejemplo de bifurcación de Hopf}
-\label{fig: hopf}
+\label{fig:hopf}
 \end{figure}
 
 \begin{example}[Bifurcación de Hopf]\label{ex:hopf}
@@ -659,13 +658,13 @@ El único punto de equilibrio del sistema es $x^*= (0,0)$. Si linealizamos el si
 	\end{bmatrix}
 \end{align*}
 Que tiene autovalores $\mu\pm j$. Estos autovalores son imaginarios puros para $\mu=0$ y cruzan el eje imaginario cuando $\mu$ pasa de negativo a positivo. Para $\mu<0$ el origen es un foco atractivo, para $mu>0$ se convierte en un foco repulsivo.
-Podemos analizarlo más fácilmente si transformamos el sistema a coordenadas polares, $x_1= r\cos(\theta), x_2 = r\sin(theta)$,
+Podemos analizarlo más fácilmente si transformamos el sistema a coordenadas polares, $x_1= r\cos(\theta), x_2 = r\sin(\theta)$,
 \begin{align*}
 \dot r = \mu r - r^3\\
 \dot \theta = 1
 \end{align*}
 
-En esta representación las variables aparecen desacopladas. El valor r=0, corresponde con el punto crítico del sistema. Para el caso en que $\mu>0$, tenemos que $r=\sqrt{\mu}$ hace nula la ecuación  $\dot r = \mu r - r^3$. Esta curva corresponde a un ciclo límite; en torno al origen de radio $\sqrt{\mu}$. Por tanto, para este caso, aunque el origen sea un punto inestable, el sistema converge al ciclo límite y es estable. La figura \ref{fig:hopf} Muestra el diagrama de bifurcación de este sistema.  En este caso, el punto de equilibrio, $x^*=(0,0)$ coincide con el eje $\mu$. Para $mu$ negativo es atractivo y el sistema converge para cualquier condición inicial. Para mu positivo se ha representado ---junto al eje $\mu$ que ahora representa un punto de equilibrio inestable--   la forma del ciclo límite como un paraboloide. En este caso, el sistema converge, para cualquier condición inicial,  a la sección del paraboloide correspondiente al valor de $\mu$ del sistema.
+En esta representación las variables aparecen desacopladas. El valor $r=0$, corresponde con el punto crítico del sistema. Para el caso en que $\mu>0$, tenemos que $r=\sqrt{\mu}$ hace nula la ecuación  $\dot r = \mu r - r^3$. Esta curva corresponde a un ciclo límite; en torno al origen de radio $\sqrt{\mu}$. Por tanto, para este caso, aunque el origen sea un punto inestable, el sistema converge al ciclo límite y es estable. La figura \ref{fig:hopf} Muestra el diagrama de bifurcación de este sistema.  En este caso, el punto de equilibrio, $x^*=(0,0)$ coincide con el eje $\mu$. Para $\mu$ negativo es atractivo y el sistema converge para cualquier condición inicial. Para $\mu$ positivo se ha representado ---junto al eje $\mu$ que ahora representa un punto de equilibrio inestable--   la forma del ciclo límite como un paraboloide. En este caso, el sistema converge, para cualquier condición inicial,  a la sección del paraboloide correspondiente al valor de $\mu$ del sistema.
 \qed
 \end{example}
 
@@ -679,10 +678,10 @@ Para terminar, reiterar que aquí solo se muestran algunos ejemplos de bifurcaci
 &\dot x_2 =-bx_2 + dx_1x_2\\
 &a,b,c,d \in \mathbb{R}^+,
 \end{align*}
-donde $x_1$ representa la población de presas; $x_2$ la de depredadores; $a$ la tasa de nacimiento de las presas, que es función de la cantidad de alimento que reciben; b es la tasa de defunción de los depredadores; c y d modelan la interacción entre los depredadores y las presas.
+donde $x_1$ representa la población de presas; $x_2$ la de depredadores; $a$ la tasa de nacimiento de las presas, que es función de la cantidad de alimento que reciben; $b$ es la tasa de defunción de los depredadores;$c$ y $d$ modelan la interacción entre los depredadores y las presas.
 
 \begin{enumerate}
-\item Simular el modelo de Volterra-Lotka para parámetros fijos, por ejemplo $a=b=c=d=1$. Emplear para ello tanta Matlab como simulink. Emplear distintas condiciones iniciales. Obtener tanto un gráfico de la evolución temporal de los estados como el diagrama de fases.
+\item Simular el modelo de Volterra-Lotka para parámetros fijos, por ejemplo $a=b=c=d=1$. Emplear para ello tanta Matlab como Simulink. Emplear distintas condiciones iniciales. Obtener tanto un gráfico de la evolución temporal de los estados como el diagrama de fases.
 \item Modificar el modelo, de modo que el parámetro $a$ pase a ser un una función periódica $a = \frac{a_0}{2}\sin(\omega t)+\frac{a_0}{2}$. Estudiar el efecto de la frecuencia en el modelo.
 \end{enumerate}
 \item El modelo de Lorenz, fue propuesto en 1963 por Edward Lorenz  como un modelo simplificado de convección atmosférica.
@@ -703,7 +702,7 @@ Para los valores $\sigma  = 10$, $\beta = 8/3, \rho = 28$ el sistema exhibe solu
 m\ddot y + c \dot y + k y = F(t),
 \end{equation*}
 
-donde $y$ es la posición del sistema, $m$ representa la masa, $c$ es un coeficiente de amortiguamiento, y es una constante recuperadora, $F(t)$ representa una fuerza externa. El modelo es genérico en el sentido de que reproduce el símil mecánico de sistemas de muy diverso tipo.
+donde $y$ es la posición del sistema, $m$ representa la masa, $c$ es un coeficiente de amortiguamiento, y $k$ es una constante recuperadora, $F(t)$ representa una fuerza externa. El modelo es genérico en el sentido de que reproduce el símil mecánico de sistemas de muy diverso tipo.
 \begin{enumerate}
 \item Obtener el modelo equivalente en variable de estados, de modo que una variable de estado sea la posición del sistema $y$ y la otra la velocidad $\dot y$
 \item Simular el modelo para valores $m=2.5Kg$, $c=0.6Ns/m$ y $k=0.4N/m$, empelando Matlab. Considerar los siguientes casos,
@@ -725,10 +724,10 @@ donde $y$ es la posición del sistema, $m$ representa la masa, $c$ es un coefici
 \dot x_2 = -x_2(1-x_1^2-x_2^2) -x_1
 \end{align*}
 
-\begin{itemize}
+\begin{enumerate}
 \item Obtener un diagrama de fases del sistema, empleando para ello Matlab. Comprobar gráficamente que el círculo $x_1^2+x_2^2 = 1$  marca el límite de la región de estabilidad del punto de equilibrio del sistema $(0,0)$. Pista: una manera clara de obtener el resultado es integrar para un intervalo de tiempo negativo, en ese caso, el límite de estabilidad se convierte en un ciclo límite.
 \item Comprobar que el resultado de integrar el sistema para un tiempo negativo es idéntico a obtener las soluciones del sistema presentado en el ejemplo \ref{ex:hopf}, tomando $\mu=1$.
-\end{itemize}
+\end{enumerate}
 
 
 \end{enumerate}
