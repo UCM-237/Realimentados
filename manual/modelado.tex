@@ -79,7 +79,7 @@ Es posible encontrar sistemas no-lineales inestables que se comportan de modo an
 \lim_{ t \to t_e} x \to \infty
 \end{equation}
 
-\paragraph{Cíclos límite.} Un sistema lineal se dice que es marginalmente estable, cuando sus variables de estado oscilan periódicamente. Sin embargo, como veremos más adelante, las circunstancias para que se de una oscilación mantenida en un sistema lineal, constituyen una condición no robusta, por lo que es en la práctica  imposible que se dé en condiciones reales. Además, la amplitud de las oscilaciones depende de las condiciones iniciales del sistema.
+\paragraph{ciclos límite.} Un sistema lineal se dice que es marginalmente estable, cuando sus variables de estado oscilan periódicamente. Sin embargo, como veremos más adelante, las circunstancias para que se de una oscilación mantenida en un sistema lineal, constituyen una condición no robusta, por lo que es en la práctica  imposible que se dé en condiciones reales. Además, la amplitud de las oscilaciones depende de las condiciones iniciales del sistema.
 
 Hay sistemas no lineales que pueden oscilar de modo estable con una amplitud y frecuencia independiente de las condiciones iniciales. A este tipo de oscilaciones se les conoce con el nombre de ciclos límite. 
 
@@ -177,7 +177,8 @@ Donde el elemento no lineal NL, presenta una relación entre voltaje e intensida
 El voltaje $v$ en los tres componentes del circuito debe ser igual; además,
 \begin{align}
 v = L \frac{di_L}{dt}\\
-i_C = C\frac{dv}{dt}
+i_C = C\frac{dv}{dt}\\
+i_N = h(v)
 \end{align}
 Si aplicamos la primera ley de Kirchohff al nodo superior del circuito,
 \begin{align}
@@ -194,7 +195,7 @@ Se trata de un caso particular de la ecuación de Liénard,
 \end{equation}
 Si definimos ahora, $h(v)$,
 \begin{align}
-h(v) = m(\frac{1}{3}v^3-1)\\
+h(v) = m(\frac{1}{3}v^3-v)\\
 \frac{dh}{dv} = m(v^2-1)
 \end{align}
 y sustituimos en (\ref{eq:vdp2}),
@@ -312,7 +313,7 @@ En general, podemos definir un sistema autónomo de segundo orden a partir de do
 \dot x_2 &= f_2(x_1,x_2) \label{eq: sysa2}
 \end{align}
 
-Supongamos que conocemos una solución al sistema $x(t) = [x_1(t),x_2(t)]^T$, que pasa por el punto $x(0) = x_0$. La solución describe una curva sobre el plano $x_1-x_2$ que pasa por el punto $x_0$. Esta curva recibe el nombre de trayectoria u órbita, desde $x_0$, del sistema. El plano $x_1-x_2$ recibe el nombre de plano de fases. La ecuaciones (\ref{eq: sysa1}) - (\ref{eq: sysa2}) representan un vector tangente $\dot x(t) = [\dot x_1(t),\dot x_2(t)]$ a la trayectoria en el punto $x(t)$ .
+Supongamos que conocemos una solución al sistema $x(t) = [x_1(t),x_2(t)]^T$, que pasa por el punto $x(0) = x_0$. La solución describe una curva sobre el plano $x_1-x_2$ que pasa por el punto $x_0$. Esta curva recibe el nombre de trayectoria u órbita, desde $x_0$, del sistema. El plano $x_1-x_2$ recibe el nombre de plano de fases. La ecuaciones (\ref{eq: sysa1}) - (\ref{eq: sysa2}) representan un vector tangente $\dot x(t) = [\dot x_1(t),\dot x_2(t)]$ a la trayectoria en el punto $x(t)$.
 
 Además podemos considerar $f(x)=[f_1(x),f_2(x)]$ como un campo vectorial definido sobre el plano de fases., es decir asignamos a cada punto $x$ en el espacio de fases el vector $f(x)$. Es posible obtener una representación aproximada del campo vectorial asociado a un sistema si definimos una región de interés del plano de fase, por ejemplo, una región que contenga sus puntos de equilibrio. Seleccionamos un conjunto de puntos $x$ en posiciones equiespaciadas dentro de la región de interés, y representamos en cada punto $x$ el campo asociado $f(x)$ mediante una flecha que apunte en la dirección de $f(x)$ y cuya longitud sea proporcional al módulo de $f(x)$.
 
@@ -380,7 +381,7 @@ La única solución es el origen $x^*=[0,0]^T$. La figura \ref{fig:vandesol}, mu
 \subsection{Ciclos límite}
 Los ciclos límites son un tipo de solución específica de algunos sistemas no lineales. Se trata de una solución periódica $x(t+T) =x(t), \forall t>0$ para un determinado periodo  $T>0$. 
 
-Tienen dos características fundamentales, la primera es que corresponde a soluciones de sistemas estructuralmente estables, es decir, el sistema no cambia su comportamiento bajo pequeñas perturbaciones. La segunda es que la amplitud de la oscilación no depende de las condiciones iniciales, o dicho  de otra manera, todas las condiciones iniciales convergen al o divergen del mismo ciclo límite. Podemos, por tanto, encontrar cíclos límites estables o inestables. En el caso de los inestable, solo permanecen en el cíclo límite las soluciones que empiezan en él,mientrsa que toda solución que cuyas condiciones iniciales estén próximas al ciclo límite se alejarán de él. . Una manera sencilla de observar un ciclo límite inestable, se obtiene integrando el oscilador del Van der Pol, con el tiempo invertido $t\to -\infty$.
+Tienen dos características fundamentales, la primera es que corresponde a soluciones de sistemas estructuralmente estables, es decir, el sistema no cambia su comportamiento bajo pequeñas perturbaciones. La segunda es que la amplitud de la oscilación no depende de las condiciones iniciales, o dicho  de otra manera, todas las condiciones iniciales convergen al o divergen del mismo ciclo límite. Podemos, por tanto, encontrar ciclos límites estables o inestables. En el caso de los inestable, solo permanecen en el ciclo límite las soluciones que empiezan en él, mientras que toda solución que cuyas condiciones iniciales estén próximas al ciclo límite se alejarán de él. . Una manera sencilla de observar un ciclo límite inestable, se obtiene integrando el oscilador del Van der Pol, con el tiempo invertido $t\to -\infty$.
 
 
 
