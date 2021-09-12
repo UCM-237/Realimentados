@@ -1,0 +1,239 @@
+\appendix
+\chapter[Ejemplos de codigo de simulación]{Ejemplos de código en Matlab para la simulación de sistemas dinámicos}\label{apend1}
+
+\section[Código para el péndulo invertido]{Ejemplo de código para simular el péndulo invertido}\label{Apinv}
+Partimos de las ecuaciones del movimiento en variables de estado,
+\begin{align*}
+\dot x_1 &= x_2\\
+\dot x_2 &= \frac{g}{l}\sin x_1 - \frac{b}{ml}x_2
+\end{align*}
+
+En primer lugar creamos una función, que reproduzca las ecuaciones de estado, 
+\begin{lstlisting}
+function xdot = pendulo_inv(t,x,m,l,g,b)
+% VARIABLES DE ENTRADA:
+% t tiempo (s). Este sistema es autonomo, no depende del tiempo. 
+% Evidentemente luego no se emplea el tiempo para nada.
+% x Vector (columna) de estados: 
+% x, vector de variables de estado, descrito como un vector columna;  
+% x((1,1) angulo de pendulo con la vertical (semieje positivo) (rad);
+% x(2,1) velocidad angular radianes por segundo;
+
+% Las variables t y x deben pasarse en el orden que aparecen en la cabecera
+% de la funcion: primero el tiempo y despues el vector de estados
+% Este orden es necesario para que el integrador de matlab encuentre las variables
+
+% parametros del sistema
+% m Masa del pendulo (Kg)
+% l longitud del pendulo (m)
+% g Aceleracion de la gravedad (m/s^2)
+% b coeficiente de friccion (Kg.m/s)
+
+% VARIABLES DE SALIDA:
+% xdot vector de velocidades 
+% xdot(1,1) velocidad angular (derivada temporal del angulo)
+% xdot(2,1) aceleracion angular (derivada temporal de la velocidad angular)
+
+xdot(1,1) = x(2,1);
+xdot(2,1) = (g*sin(x(1,1))-b*x(2,1)/m)/l;
+end
+\end{lstlisting}
+
+A continuación construimos un script (puede ser un livescript) que integre el sistema representado por la función.
+
+\begin{lstlisting}
+% Definimos y damos valores los parametros del sistema
+g1 = 10; % gravedad
+m1 = 10; % masa
+l1 = 10; % longitud
+b1 = 100; % resistencia viscosa
+
+% Definimos un intervalo de tiempo para el que queremos que el
+% integrador resuelva las ecuaciones
+tin = [0,15];
+
+% Definimos unas condiciones iniciales [x_1,x_2]
+x0 = [pi/3; 0]; %Siempre vector columna.
+
+% A continuacion llamamos a uno de los integradores de matlab, 
+% En este caso se trata del par encajado 
+% de ordenes 4 y 5 de Dormund and Price  (ver ayuda de matlab). 
+% Es el par que emplearemos habitualmente para obtener soluciones
+% Atencion a la sintaxis: la funcion ode45 toma como primera variable
+% un handle @ a la funcion que se desea integrar. 
+% Delante de la funcion se indican entre parentesis y, por ese orden,
+% las variables t y x.  
+% El resto de los parametros se fijan a los valores definidos en el script.
+% ademas se pasa a la funcion ode45 el intervalo de tiempo
+% de integracion y las condiciones iniciales  
+% pedimos a la funcion que nos devuelva los valores de tiempo (t) para 
+% los que ha calculado las soluciones
+% y una matriz (x) de dimensiones dim(t)  x dim(x) 
+% Cada columna de esta matriz representa los valores del vector
+% de estados para cada valor del tiempo contenido en el vector t
+[t,x] = ode45(@(t,x)pendulo_inv(t,x,m1,l1,g1,b1),tin,x0);
+
+% podemos representar la evolucion temporas de los estados
+figure(1)
+subplot(2,1,1)
+plot(t,x)
+title('Evolucion temporal de los estados')
+xlabel('tiempo(s)')
+legend('$\theta$','$\dot{\theta}$','interpreter','latex')
+% y la trayectoria del sistema en el espacio de fases (Solo posible si 
+% la dimension del vector de estados es 3 o menor)
+subplot(2,1,2)
+plot(x(:,1),x(:,2))
+hold on
+plot(x0(1,1),x0(2,1),'x')
+title('trayectoria en el plano de fases')
+xlabel('$\theta$','interpreter','latex')
+ylabel('$\dot{\theta}$','interpreter','latex')
+\end{lstlisting}
+
+En las versiones modernas de Matlab es posible escribir en el mismo fichero el código correspondiente al script  y debajo  la función que representa el sistema. En versiones más antiguas, hay que escribirlos en ficheros separados y guardar ambos ficheros en el mismo directorio.
+
+La función \texttt{ode45} tiene muchas opciones de ajuste. Veremos algunas en otros ejemplos incluidos en estos apéndices. En cualquier caso, es aconsejable leer la documentación de Matlab para conocer mejor su uso.
+
+
+\section[diagramas de fase para sistemas 2D]{Ejemplo de código para obtener una representación del diagrama de fases (sistemas 2D)}\label{AVdP}
+
+Este ejemplo se ha construido sobre el código del ejemplo anterior, para el cálculo de la dinámica del péndulo invertido.
+
+\begin{lstlisting}
+% Representacion del campo vectorial del sistema. 
+% Para este calculo empezamos por obtener un conjunto de puntos
+% sobre los que obtener los valores del campo. En este caso (pendulo invertido), 
+
+% Definimos y damos valores los parametros del sistema
+g1 = 10; % gravedad
+m1 = 10; % masa
+l1 = 10; % longitud
+b1 = 100; % resistencia viscosa
+
+% Definimos un intervalo de tiempo para el que queremos que el
+% integrador resuelva las ecuaciones
+tin = [0,15];
+
+% Sabemos la posicion de los puntos de equilibrio, 
+% parece interesante seleccionar una region que que contenga varios,
+x1 = -3*pi/2:3*pi/18:3*pi/2;
+x2 = -3:0.3:3;
+
+% Empleamos la funcion meshgrid de matlab para construir un mallado
+[x1m,x2m] = meshgrid(x1,x2);
+
+% Calculamos las componentes de campo en los puntos del mallado
+xdot1m = x2m; 
+xdot2m = (g1*sin(x1m)-b1*x2m/m1)/l1;
+
+% Empleamos quiver para representar en cada punto del mallado
+% el vector asociado al campo 
+figure(1)
+quiver(x1m,x2m,xdot1m,xdot2m)
+axis('equal')
+xlabel('$\theta$','interpreter','latex')
+ylabel('$\dot{\theta}$','interpreter','latex')
+
+% Obtencion del diagrama de fases.
+% Creamos un vector de valores de x1 y otro de x2 en la region de interes
+%(nomalmente una region que contenga puntos de equilibrio).
+% Se trata de crear un conjunto de condiciones iniciales.
+x1 = -3*pi/2:3*pi/6:3*pi/2;
+x2 = -3:0.6:3;
+figure(2)
+hold on
+% Resolvemos para todas las condiciones iniciales seleccionadas
+% y dibujamos los resultados. Esto puede ser muy lento
+% segun el sistema y la precision que pidamos
+for i = 1:length(x1)
+    for j =1: length(x2)
+     [t,x] = ode45(@(t,x)pendulo_inv(t,x,m1,l1,g1,b1),t,[x1(i),x2(j)]');
+     plot(x1(i),x2(j),'x') %dibujo condiciones iniciales
+     plot(x(:,1),x(:,2)) %dibujo trayectoria obtenida 
+    end
+end
+xlabel('$\theta$','interpreter','latex')
+ylabel('$\dot{\theta}$','interpreter','latex')
+
+\end{lstlisting}
+
+\chapter[Cálculo simbolico]{Ejemplo de uso de cálculo simbólico en Matlab para el estudio de la estabilidad}
+Este ejemplo muestra el uso de los comandos más utilizados de matlab para apoyar el análisis de estabilidad de sistemas.
+
+\begin{lstlisting}
+%creamos unas variables simbolicas
+
+syms x1 x2 real %real no es una variable. Sino que define x1 y x2 como
+                %variable reales. 
+syms s
+
+
+% definimos las ecuaciones del sistema
+f(1,1) =  x2
+f(2,1) = -x1 -x2 + x1*x2 
+%la funcion solve obtendra las soluciones de la ecuacion f(x1,x2) =(0,0) y
+%por tanto los puntos de equilibrio del sistema
+[X01 X02] = solve(f,x1,x2)
+X0 = [X01, X02]
+
+% Calculamos el Jacobiano
+J = jacobian(f,[x1 x2])
+% sustituimos en los puntos en que se anulan las ecuaciones de estado, ya que
+% dichos puntos son precisamente los puntos de equilibrio. 
+
+% uso un bucle para obtener la matriz del sistema linealizado y los
+% autovalores en todos los puntos de equilibrio obtenidos. (en realidad en
+% este caso solo esta el x= (0,0)
+for i = 1:size(X0,1)
+    Je = subs(J,{x1,x2},[X01(i),X02(i)])
+    E = double(eig(Je))
+    % En algunos casos, sobre todo si el sistema depende de parametros, es
+    % mas facil analizar la estabilidad a partir del polinomio carateristico
+    % de la matriz del sistema (Je) y emplear el metodo de Routh-Hurwitz
+    % para estudiar la estabilidad a partir de los coeficientes del
+    % polinomio caracteristico.
+    C = det(Je - s*eye(size(Je)))
+end
+
+% funcion de liapunov para el linealizado,
+% en este caso, solo hay un punto de equilibrio que es el origen. Podemos
+% obtener una funcion de Lyapunov para el sistema lineal,resolviendo la
+% ecuacion de lyapunov, obtenemos una funcion cuadratica V(x) = x'*P*x. 
+% Despues empleamos dicha funcion como candidata de Lyapunov para estudiar
+% el sistema no lineal
+P =lyap(double(Je'),[1 0;0 1])
+V = [x1 x2]*P*[x1;x2]
+% calculamos el gradiente de la funcion de liapunov y multiplicamos por f de
+% este modo obtenemos la derivada de Lee, El comando simplify, simplifica el
+% resultado.
+grV = gradient(V)
+dotV = simplify(grV'*f)
+
+% por supuesto, estudiar si la derivada de Lee, cumple las condiciones del
+% teorema de Lyapunov o encontrar el dominio de atraccion es algo que matlab
+% no puede hacer por nosotros. Hay que usar la cabeza, normal, de pensar ;)
+
+% Empleo los metodos ya vistos en otros ejemplos para resolver el sistema
+% numericamente y representar el diagrama de fases.
+
+% ode45 va a mostrar un warning por pantalla, debido a que hay soluciones
+% que divergen. Para evitarlo, anulo los warning
+warning('off')
+for i =-3:0.5:3
+    for j = -3:0.2:3
+        [t,x] = ode45(@ej11,[0 10],[i;j]);
+        plot(x(:,1),x(:,2))
+        hold on
+        plot(i,j,'or')
+    end
+end
+axis([-5 5 -5 5])
+%r ecupero los warnings
+warning('on')
+% funcion f para emplear con ode45
+function dotx = ej11(t,x)
+dotx(1,1) = x(2,1);
+dotx(2,1) = -x(1,1) - x(2,1) + x(1,1)*x(2,1);
+end
+\end{lstlisting}
