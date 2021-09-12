@@ -9,4 +9,4 @@ realimentados.pdf: realimentados.tex
 	#bibtex realimentados
 	pdflatex realimentados
 	pdflatex realimentados
-	mv realimentados.pdf ./pdf
+	mv realimentados.pdf ./pdf/
