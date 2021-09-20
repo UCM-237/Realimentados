@@ -36,7 +36,7 @@ Una solución que es estable, pero no asintóticamente estable, se denomina marg
 \end{definition}
 
 \begin{definition}[Estabilidad exponencial]
-Una solución $x(t;x_0)$ para el sistema \ref{eq: sis1} se dice que es exponencialmente estable estable si es estable y además  $\exists r>0$, tal que dada otra condición inicial $\hat x_0$ se verifica que existen $\alpha>0 , \sigma >0$, tales que,
+Una solución $x(t;x_0)$ para el sistema \ref{eq: sis1} se dice que es exponencialmente estable si es estable y además  $\exists r>0$, tal que dada otra condición inicial $\hat x_0$ se verifica que existen $\alpha>0 , \sigma >0$, tales que,
 \begin{equation}
 \|\hat x_0-x_0\|<r \Rightarrow \|x(t;\hat x_0) - x(t;x_0)\| \leq \|\hat x_0 - x_0\| \alpha e^{-\sigma t}
 \end{equation}
@@ -77,10 +77,10 @@ Podemos, a partir de esta definición, obtener algunas propiedades importantes d
 y = g(x)
 \end{align}
 
-\paragraph{Sistemas realimentados.} Del mismo modo, podemos considerar sistemas en los que la entrada es una función directa del valor de los estados; $\textbf{u}= \textbf{c(x)}$. Hablaremos entonces de un \emph{sistema realimentado}. A efectos de análisis de la estabilidad del sistema, no hay diferencia entre un sistema realimentado y un sistema autónomo,
+\paragraph{Sistemas realimentados.} Del mismo modo, podemos considerar sistemas en los que la entrada es una función directa del valor de los estados; $\textbf{u}= \textbf{k(x)}$. Hablaremos entonces de un \emph{sistema realimentado}. A efectos de análisis de la estabilidad del sistema, no hay diferencia entre un sistema realimentado y un sistema autónomo,
 \begin{align}
-\dot{x} = f(x,c(x)) = \bar{f}(x)\\
-y = g(x,c(x)) = \bar{g}(x)
+\dot{x} = f(x,k(x)) = \bar{f}(x)\\
+y = g(x,k(x)) = \bar{g}(x)
 \end{align}
 El nombre de sistema realimentado, proviene de considerar que se están \emph{realimentando} los estados en la entrada del sistema. El concepto de realimentación constituye uno de los pilares de los sistemas de control. La figura \ref{fig:rea}, muestra esquemáticamente este concepto.
 
@@ -130,7 +130,7 @@ El punto de equilibrio x = 0 del sistema \ref{eq: aut} es:
  \item Es inestable si no es estable.
  \item Es asintóticamente estable si es estable y además se puede elegir $\delta$ de modo que,
 \begin{equation*}
-\| x(0)\| < \delta \Leftarrow \lim_{t \to \infty} x(t) = 0
+\| x(0)\| < \delta \Rightarrow \lim_{t \to \infty} x(t) = 0
 \end{equation*}
 \end{itemize}
 \qed
@@ -174,7 +174,7 @@ Pero entonces $\Omega_\beta$ está en el interior de $B_r$.  Si no fuera así, s
 
 El conjunto $\Omega_\beta$ tiene la propiedad, de que cualquier trayectoria del sistema que empiece en $\Omega_\beta$  en $t=0$ permanecerá en $\Omega_\beta, \forall t \geq 0$; ya que, de acuerdo con \ref{eq: lyap2}
 \begin{equation*}
-\dot V \leq 0 \Rightarrow V(x(t)) \leq V(x(t)) \leq \beta, \forall t \geq 0.
+\dot V \leq 0 \Rightarrow V(x(t)) \leq V(x(0)) \leq \beta, \forall t \geq 0.
 \end{equation*}
 
 Como $V(x)$ es continua y $V(0) = 0$,

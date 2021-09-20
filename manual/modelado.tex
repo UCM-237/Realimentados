@@ -474,13 +474,13 @@ De nuevo. Podemos distinguir varios casos atendiendo a la forma que tome la part
 
 \begin{figure}
 \centering
-\subfigure[Nodo inestable. $\lambda_1 = \lambda_2 \ge 0$\label{fig:lin2a}]{
+\subfigure[Nodo inestable. $\lambda_1 = \lambda_2 > 0$\label{fig:lin2a}]{
 \includegraphics[width=0.31\linewidth]{lineal_ji.eps}}
-\subfigure[Nodo estable. $\lambda_1 = \lambda_2 \le 0$\label{fig:lin2b}]{
+\subfigure[Nodo estable. $\lambda_1 = \lambda_2 < 0$\label{fig:lin2b}]{
 \includegraphics[width=0.31\linewidth]{lineal_je.eps}}\\
-\subfigure[$\lambda_1=0,\ \lambda_2 \ge 0$\label{fig:lin2c}]{
+\subfigure[$\lambda_1=0,\ \lambda_2 > 0$\label{fig:lin2c}]{
 \includegraphics[width=0.31\linewidth]{lineal_0i.eps}}
-\subfigure[$\lambda_1 = 0,\ \lambda_2 \le 0$\label{fig:lin2d}]{
+\subfigure[$\lambda_1 = 0,\ \lambda_2 > 0$\label{fig:lin2d}]{
 \includegraphics[width=0.31\linewidth]{lineal_0e.eps}}
 \subfigure[$\lambda_1 = 0,\ \lambda_2 = 0$\label{fig:lin2e}]{
 \includegraphics[width=0.31\linewidth]{lineal_doblecero.eps}}
@@ -530,11 +530,11 @@ De nuevo, la recta definida por el autovector $v_1$ define los puntos de equilib
 
 Como se decía al principio de esta sección, estudiar el comportamiento de los sistemas lineales cerca de su punto de equilibrio $x=0$, tiene interés para los sistemas no lineales, ya que en muchos casos es posible conocer cual sera el comportamiento \emph{local} de un sistema no lineal cerca de un punto de equilibrio, linealizando el sistema en torno a dicho punto de equilibrio. Hasta qué punto los resultados de la linealización son válidos, va a depender en cómo de robustos son los sistemas lineales obtenidos frente a pequeñas perturbaciones. 
 
-En general, para sistemas lineales cuyos autovalores tiene parte real distinta de cero, Pequeñas perturbaciones en la estructura del sistema no cambiarán significativamente el valor de la parte real de los autovalores , por tanto conservarán su signo positivo o negativo y el sistema seguirá siendo inestable o estable. De estos sistemas se dice que son estructuralmente inestables o estructuralmente estables, y su punto de equilibrio $x=0$ se dice que es hiperbólico. 
+En general, para sistemas lineales cuyos autovalores tiene parte real distinta de cero, Pequeñas perturbaciones en la estructura del sistema no cambiarán significativamente el valor de la parte real de los autovalores, por tanto conservarán su signo positivo o negativo y el sistema seguirá siendo inestable o estable. De estos sistemas se dice que son estructuralmente inestables o estructuralmente estables, y su punto de equilibrio $x=0$ se dice que es hiperbólico. 
 
 Si el sistema resultante de linealizar un sistema no lineal da como resultado un sistema lineal estructuralmente estable o inestable, el sistema no lineal será también inestable o estable en las proximidades del punto de equilibrio. Este resultado es generalizable a sistemas de dimensiones mayores que 2.
 
-Para  sistemas lineales cuyos autovalores son nulos, cualquier perturbación, por pequeña que sea, modificará el valor de la parte real de los autovalores, haciéndolos positivos o negativos. Como resultado, si al linealizar un sistema no lineal se obtiene como resultado un sistema con autolores con parte real nula, no es posible concluir nada sobre el comportamiento del sistema no lineal en las proximidades del punto de equilibrio.
+Para  sistemas lineales cuyos autovalores tienen parte real nula, cualquier perturbación, por pequeña que sea, modificará el valor de la parte real de los autovalores, haciéndolos positivos o negativos. Como resultado, si al linealizar un sistema no lineal se obtiene como resultado un sistema autovalers con parte real negativa y/o  autovalores con parte real nula, no es posible concluir nada sobre el comportamiento del sistema no lineal en las proximidades del punto de equilibrio. 
 
 \subsection{Bifurcaciones}
 
@@ -544,39 +544,39 @@ Un aspecto interesante que ha salido de pasada, es el estudio de la estabilidad 
 Supongamos que tenemos un sistema dinámico que depende de un parámetro $\lambda$,
 
 \begin{equation}
-\dot x = g(x,\lambda), y \in \ \mathbb{R}^n, \lambda \in \ \mathbb{R}^p,
+\dot x = g(x,\lambda), x \in \ \mathbb{R}^n, \lambda \in \ \mathbb{R}^p,
 \end{equation}
 donde $g$ es una función diferenciable $\mathcal{C}^r$ en algún conjunto abierto en $ \mathbb{R}^n \times  \mathbb{R}^p$.
 
 supongamos además que el sistema tiene un punto de equilibrio $x^*$ para un determinado valor del parámetro $\lambda = \lambda^*$,
 
 \begin{equation}
-g(x^*,\lambda^*) = 0
+g(x^*,\lambda^*) = 0.
 \end{equation}
 
 En primer lugar, podemos estudiar la estabilidad del punto de equilibrio, linealizando el sistema en torno al punto de equilibrio y estudiando la estabilidad del sistema linealizado. En segundo lugar, podríamos plantearnos cómo afectan a la estabilidad del sistema pequeñas variaciones en el valor del parámetro $\lambda^*$.
 
 Si linealizamos,
 \begin{equation}
-\dot {\delta x} = A \delta x
+\delta \dot{x} = A \delta x,
 \end{equation}
-Donde ahora, el jacobiano en el punto de equilibrio depende también del parámetro $\lambda$
+donde ahora, el jacobiano en el punto de equilibrio depende también del parámetro $\lambda$,
 
 \begin{equation}
-A = D_x(x^*,\lambda^*)
+A = D_x(x^*,\lambda^*).
 \end{equation}
 
 Tendremos que si el punto de equilibrio es hiperbólico --no hay ningún autovalor de $A$ sobre el eje imaginario-- El sistema será estable o inestable según el signo de la parte real de los autovalores de $A$. Esto nos resuelve también la cuestión del efecto de las pequeñas variaciones de $\lambda$. En principio, éstas variaciones no cambiarán la naturaleza del punto de equilibrio.
 
-Sin embargo, si la matriz $A$ tiene autovalores en el eje, pequeños variaciones de $\lambda$ pueden cambiar completamente el comportamiento del sistema. Dando lugar a la creación y/o destrucción de puntos fijos, la aparición de ciclos límite e incluso comportamiento caótico.
+Sin embargo, si la matriz $A$ tiene autovalores en el eje imaginario, pequeños variaciones de $\lambda$ pueden cambiar completamente el comportamiento del sistema. Dando lugar a la creación y/o destrucción de puntos de equilibrio, a la aparición de ciclos límite e incluso de comportamiento caótico.
 
 El tema es bastante complejo, y nos vamos a limitar a ilustrarlo con algunos casos y ejemplos. Empecemos con sistemas en una dimensión en los que el sistema linealizado tiene un autovalor cero, cuando el parámetro toma el valor cero.
 
 \begin{example}[Bifurcación silla-nodo]
 \begin{figure}
-\subfigure[Silla-nodo]{\includegraphics[scale=0.35]{sadlenode.eps}}
+\subfigure[Silla-nodo]{\includegraphics[scale=0.35]{sadlenode2.eps}}
 \label{fig:saddlenode}
-\subfigure[Transcrítica]{\includegraphics[scale=0.35]{trans.eps}}
+\subfigure[Transcrítica]{\includegraphics[scale=0.35]{trans2.eps}}
 \label{fig:trans}
 \caption{Ejemplos de bifurcaciones silla-nodo y transcrítica}
 \end{figure}
@@ -591,7 +591,7 @@ Para el caso en 	que $\mu<0$ no existen en el sistema puntos de equilibrio.
 
 El sistema descrito muestra un ejemplo de \emph{bifurcación}. El punto $(x,\mu)=(0,0)$ recibe el nombre de punto de bifurcación y el valor del parámetro $\mu = 0$ es un valor de bifurcación. Por último la figura \ref{fig:saddlenode} muestra el \emph{diagrama de bifurcación} de este sistema. En él, se ha representado la parábola $x=\pm \sqrt{\mu}$ correspondiente a la posición de los puntos de equilibrio del sistema en función de $\mu$. La rama representada con línea continua, corresponde a los nodos estables, mientras que la rama representada con una línea discontinua, corresponde a los nodos inestable. Sobre el diagrama, se han representado también las trayectorias que seguiría el sistema para diferentes valores iniciales de la variable $x$, las  aspas representan posiciones iniciales y los círculos las posiciones finales para el tiempo de simulación empleado. Es fácil ver cómo, para valores positivos de $\mu$  las trayectorias se alejan de la rama negativa de la parábola y, en su caso, tienden a converger en la positiva que contiene los puntos de equilibrio estables. Para $\mu =0$ los dos nodos colapsan en un único punto de equilibrio; condiciones iniciales negativas produce trayectorias que se alejan del origen, mientras que para condiciones iniciales positivas, las trayectorias convergen al origen. Para valores de $\mu<0$ no hay puntos de equilibrio y $x\to -\infty$ cuando $t\to \infty$.
 
-Este tipo de bifurcaciones en las que a un lado de un valor del parámetro ($\mu$) no hay puntos de equilibrio y en el otro lado hay dos puntos de equilibrio, se conocen con el nombre de bifurcación silla-node (\emph{saddle-node}).  
+Este tipo de bifurcaciones en las que a un lado de un valor del parámetro ($\mu$) no hay puntos de equilibrio y en el otro lado hay dos puntos de equilibrio, se conocen con el nombre de bifurcación silla-nodo (\emph{saddle-node}).  
 
 \qed
 \end{example}
@@ -601,7 +601,7 @@ Este tipo de bifurcaciones en las que a un lado de un valor del parámetro ($\mu
 \begin{equation*}
 \dot x = \mu x - x^2,\  x, \mu \in \mathbb{R},  
 \end{equation*}
-Al igual que en el ejemplo anterior, si hacemos $\mu=0$, el único punto de equilibrio es $x=0$ y de nuevo en este caso, el autovalor del sistema lineal vale cero. Si dejamos que $\mu$ tome valores distintos de cero, el sistema tiene dos puntos críticos para cada valor de $mu$, $x^*=0$ y $x^*=\mu$. No es difícil comprobar que para el sistema linealizado tendremos dos situaciones distintas. Si $\mu>0$., el punto de equilibrio $x^*=\mu$ es estable y el punto de equilibrio $x^*=0$ es inestable. Para $\mu<0$ el carácter de los puntos críticos se invierte. La figura \ref{fig:trans} muestra el diagrama de bifurcación para este sistema.  Es fácil ver cómo para $\mu<0$ las trayectorias divergen de la recta $x=\mu$ y convergen, en su caso, a la recta $x=0$. Para $\mu>0$ la situación se invierte y ahora las trayectorias convergen a $x=\mu$ y divergen de $x=0$. Para $\mu=0$ los puntos de equilibrio colapsas en $x=0$. Este tipo de bifurcación se conoce con el nombre de bifurcación transcrítica
+Al igual que en el ejemplo anterior, si hacemos $\mu=0$, el único punto de equilibrio es $x=0$ y de nuevo en este caso, el autovalor del sistema lineal vale cero. Si dejamos que $\mu$ tome valores distintos de cero, el sistema tiene dos puntos críticos para cada valor de $\mu$, $x^*=0$ y $x^*=\mu$. No es difícil comprobar que para el sistema linealizado tendremos dos situaciones distintas. Si $\mu>0$., el punto de equilibrio $x^*=\mu$ es estable y el punto de equilibrio $x^*=0$ es inestable. Para $\mu<0$ el carácter de los puntos críticos se invierte. La figura \ref{fig:trans} muestra el diagrama de bifurcación para este sistema.  Es fácil ver cómo para $\mu<0$ las trayectorias divergen de la recta $x=\mu$ y convergen, en su caso, a la recta $x=0$. Para $\mu>0$ la situación se invierte y ahora las trayectorias convergen a $x=\mu$ y divergen de $x=0$. Para $\mu=0$ los puntos de equilibrio colapsas en $x=0$. Este tipo de bifurcación se conoce con el nombre de bifurcación transcrítica
 \qed
 \end{example}
  
@@ -612,9 +612,9 @@ Para el sistema,
 \end{equation*}
 Se cumple de nuevo la condición de los ejemplos anteriores para $\mu=0$. Para $\mu>0$, se obtienen tres puntos críticos $x^*=0$ inestable, y $x^*=\pm\sqrt{\mu}$, ambos estables (compruébalo). Para $\mu<0$ solo tenemos un punto crítico $x^*=0$ que resulta ser estable. La figura \ref{fig:horquilla} muestra el diagrama de bifurcación para este sistema. La interpretación es similar a la de los dos ejemplos anteriores.
 \begin{figure}
-\subfigure[Horquilla]{\includegraphics[scale=0.35]{pitchfork.eps}}
+\subfigure[Horquilla]{\includegraphics[scale=0.35]{pitchfork2.eps}}
 \label{fig:horquilla}
-\subfigure[No existe bifurcación]{\includegraphics[scale=0.35]{nobif.eps}}
+\subfigure[No existe bifurcación]{\includegraphics[scale=0.35]{nobif2.eps}}
 \label{fig:nobif}
 \caption{Ejemplo de bifurcación en horquilla y un caso en que no hay bifurcación}
 \end{figure}
@@ -654,8 +654,8 @@ Consideremos el sistema,
 El único punto de equilibrio del sistema es $x^*= (0,0)$. Si linealizamos el sistema obtenemos en torno a dicho punto, obtenemos que el jacobiano vale,
 \begin{align*}
 	A = D_xf(x^*) &=  \begin{bmatrix}
-		\mu &  1 \\
-		-1 & 0
+		\mu &  -1 \\
+		1 & mu
 	\end{bmatrix}
 \end{align*}
 Que tiene autovalores $\mu\pm j$. Estos autovalores son imaginarios puros para $\mu=0$ y cruzan el eje imaginario cuando $\mu$ pasa de negativo a positivo. Para $\mu<0$ el origen es un foco atractivo, para $mu>0$ se convierte en un foco repulsivo.
