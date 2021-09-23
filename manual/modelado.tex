@@ -431,7 +431,7 @@ El comportamiento del sistema original, en la proximidades del punto de equilibr
 \delta x(t) = P\exp(J_rt)P^{-1}\delta x_0 
 \end{equation}
 
-donde  $J_r$ es la forma de Jordan \emph{real} de la matriz A y $P=[v_1,v_2]$,$\ J_r=P^{-1}AP$ es una matriz formada por los autovectores de $A$. La matriz de Jordan, en este caso bidimensional, puede tomar una de las siguientes formas,
+donde  $J_r$ es la forma de Jordan \emph{real} de la matriz A y $P=[v_1,v_2]$ es una matriz formada por los autovectores de $A$, $\ J_r=P^{-1}AP$. La matriz de Jordan, en este caso bidimensional, puede tomar una de las siguientes formas,
 \begin{equation}\label{eq:240}
 \begin{bmatrix}
 \lambda_1 & 0\\ 0 & \lambda_2
@@ -528,7 +528,7 @@ Por último, para el caso en que ambos autovalores son nulos. Si la matriz del s
 
 De nuevo, la recta definida por el autovector $v_1$ define los puntos de equilibrio del sistema. Las trayectorias en el espacio de las fases serán líneas rectas paralelas a dicha línea. La dirección del movimiento dependerá de las condiciones iniciales. La figura \ref{fig:lin2e} muestra un ejemplo.
 
-Como se decía al principio de esta sección, estudiar el comportamiento de los sistemas lineales cerca de su punto de equilibrio $x=0$, tiene interés para los sistemas no lineales, ya que en muchos casos es posible conocer cual sera el comportamiento \emph{local} de un sistema no lineal cerca de un punto de equilibrio, linealizando el sistema en torno a dicho punto de equilibrio. Hasta qué punto los resultados de la linealización son válidos, va a depender en cómo de robustos son los sistemas lineales obtenidos frente a pequeñas perturbaciones. 
+Como se decía al principio de esta sección, estudiar el comportamiento de los sistemas lineales cerca de su punto de equilibrio $x=0$, tiene interés para los sistemas no lineales, ya que en muchos casos es posible conocer cual será el comportamiento \emph{local} de un sistema no lineal cerca de un punto de equilibrio, linealizando el sistema en torno a dicho punto de equilibrio. Hasta qué punto los resultados de la linealización son válidos, va a depender en cómo de robustos son los sistemas lineales obtenidos frente a pequeñas perturbaciones. 
 
 En general, para sistemas lineales cuyos autovalores tiene parte real distinta de cero, Pequeñas perturbaciones en la estructura del sistema no cambiarán significativamente el valor de la parte real de los autovalores, por tanto conservarán su signo positivo o negativo y el sistema seguirá siendo inestable o estable. De estos sistemas se dice que son estructuralmente inestables o estructuralmente estables, y su punto de equilibrio $x=0$ se dice que es hiperbólico. 
 
@@ -574,10 +574,8 @@ El tema es bastante complejo, y nos vamos a limitar a ilustrarlo con algunos cas
 
 \begin{example}[Bifurcación silla-nodo]
 \begin{figure}
-\subfigure[Silla-nodo]{\includegraphics[scale=0.35]{sadlenode2.eps}}
-\label{fig:saddlenode}
-\subfigure[Transcrítica]{\includegraphics[scale=0.35]{trans2.eps}}
-\label{fig:trans}
+\subfigure[Silla-nodo \label{fig:saddlenode}]{\includegraphics[scale=0.35]{sadlenode2.eps}}
+\subfigure[Transcrítica \label{fig:trans}]{\includegraphics[scale=0.35]{trans2.eps}}
 \caption{Ejemplos de bifurcaciones silla-nodo y transcrítica}
 \end{figure}
 Consideremos el sistema,
@@ -612,10 +610,9 @@ Para el sistema,
 \end{equation*}
 Se cumple de nuevo la condición de los ejemplos anteriores para $\mu=0$. Para $\mu>0$, se obtienen tres puntos críticos $x^*=0$ inestable, y $x^*=\pm\sqrt{\mu}$, ambos estables (compruébalo). Para $\mu<0$ solo tenemos un punto crítico $x^*=0$ que resulta ser estable. La figura \ref{fig:horquilla} muestra el diagrama de bifurcación para este sistema. La interpretación es similar a la de los dos ejemplos anteriores.
 \begin{figure}
-\subfigure[Horquilla]{\includegraphics[scale=0.35]{pitchfork2.eps}}
-\label{fig:horquilla}
-\subfigure[No existe bifurcación]{\includegraphics[scale=0.35]{nobif2.eps}}
-\label{fig:nobif}
+\subfigure[Horquilla \label{fig:horquilla}]{\includegraphics[scale=0.35]{pitchfork2.eps}}
+\subfigure[No existe bifurcación \label{fig:nobif}]{\includegraphics[scale=0.35]{nobif2.eps}}
+
 \caption{Ejemplo de bifurcación en horquilla y un caso en que no hay bifurcación}
 \end{figure}
 
@@ -627,14 +624,14 @@ Se cumple de nuevo la condición de los ejemplos anteriores para $\mu=0$. Para $
 \dot x = \mu - x^3,\  x, \mu \in \mathbb{R},  
 \end{equation*}
 
-Se cumple la misma condición que en los casos anteriores para $\mu=0$. Es fácil comprobar que para $\mu \neq 0$, el sistema sigue teniendo un único punto crítico $x^*=\sqrt[3]{\mu}$. No hay cambio por tanto, en el número de puntos críticos, ni tampoco en en el carácter del único punto crítico, que es siempre un nodo estable.  Podemos afirmar que en este caso no se da una bifurcación.
+Se cumple la misma condición que en los casos anteriores para $\mu=0$. Es fácil comprobar que para $\mu \neq 0$, el sistema sigue teniendo un único punto crítico $x^*=\sqrt[3]{\mu}$. No hay cambio por tanto, en el número de puntos críticos, ni tampoco en en el carácter del único punto crítico, que es siempre un nodo estable.  Podemos afirmar que en este caso no se da una bifurcación tal y como se muestra en el diagrama de bifurcación de la figura \ref{fig:nobif}.
 
 \qed
 \end{example}
-Veamos por último un ejemplo del caso en que un sistema de segundo orden tiene dos autovalores imaginarios puros.
 
  El término bifurcación no es fácil de definir. Una definición cualitativa e informal sería decir que una bifurcación para un punto de equilibrio de un sistema dinámico se produce cuando el cambio de un parámetro modifica el comportamiento del sistema en las proximidades del punto crítico.
  
+Veamos por último un ejemplo del caso en que un sistema de segundo orden tiene dos autovalores imaginarios puros.
 \begin{figure}
 \centering
 \subfigure[Diagrama de bifurcación]{\includegraphics[scale=0.7]{hopf2.eps}}\\
@@ -655,7 +652,7 @@ El único punto de equilibrio del sistema es $x^*= (0,0)$. Si linealizamos el si
 \begin{align*}
 	A = D_xf(x^*) &=  \begin{bmatrix}
 		\mu &  -1 \\
-		1 & mu
+		1 & \mu
 	\end{bmatrix}
 \end{align*}
 Que tiene autovalores $\mu\pm j$. Estos autovalores son imaginarios puros para $\mu=0$ y cruzan el eje imaginario cuando $\mu$ pasa de negativo a positivo. Para $\mu<0$ el origen es un foco atractivo, para $mu>0$ se convierte en un foco repulsivo.

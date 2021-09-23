@@ -36,21 +36,20 @@ Una solución que es estable, pero no asintóticamente estable, se denomina marg
 \end{definition}
 
 \begin{definition}[Estabilidad exponencial]
-Una solución $x(t;x_0)$ para el sistema \ref{eq: sis1} se dice que es exponencialmente estable si es estable y además  $\exists r>0$, tal que dada otra condición inicial $\hat x_0$ se verifica que existen $\alpha>0 , \sigma >0$, tales que,
+Una solución $x(t;x_0)$ para el sistema \ref{eq: sis1} se dice que es exponencialmente estable si es estable y además  $\exists r>0$, tal que dada otra condición inicial $\hat x_0$ se verifica que existen $\alpha>0 , \lambda >0$, tales que,
 \begin{equation}
-\|\hat x_0-x_0\|<r \Rightarrow \|x(t;\hat x_0) - x(t;x_0)\| \leq \|\hat x_0 - x_0\| \alpha e^{-\sigma t}
+\|\hat x_0-x_0\|<r \Rightarrow \|x(t;\hat x_0) - x(t;x_0)\| \leq \|\hat x_0 - x_0\| \alpha e^{-\lambda t}
 \end{equation}
 \qed
 \end{definition}
 
-Por último indicar que cuando la estabilidad se cumple para cualquier condición inicial, $\hat x  \in \mathbb{R}^n$ la solución $x(t;x_0)$ se denomina \emph{globalmente} estable.
-
-
+Por último indicar que cuando la estabilidad se cumple para cualquier condición inicial, $\hat{x}_0  \in \mathbb{R}^n$ la solución $x(t;x_0)$ se denomina \emph{globalmente} estable.
+ 
 \subsection{Puntos de equilibrio} 
 \begin{definition}[Punto de equilibrio] Dados un sistema dinámico definido por las ecuaciones,
 \begin{align}
-\dot{x} = f(x,u)\\
-y = g(x,u)
+\dot{x} = f(x,u) \label{eq:6}\\
+y = g(x,u) \label{eq:7}
 \end{align}
 donde $x \in \mathbb{R}^n$, $u \in \mathbb{R}^m$ e $y \in \mathbb{R}^l$. Se definen como puntos de equilibrio o puntos estacionarios los valores del vector de estados $\overline x$ y del vector de entradas $\overline u$ para los cuales el estado y, consecuentemente, la salida del sistema permanecen constantes,
 
@@ -65,7 +64,7 @@ Si el vector de estados no cambia, su derivada será cero. Por tanto, mientras n
 
 Podemos, a partir de esta definición, obtener algunas propiedades importantes de los puntos de equilibrio:
 \begin{enumerate}
-\item Una vez que un sistema alcanza un punto de equilibrio, permanece en él indefinidamente. (Todas las derivadas temporales de las componentes del vector de estado son cero.
+\item Una vez que un sistema alcanza un punto de equilibrio, permanece en él indefinidamente. (Todas las derivadas temporales de las componentes del vector de estado son cero).
 \item Desde el punto de vista del control de sistemas, los puntos de equilibrio juegan un papel importante ya que representan condiciones de operación constante.
 \item Un sistema dinámico puede tener uno o más puntos de equilibrio, o no tener ninguno. 
 \end{enumerate}
@@ -73,9 +72,9 @@ Podemos, a partir de esta definición, obtener algunas propiedades importantes d
 \paragraph{Sistemas autónomos.} Para simplificar el estudio de la estabilidad, podemos empezar por considerar el casos de sistemas autónomos con entrada nula  $u = 0, \ \forall t$. La salida evoluciona a partir de un estado inicial $x_0\equiv x(t_0)$,
 
 \begin{align}
-\dot{x} = f(x)\\
+\dot{x} = f(x) \label{eq:310}\\
 y = g(x)
-\end{align}
+\end{align}\label{eq:311}
 
 \paragraph{Sistemas realimentados.} Del mismo modo, podemos considerar sistemas en los que la entrada es una función directa del valor de los estados; $\textbf{u}= \textbf{k(x)}$. Hablaremos entonces de un \emph{sistema realimentado}. A efectos de análisis de la estabilidad del sistema, no hay diferencia entre un sistema realimentado y un sistema autónomo,
 \begin{align}
@@ -103,6 +102,21 @@ El nombre de sistema realimentado, proviene de considerar que se están \emph{re
 \caption{Esquema general de un sistema realimentado}\label{fig:rea}
 \end{figure}
 
+\paragraph{Movimiento Nominal.} En ocasiones nos interesa estudiar el problema de la estabilidad, no de un punto de equilibrio, sino de una trayectoria. Por ejemplo, que sucede si apartamos a un sistema de su ciclo límite, a un satélite de su órbita o, en general, a un vehículo controlado de su trayectoria. 
+
+Supongamos que $x_e(t;x_0)$ es una solución para el sistema, representado por las ecuaciones \ref{eq:310} y \ref{eq:311}, con condición inicial $x_e(0) = x_0$. Si tomamos una condición inicial ligeramente distinta $x(0) = x_e(0) + \delta x_0$, obtendremos una solución distinta $x(t;x_0+\delta x_0)$. Si consideramos la primera de las soluciones como la solución deseada o nominal, podemos considerar la perturbación o error en la trayectoria, inducida por $\delta x_0$, como la diferencia entre las dos soluciones,
+
+\begin{equation}
+e(t) = x(t) - x_e(t).
+\end{equation}
+
+Pero esta diferencia es a su vez solución del siguiente sistema dinámico,
+\begin{equation} \label{eq:315}
+\dot{e} = f(e + x_e(t)) - f(x_e(t) = h(e,t),
+\end{equation}
+
+con la condición inicial $e(0) = \delta x_0$. Como $h(0,t) = 0 \forall t$, Estudiar la estabilidad del sistema original respecto a la solución nominal, es equivalente a estudiar la estabilidad del punto de equilibrio $e=0$ para el sistema  \ref{eq:315}. Por último observar que el sistema \ref{eq:315} no es un sistema autónomo, depende explícitamente del tiempo debido a la presencia de la solución nominal $x_e(t)$ en su definición.
+
 \section{Estabilidad de Lyapunov}
  En esta sección vamos a centrarnos en el estudio de la estabilidad de los puntos de equilibrio. 
 
@@ -110,7 +124,7 @@ Habitualmente, cuando se trata de la estabilidad de los puntos de equilibrio se 
 
 Un punto de equilibrio de un sistema dinámico es \emph{estable} si toda  solución que comienzan cerca del punto de equilibrio permanece cercana al punto de equilibrio; en otro caso, el punto de equilibrio es inestable. Es \emph{asintóticamente estable} si toda solución que empieza próxima al punto de equilibrio no solo permanecen cerca del punto de equilibrio sino que tienden a él cuando el tiempo tiende a infinito.
 
-Podemos relacionar directamente la estabilidad de un punto de equilibrio, con la estabilidad de las trayectorias de un sistema lineal definida en (\ref{esttr}), si consideramos  un punto de equilibrio como una solución del sistema dinámico, cuya condición inicial es el propio punto de equilibrio: $x(t;\overline x) = \overline x$.
+Podemos relacionar directamente la estabilidad de un punto de equilibrio, con la estabilidad de las soluciones del sistema,  definida en (\ref{esttr}), si consideramos  un punto de equilibrio como una solución del sistema dinámico, cuya condición inicial es el propio punto de equilibrio: $x(t;\overline x) = \overline x$.
 
 \subsection{Estabilidad de Lyapunov para sistemas autónomos}
 Consideremos un sistema autónomo genérico,
@@ -119,22 +133,34 @@ Consideremos un sistema autónomo genérico,
 \end{equation}
 donde $f(x): D\rightarrow \mathbb{R}^n$ es una función (localmente) lipschitziana desde un domino $D \subset \mathbb{R}^n$ a $\mathbb{R}^n$. Supongamos además que $\overline x \in D$ es un punto de equilibrio; es decir, $f(\overline x) = 0$. Lo que buscamos es un método para caracterizar el tipo de estabilidad de $\overline x$. En lo que sigue, y sin perdida de generalidad, consideramos que el punto de equilibrio es el origen de coordenadas $\overline x = 0$ \footnote{Siempre es posible hacer un cambio de coordenadas de modo que si $\overline x \neq 0$, $z = x-\overline x$; $\dot z = \dot x = f(x+\overline x) := g(z)$, donde $g(0)=0$.}.
 
-\begin{definition} (Estabilidad de Lyapunov, para un punto de equilibrio)\label{def: est}
+\begin{definition} [Estabilidad de Lyapunov, para un punto de equilibrio]\label{def: est}
 El punto de equilibrio x = 0 del sistema \ref{eq: aut} es:
 \begin{itemize}
-\item estable $\forall \epsilon > 0$ que cumpla:
+\item estable si $\forall \epsilon > 0$ se cumple:
 \begin{equation*}
- \exists \delta =\delta(\epsilon)>0: \| x(0) \| < \delta \Rightarrow \| x(t)\| < \epsilon \ \forall t \ge 0
+ \exists \delta =\delta(\epsilon)>0\  \vert\  \| x(0) \| < \delta \Rightarrow \| x(t)\| < \epsilon \ \forall t \ge 0.
 \end{equation*}
  
  \item Es inestable si no es estable.
  \item Es asintóticamente estable si es estable y además se puede elegir $\delta$ de modo que,
 \begin{equation*}
-\| x(0)\| < \delta \Rightarrow \lim_{t \to \infty} x(t) = 0
+\| x(0)\| < \delta \Rightarrow \lim_{t \to \infty} x(t) = 0.
 \end{equation*}
-\end{itemize}
+
+\item Es exponencialmente estable si es asintóticamente estable y existen dos números positivos $\alpha , \lambda >0$ tales que,
+\begin{equation*}
+\| x(t) \| \leq \alpha\| x(0) \| e^{-\lambda t}. 
+\end{equation*} 
+
+\item Es asintóticamente (o exponencialmente) estable de modo global si es asintóticamente (o exponencialmente) estable para cualquier condición inicial.
+\end{itemize} 
 \qed
 \end{definition}
+
+
+Para un punto de equilibrio asintóticamente estable, el entorno $\|x(0)\| < \delta$ es   \emph{un} dominio de atracción de punto de equilibrio $x = 0$. Mientras que \emph{el} dominio de atracción del punto de equilibrio lo constituyen todos los puntos para los cuales, las trayectorias que comienzan en dichos puntos convergen al origen. Un punto de equilibrio estable, en el sentido de Lyapunov, que no es asintóticamente estable, recibe el nombre de marginalmente estable.
+
+
 
 En 1892 Lyapunov propuso un método para analizar la estabilidad de un punto de equilibrio, basado en el análisis  una función $V:D\to \mathbb{R}$, continua y diferenciable en un entorno $D \subset \mathbb{R}^n$. En concreto, el método analiza la variación de la función $V$ a lo largo de las \emph{trayectorias} del sistema cuya estabilidad se quiere analizar, Podemos representar dicha variación empleando la derivada temporal de la función $V$
 \begin{equation} \label{eq: dlyap}
@@ -162,15 +188,15 @@ entonces $x=0$ es estable de forma local. Además, si
 Entonces $x(0)$ es asintóticamente estable de forma local.
 \end{theorem}
 \begin{proof}
-Dado $\epsilon > 0$, elegimos $r \ in (0,\epsilon]$ tal que,
+Dado $\epsilon > 0$, elegimos $r \in (0,\epsilon]$ tal que,
 \begin{equation*}
-B_r = \left\{ x \in \mathbb{R} \ |\  \|x\| \leq r \right\} \subset D.
+B_r = \left\{ x \in \mathbb{R}^n \ |\  \|x\| \leq r \right\} \subset D.
 \end{equation*}
 Sea $\alpha =  \min_{\|x\| = r}V(x)$. Donde, $\alpha >0$ de acuerdo con \ref{eq: lyap1}. Tomamos ahora $\beta \in (0,\alpha)$ y construimos un nuevo dominio de modo que,
 \begin{equation*}
 \Omega_\beta = \left\{ x \in B_r \ |\  V(x) \leq \beta \right\}
 \end{equation*}
-Pero entonces $\Omega_\beta$ está en el interior de $B_r$.  Si no fuera así, sería posible encontrar un $p \in \Omega_\alpha$ que estaría situado en la frontera $B_r$. Pero en este punto $V(p) \ge \alpha > \beta$, lo que estaría en contradicción con la definición de $\Omega_\beta$. 
+Pero entonces $\Omega_\beta$ está en el interior de $B_r$.  Si no fuera así, sería posible encontrar un $p \in \Omega_\beta$ que estaría situado en la frontera $B_r$. Pero en este punto $V(p) \ge \alpha > \beta$, lo que estaría en contradicción con la definición de $\Omega_\beta$. 
 
 El conjunto $\Omega_\beta$ tiene la propiedad, de que cualquier trayectoria del sistema que empiece en $\Omega_\beta$  en $t=0$ permanecerá en $\Omega_\beta, \forall t \geq 0$; ya que, de acuerdo con \ref{eq: lyap2}
 \begin{equation*}
@@ -212,10 +238,10 @@ Algunas observaciones:
 \begin{itemize}
 \item Una función continua y diferenciable $V(x)$ que cumple las condiciones \ref{eq: lyap1} y \ref{eq: lyap2} recibe el nombre de función de Lyapunov.
 \item La derivada $\dot V$, definida en la ecuación (\ref{eq: dlyap}) recibe el nombre de derivada de Lyapunov o derivada de Lie.
-\item Una función $V(x)$ que satisface $V(0)=0$ y $V(x)>0$ para $x\neq 0$ en $D$, (\ref{eq: lyap1}), se dice que es definida positiva en $D$. Si la solo satisface $V(x)\geq 0$ para $x\neq 0$ en $D$, se dice que es semidefinida positiva en $D$.
-\item Una función que cumple que $-V(x)$ es definida positiva/semidefinida positiva en $D$, se dice que es definida negativa/semidefinida negativa en $D$. Podríamos por tanto reescribir el teorema \ref{thm: lyap1} diciendo que el origen es un punto de equilibrio estable, para un sistema dinámico si existe una función diferenciable definida positiva $V(x)$ tal que $\dot V(x)$ es semidefinida negativa, y es asintóticamente estable si $\dot V(x)$ es definida negativa.
-\item El teorema de Lyapunov puede aplicarse a un sistema siempre que encontremos una función $V(x)$ que satisfaga las condiciones del teorema con independencia de que conozcamos o no la solución del sistema.
-\item El teorema \ref{thm: lyap1} aporta condiciones suficientes para la estabilidad de un sistema; el hecho de no ser capaz de encontrar una función de Lyapunov para un sistema dado, no implica necesariamente que este sea inestable. Solo muestra que no se puede establecer la estabilidad del sistema mediante la función elegida.
+\item Una función $V(x)$ que satisface $V(0)=0$ y $V(x)>0$ para $x\neq 0$ en $D$, (\ref{eq: lyap1}), se dice que es definida positiva en $D$. Si solo satisface $V(x)\geq 0$ para $x\neq 0$ en $D$, se dice que es semidefinida positiva en $D$.
+\item Una función que cumple que $-V(x)$ es definida positiva/semidefinida positiva en $D$, se dice que es definida negativa/semidefinida negativa en $D$. Podríamos por tanto reescribir el teorema de Lyapunov (\ref{thm: lyap1}) diciendo que el origen es un punto de equilibrio estable, para un sistema dinámico si existe una función diferenciable definida positiva $V(x)$ tal que $\dot V(x)$ es semidefinida negativa, y es asintóticamente estable si $\dot V(x)$ es definida negativa.
+\item El teorema de Lyapunov  puede aplicarse a un sistema siempre que encontremos una función $V(x)$ que satisfaga las condiciones del teorema con independencia de que conozcamos o no la solución del sistema.
+\item El teorema de Lyapunov aporta condiciones suficientes para la estabilidad de un sistema; el hecho de no ser capaz de encontrar una función de Lyapunov para un sistema dado, no implica necesariamente que este sea inestable. Solo muestra que no se puede establecer la estabilidad del sistema mediante la función elegida.
 \item Además, no es constructivo; indica que si existe una función de Lyapunov para el sistema, éste es estable, pero no indica cómo construir dicha función. 
 \end{itemize}
 
