@@ -1,7 +1,7 @@
 \chapter{Diseño de controladores para sistemas en el espacio de estados}
 
 \section{Seguidor de trayectorias deseadas}
-Considera el sistema $\Sigma$ en (\ref{eq: sigma}). Dada una señal deseada o trayectoria $x^*(t)\in\mathbb{R}^n$, nuestro objetivo es diseñar $u(t)\in\mathbb{R}^k$ tal que $x(t) \to x^*(t)$ para $t\to\infty$.
+Considera un sistema autónomo con entrada $u$ como el descrito en las ecuaciones \ref{eq:6}, \ref{eq:7} Dada una señal deseada o trayectoria $x^*(t)\in\mathbb{R}^n$, nuestro objetivo es diseñar $u(t)\in\mathbb{R}^k$ tal que $x(t) \to x^*(t)$ para $t\to\infty$.
 
 Para ello vamos a construir la función de error
 \begin{equation}
@@ -24,12 +24,12 @@ Considera el siguiente sistema cinemático de segundo orden
 	\ddot p(t) = u,
 	\label{eq: pdyn}
 \end{equation}
-donde $p,u\in\mathbb{R}^n$ son las \emph{posiciones} y las \emph{aceleraciones} respectivamente en un espacio $l\in\mathbb{N}$-dimensional. Vamos a particularizar para $l=2$. Apilamos las posiciones y velocidades $p_x,p_y,\dot p_x$ y $\dot p_y$ en $x\in\mathbb{R}^4$, consideramos que podemos medir $x$, y apilamos las aceleraciones $\ddot p_x$ y $\ddot p_y$ en $u\in\mathbb{R}^2$. Por lo que las funciones $f$ y $g$ del sistema $\Sigma$ (\ref{eq: sigma}) son
+donde $p,u\in\mathbb{R}^l$ son las \emph{posiciones} y las \emph{aceleraciones} respectivamente en un espacio $l\in\mathbb{N}$-dimensional. Vamos a particularizar para $l=2$. Apilamos las posiciones y velocidades $p_x,p_y,\dot p_x$ y $\dot p_y$ en $x\in\mathbb{R}^4$, consideramos que podemos medir $z$, y apilamos las aceleraciones $\ddot p_x$ y $\ddot p_y$ en $u\in\mathbb{R}^2$. Por lo que las funciones $f$ y $g$ del sistema $\Sigma$ (\ref{eq: sigma}) son
 \begin{equation}
 	\begin{cases}
-		f &= \begin{bmatrix}0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 0 \\
-		0 & 0 & 0 & 1 \\ 0 & 0 & 0 & 0 \end{bmatrix} x + \begin{bmatrix}0 & 0  \\ 1 & 0  \\ 0 & 0 \\ 0 & 1\end{bmatrix} u \\
-			g &= x.
+		f &= \begin{bmatrix}0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \\
+		0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 \end{bmatrix} z + \begin{bmatrix}0 & 0  \\ 0 & 0  \\ 1 & 0 \\ 0 & 1\end{bmatrix} u \\
+			g &= z.
 \end{cases}
 \end{equation}
 
@@ -71,14 +71,14 @@ nos lleva a
 	donde se puede ver que cuando $e_2 = 0$, el conjunto invariante más grande es $e_1 = e_2 = 0$. Consecuentemente, podemos concluir que $e(t) \to 0$ cuando $t\to\infty$ para cualquier $e(0)$ empezando en $\mathcal{B}$ con un $\rho$ arbitrario, esto es, tenemos convergencia global.
 
 	\section{Diseño de ciclos límites para sistemas planos}
-	Consideremos de nuevo el sistema (\ref{eq: pdyn}) para $l=2$, es decir, seguimos en 2D, o un sistema en el plano. En vez de querer seguir una trayectoria $p^*(t)$, queremos que la posición converja a un \emph{camino} cerrado que además sea un ciclo límite. El camino cerrado lo podemos definir como una curva $\phi(p_x, p_y) = 0$, es decir, todos los puntos con curva de nivel igual a cero definen \emph{el camino}. Por ejemplo, un círculo de radio $r\in\mathbb{R}_+$ 
+	Consideremos de nuevo el sistema (\ref{eq: pdyn}) para $l=2$, es decir, seguimos en 2D, o un sistema en el plano. En vez de querer seguir una trayectoria $p^*(t)$, queremos que la posición converja a un \emph{camino} cerrado que además sea un ciclo límite. El camino cerrado lo podemos definir como una curva $\phi(p^*_x, p^*_y) = 0$, es decir, todos los puntos con curva de nivel igual a cero definen \emph{el camino}. Por ejemplo, un círculo de radio $r\in\mathbb{R}_+$ 
  satisface
 	\begin{equation}
-	\phi(p) := p_x^2 + p_y^2 - r^2 = 0.
+	\phi(p^*) := p_x^{*2} + p_y^{*2} - r^2 = 0.
 	\end{equation}
 Atención a que podemos considerar $\phi(p)$ como una señal de error, i.e., $e(t) := \phi(p(t))$. Consecuentemente, podemos definir la siguiente función candidata de Lyapunov.
 \begin{equation}
-	V(e(t)) = \frac{1}{2}e(t)^2 + \frac{1}{2}||\dot p(t) - \dot p^*(t)||^2,
+	V(e(t),e_v(t)) = \frac{1}{2}e(t)^2 + \frac{1}{2}||\dot p(t) - \dot p^*(t)||^2,
 	\label{eq: Ve2}
 \end{equation}
 	cuya derivada temporal satisface (por ahora considera $\dot p^*(t) = 0$).
@@ -93,6 +93,6 @@ y, similarmente a como hemos hecho en la sección anterior, por el principio de 
 
 \section*{Ejercicios}
 \begin{enumerate}
-\item Para que $\phi(p)$ sea un ciclo límite, la posición no solo ha de converger a ese camino, sino que ha de evolucionar en él en el tiempo. Para ello considera $\dot p^*(t) = \begin{bmatrix}0 & 1 \\ -1 & 0\end{bmatrix}\nabla\phi(p)^T$, y concluye que ahora $\phi(p)$ sí es un ciclo límite.
+\item Para que $\phi(p^*)$ sea un ciclo límite, la posición no solo ha de converger a ese camino, sino que ha de evolucionar en él en el tiempo. Para ello considera $\dot p^*(t) = \begin{bmatrix}0 & 1 \\ -1 & 0\end{bmatrix}\nabla\phi(p)^T$, y concluye que ahora $\phi(p^*)$ sí es un ciclo límite.
 \end{enumerate}
 
