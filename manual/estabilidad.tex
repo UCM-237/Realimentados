@@ -25,6 +25,7 @@ Una solución $x(t;x_0)$ para el sistema \ref{eq: sis1} se dice que es asintóti
 \begin{equation}
 \|\hat x_0-x_0\|<r \Rightarrow \lim_{t \to \infty}\|x(t;\hat x_0) - x(t;x_0)\|=0
 \end{equation}
+
 es decir, cualquier solución con condición inicial próxima  a $x(t;x_0)$ converge a $x(t;x_0)$
 \qed
 \end{definition}
@@ -111,7 +112,7 @@ e(t) = x(t) - x_e(t).
 
 Pero esta diferencia es a su vez solución del siguiente sistema dinámico,
 \begin{equation} \label{eq:315}
-\dot{e} = f(e + x_e(t)) - f(x_e(t)) = h(e,t),
+\dot{e} = f(e + x_e(t)) - f(x_e(t) = h(e,t),
 \end{equation}
 
 con la condición inicial $e(0) = \delta x_0$. Como $h(0,t) = 0 \forall t$, Estudiar la estabilidad del sistema original respecto a la solución nominal, es equivalente a estudiar la estabilidad del punto de equilibrio $e=0$ para el sistema  \ref{eq:315}. Por último observar que el sistema \ref{eq:315} no es un sistema autónomo, depende explícitamente del tiempo debido a la presencia de la solución nominal $x_e(t)$ en su definición.
@@ -135,22 +136,23 @@ donde $f(x): D\rightarrow \mathbb{R}^n$ es una función (localmente) lipschitzia
 \begin{definition} [Estabilidad de Lyapunov, para un punto de equilibrio]\label{def: est}
 El punto de equilibrio x = 0 del sistema \ref{eq: aut} es:
 \begin{itemize}
-\item Estable si $\forall \epsilon > 0$ se cumple:
+\item estable si $\forall \epsilon > 0$ se cumple:
 \begin{equation*}
- \exists \delta =\delta(\epsilon)>0\  \vert\  \| x(0) \| < \delta \Rightarrow \| x(t)\| < \epsilon \ \forall t \ge 0,
+ \exists \delta =\delta(\epsilon)>0\  \vert\  \| x(0) \| < \delta \Rightarrow \| x(t)\| < \epsilon \ \forall t \ge 0.
 \end{equation*}
- \item Inestable si no es estable.
- \item Asintóticamente estable si es estable y además se puede elegir $\delta$ de modo que,
+ 
+ \item Es inestable si no es estable.
+ \item Es asintóticamente estable si es estable y además se puede elegir $\delta$ de modo que,
 \begin{equation*}
 \| x(0)\| < \delta \Rightarrow \lim_{t \to \infty} x(t) = 0.
 \end{equation*}
 
-\item Exponencialmente estable si es asintóticamente estable y existen dos números positivos $\alpha , \lambda >0$ tales que,
+\item Es exponencialmente estable si es asintóticamente estable y existen dos números positivos $\alpha , \lambda >0$ tales que,
 \begin{equation*}
 \| x(t) \| \leq \alpha\| x(0) \| e^{-\lambda t}. 
 \end{equation*} 
 
-\item Asintóticamente (o exponencialmente) estable de modo global si es asintóticamente (o exponencialmente) estable para cualquier condición inicial.
+\item Es asintóticamente (o exponencialmente) estable de modo global si es asintóticamente (o exponencialmente) estable para cualquier condición inicial.
 \end{itemize} 
 \qed
 \end{definition}
@@ -183,7 +185,7 @@ entonces $x=0$ es estable de forma local. Además, si
 \begin{equation}\label{eq: lyap3}
 \dot V(x) < 0 \ en\ D-\{0\},
 \end{equation} 
-Entonces $x=0$ es asintóticamente estable de forma local.
+Entonces $x(0)$ es asintóticamente estable de forma local.
 \end{theorem}
 \begin{proof}
 Dado $\epsilon > 0$, elegimos $r \in (0,\epsilon]$ tal que,
@@ -194,7 +196,7 @@ Sea $\alpha =  \min_{\|x\| = r}V(x)$. Donde, $\alpha >0$ de acuerdo con \ref{eq:
 \begin{equation*}
 \Omega_\beta = \left\{ x \in B_r \ |\  V(x) \leq \beta \right\}
 \end{equation*}
-Pero entonces $\Omega_\beta$ está en el interior de $B_r$.  Si no fuera así, sería posible encontrar un $p \in \Omega_\beta$ que estaría situado en la frontera de $B_r$. Pero en este punto $V(p) \ge \alpha > \beta$, lo que estaría en contradicción con la definición de $\Omega_\beta$. 
+Pero entonces $\Omega_\beta$ está en el interior de $B_r$.  Si no fuera así, sería posible encontrar un $p \in \Omega_\beta$ que estaría situado en la frontera $B_r$. Pero en este punto $V(p) \ge \alpha > \beta$, lo que estaría en contradicción con la definición de $\Omega_\beta$. 
 
 El conjunto $\Omega_\beta$ tiene la propiedad, de que cualquier trayectoria del sistema que empiece en $\Omega_\beta$  en $t=0$ permanecerá en $\Omega_\beta, \forall t \geq 0$; ya que, de acuerdo con \ref{eq: lyap2}
 \begin{equation*}
@@ -213,7 +215,7 @@ B_\delta \subset \Omega_\beta \subset B_r
 \end{equation*}
 y
 \begin{equation*}
-x(0) \in B_\delta \Rightarrow x(0) \in \Omega_\beta \Rightarrow x(t) \in B_r,
+x \in B_\delta \Rightarrow x(0) \in \Omega_\beta \Rightarrow x(t) \in B_r,
 \end{equation*}
 por tanto,
 \begin{equation*}
@@ -222,7 +224,7 @@ por tanto,
 
 Lo cual demuestra que el punto $x=0$ es estable (ver definición: \ref{def: est}). 
 
-Si además suponemos que se cumple \ref{eq: lyap3}, para demostrar que el sistema es asintóticamente estable, debemos probar que $x \to 0$ cuando $t \to \infty$; Condición que podemos reformular como, $\forall a >0, \exists T>0\ | \ \|x(t)\| < a \ \forall t>T$. Pero, si repetimos nuestro razonamiento anterior, dado un valor $a>0$ siempre podremos encontrar un $b>0$ para el que se cumpla que $ \Omega_b \subset B_a$. Por tanto, es suficiente probar que $V$ alcanza el valor $0$ si nos movemos a lo largo de las trayectorias del sistema, $\lim_{t \to 0}V(x(t))=0$. Sabemos que $V(x(t))$ es monótona decreciente a lo largo de las trayectorias, y que está acotada inferiormente por cero.
+Si además suponemos que se cumple \ref{eq: lyap3}, para demostrar que el sistema es asintóticamente estable, debemos probar que $x \to 0$ cuando $t \to \infty$; Condición que podemos reformular como, $\forall a >0, \exists T>0\ | \ \|x\| < a \ \forall t>T$. Pero, si repetimos nuestro razonamiento anterior, dato un valor $a>0$ siempre podremos encontrar un $b>0$ para el que se cumpla que $ \Omega_b \subset B_a$. Por tanto, es suficiente probar que $V$ alcanza el valor $0$ si nos movemos a lo largo de las trayectorias del sistema, $\lim_{t \to 0}V(x(t))=0$. Sabemos que $V(x(t))$ es monótona decreciente a lo largo de las trayectorias, y que está acotada inferiormente por cero.
 \begin{equation}
 \lim_{t \to 0}V(x(t))=c \geq 0
 \end{equation}
@@ -280,7 +282,7 @@ z_2\\
 \end{bmatrix}  = -\frac{b}{lm}z_2^2
 \end{equation*}
 
-Es fácil comprobar que $\dot V(z)$ es una función semidefinida negativa, $\dot V(z)=0$ a lo largo de todo el eje $z_2=0$, con independencia del valor que tome $z_1$, por tanto solo podemos afirmar que el punto de equilibrio $z=(0,0) \rightarrow x=(\pi,0)$ es estable. Sin embargo, si miramos el diagrama de fase de la figura \ref{fig:piphp} observamos que el sistema es asintóticamente estable. La función de Lyapunov elegida, no nos permite comprobarlo.
+Es fácil comprobar que $\dot V(z)$ es una función semidefinida negativa, $\dot V(z)=0$ a lo largo de todo el eje $z_2=0$, con independencia del valor que tome $x_1$, por tanto solo podemos afirmar que el punto de equilibrio $z=(0,0) \rightarrow x=(\pi,0)$ es estable. Sin embargo, si miramos el diagrama de fase de la figura \ref{fig:piphp} observamos que el sistema es asintóticamente estable. La función de Lyapunov elegida, no nos permite comprobarlo.
 
 Podemos probar a modificar nuestra función de Lyapunov, sustituyendo la expresión de la energía cinética, por una forma cuadrática sobre ambas variables de estado:
 \begin{equation*}
@@ -297,7 +299,7 @@ Si calculamos ahora la derivada de Lee,
 \begin{equation*}
 \dot V =\left(p_{12}-\frac{b}{lm}p_{22}\right)z_2^2+ \left(p_{11}-\frac{b}{lm}p_{12} \right) z_1z_2 + (1 -p_{22})\frac{g}{l} z_2\sin(z_1) + p_{12}\frac{g}{l} z_1\sin(z_1)
 \end{equation*}
-Podemos aprovechar la libertad que nos da poder elegir los elementos de $P$ para eliminar los términos cruzados de la derivada de Lee, que contribuyen a que quede indefinido el signo. Si hacemos $p_{11} = \frac{b}{lm}p_{12}$ y $p_{22}=1$,
+Podemos aprovechar la libertad que nos da poder elegir los elementos de $P$ para eliminar los téminos cruzados de la derivada de Lee, que contribuyen a que quede indefinido el signo. Si hacemos $p_{11} = \frac{b}{lm}p_{12}$ y $p_{22}=1$,
 \begin{equation*}
 \dot V =\left(p_{12}-\frac{b}{lm}\right)z_2^2-p_{12}\frac{g}{l} z_1\sin(z_1)
 \end{equation*}
@@ -310,19 +312,19 @@ p_{12} & 1
 \end{bmatrix}, \ \det(p) = p_{12}\frac{b-lmp_{12}}{lm}
 \end{equation*}
 
-Debemos, por tanto, tomar $p_{12}$ en el intervalo,$0<p_{12}< \frac{b}{lm}$. Si elegimos por ejemplo $p_{12} =  \frac{b}{2lm}$, obtenemos para la derivada de Lie,
+Debemos, por tanto, tomar $p_{12}$ en el intervalo,$0<p_{12}< \frac{b}{lm}$. Si elegimos por ejemplo $p_{12} =  \frac{b}{2lm}$, obtenemos para la derivada de Lee,
 \begin{equation*}
 \dot V =-\frac{b}{2lm}z_2^2-\frac{bg}{2l^2m}z_1 \sin(z_1)
 \end{equation*}
 
-Si tomamos un intervalo $D=\left\{x \in \mathbb{R}^2 \ | \ |x_1|<\pi \right\}$, la derivada de Lie es siempre negativa y, por tanto, podemos concluir que el origen es asintóticamente estable. Es interesante remarcar en este punto, que el teorema nos asegura la estabilidad asintótica del origen, pero no nos dice nada de su dominio de atracción.
+Si tomamos un intervalo $D=\left\{x \in \mathbb{R}^2 \ | \ |x_1|<\pi \right\}$, la derivada de Lee es siempre negativa y, por tanto, podemos concluir que el origen es asintóticamente estable. Es interesante remarcar en este punto, que el teorema nos asegura la estabilidad asintótica del origen, pero no nos dice nada de su dominio de atracción.
 
 \qed
 \end{example}
 
 
 \subsection{Estabilidad asintótica global.}
-El teorema \ref{thm: lyap1}, establece la estabilidad asintótica del origen de coordenadas, para un sistema, en un entorno local incluido en $D$, si $\dot V(x) < 0.$.  Una pregunta inmediata que podemos plantearnos es, a qué distancia puede estar del origen una trayectoria sin dejar de ser asintóticamente estable. Es decir, que la trayectoria se aproxime al origen cuando $t$ tiende a $\infty$. Esto nos lleva a la definición de la región de atracción de un punto de equilibrio, en particular, del origen.
+El teorema \ref{thm: lyap1}, establece la estabilidad asintótica del origen de coordenadas, para un sistema, en un entorno local incluido en $D$, si $\dot V(x) < 0.$.  Una pregunta inmediata que podemos plantearnos es, a qué distancia puede estar del origen una trayectoria sin dejar de ser asintóticamente estable. Es decir, que la trayectoria se aproxime al origen cuando $t$ tiende a $\infty$. Esto nos lleva a la definición de la región de atracción de un punto fijo, en particular, del origen.
 \begin{definition}[Dominio de atracción.]
 Sea $\phi(t;x)$ la solución de el sistema (\ref{eq: aut}) con condición inicial $x$ en el instante $t=0$ y supongamos además que el sistema tiene un punto de equilibrio asintóticamente estable, $\overline x$. Se define como región de estabilidad asintótica, dominio de atracción o cuenca de atracción de dicho punto al conjunto de todos los puntos $\{x\}$ tales que,
 \begin{equation}
@@ -331,7 +333,7 @@ Sea $\phi(t;x)$ la solución de el sistema (\ref{eq: aut}) con condición inicia
 \qed
 \end{definition}
 
-Determinar con exactitud la cuenca de atracción de un sistema puede resultar una tarea muy difícil o incluso imposible. Sin embargo el teorema de Lyapunov nos permite obtener una aproximación de la región de estabilidad asintótica; si tenemos una función de Lyapunov que cumple con las condiciones de estabilidad asintótica en un dominio $D$, y si $\Omega_c =\{x \in \mathbb{R}^n \vert V(x) \leq C\}$ Esta acotada e incluida en $D$,  Entonces toda trayectoria que empieza en $\Omega_c$ permanece en $\Omega_c$ y, además se acerca al origen asintóticamente. Por tanto, podemos considerar $\Omega_c$ como una estima de la cuenca de atracción. Por supuesto, dicha estima puede resultar muy conservadora y, por  tanto, puede ser mucho menor que la cuenca de atracción real.
+Determinar con exactitud la cuenca de atracción de un sistema puede resultar una tarea muy difícil o incluso imposible. Sin embargo el teorema de Lyapunov nos permite obtener una aproximación de la región de estabilidad asintótica; si tenemos una función de Lyapunov que cumple con las condiciones de estabilidad asintótica en un dominio $D$, y si $\Omega_c =\{x \in \mathbb{R}^n \vert V(x) \leq C$ Esta acotada e incluida en $D$,  Entonces toda trayectoria que empieza en $\Omega_c$ permanece en $\Omega_c$ y, además se acerca al origen asintóticamente. Por tanto, podemos considerar $\Omega_c$ como una estima de la cuenca de atracción. Por supuesto, dicha estima puede resultar muy conservadora y, por  tanto, puede ser mucho menor que la cuenca de atracción real.
 
 Una segunda pregunta interesante sería determinar bajo qué condiciones un punto de equilibrio es \emph{asintóticamente estable de forma global}. Es decir: cuándo la cuenca de atracción de un punto de equilibrio asintóticamente estable es todo $\mathbb{R}^n$.  Para ello necesitamos imponer en primer lugar que el dominio en que se cumplen las condiciones de la función $V(x)$ sea $D=\mathbb{R}^n$. Además, hay que imponer que   $V(x)$ sea una función no acotada radialmente: $V(x) \to \infty$ cuando $\|x\| \to \infty$.
 
@@ -346,7 +348,7 @@ Una segunda pregunta interesante sería determinar bajo qué condiciones un punt
 \begin{theorem}\label{thm: BK}
 Sea $x=0$ un punto de equilibrio para el sistema \ref{eq: lyap1}. Sea $V: \mathbb{R}^n \to \mathbb{R}$ una función continua y diferenciable tal que:
 \begin{equation}
-V(0) = 0 \ \text{y} \ V(x) > 0\ \forall x,\  \neq 0 
+V(0) = 0 \ \text{y} \ V(x) > 0\ \forall X,\  \neq 0 
 \end{equation}
 \begin{equation} \label{eq: BK2}
 \|x\| \to \infty \Rightarrow V(x) \to \infty
@@ -360,7 +362,7 @@ Entonces $x=0$ es asintóticamente estable de forma global.
 Dado un punto cualquiera $p \in \mathbb{R}^n$, sea $c = V(p)$. La condición \ref{eq: BK2} implica que $\forall c>0,\ \exists r>0,\ \vert V(x) > c$ siempre que $\|x\| >r$. Por tanto $\Omega_c \subset B_r$, y por tanto está acotado. El resto de la prueba es igual que la del teorema \ref{thm: lyap1}.
 \end{proof}
 
-El teorema \ref{thm: BK} se conoce con el nombre de teorema de Barbashin-Krasovskii. Es fácil observar que si un sistema posee un punto de equilibrio $\overline x_1 $ asintóticamente estable de forma global, dicho punto de equilibrio es único. Efectivamente si el sistema tuviera un segundo punto de equilibrio $\overline x_2$ cualquier trayectoria que empezara en $\overline x_2$ permanecería en dicho punto $\forall t\geq 0$, contradiciendo por tanto la definición de estabilidad global para $\overline x_1$.
+El teorema \ref{thm: BK} se conoce con el nombre de teorema de Barbashin-Krasovskii. Es fácil observar que si un sistema posee un punto de equilibrio $\overline x_1 $ asintóticamente estable de forma global, dicho punto de equilibrio es único. Efectivamente si el sistema tuviera un segundo punto de equilibrio $\overline x_2$ cualquier trayectoria que empezara en $\overline x_2$ permanecería en dicho punto $\forall t\geq 0$, contradiciendo por tanto la definición de equilibrio global para $\overline x_1$.
 
 Es importante remarcar la importancia de que $V(x)$ sea una función no acotada radialmente. La razón está en que para probar tanto el teorema de Lyapunov como el de Barbashin-Krasovskii necesitamos poder construir un entorno acotado, incluido en una bola $B_r$ en torno al origen, $\Omega_e$ en el que la función $V(x) \leq e$. El problema es que ahora necesitamos encontrar dicho entorno, cualquiera que sea $x$. Eso supone que $V(x)$ debe crecer en cualquier dirección que escojamos para alejarnos del origen $\|x\| \to \infty$. Veamos un ejemplo de una  función que no lo hace, 
 \begin{equation*}
@@ -386,7 +388,7 @@ V(x) = \frac{x_1^2}{x_1^2+1}+x_2^2
 \section{Principio de invarianza de LaSalle}
 
 \begin{definition}[Conjunto límite positivo]
-Sea $x(t)$ una solución del sistema \ref{eq: aut}. Un punto $p$ se dice que es un punto límite positivo de $x(t)$ si existe una secuencia $\{t_n\}$, con $t_n\to \infty$ cuando $n\to \infty$ tal que $x(t_n) \to p$ cuando $n \to \infty$.
+Sea $x(t)$ una solución del sistema \ref{eq: sis1}. Un punto $p$ se dice que es un punto límite positivo de $x(t)$ si existe una secuencia $\{t_n\}$, con $t_n\to \infty$ cuando $n\to \infty$ tal que $x(t_n) \to p$ cuando $n \to \infty$.
 
 Al conjunto de todos los puntos límite positivos se le denomina el conjunto límite positivo, $L^+$ de $x(t)$
 
@@ -394,7 +396,7 @@ Al conjunto de todos los puntos límite positivos se le denomina el conjunto lí
 \end{definition}
 
 \begin{definition}[Conjunto invariante]
-Un conjunto $M$ se dice que es invariante respecto al sistema \ref{eq: aut}  si,
+Un conjunto $M$ se dice que es invariante respecto al sistema \ref{eq: sis1}  si,
 \begin{equation*}
 x(0) 	\in M \Rightarrow x(t) \in M,\ \forall t \in \mathbb{R}.
 \end{equation*}
@@ -415,7 +417,7 @@ donde $\text{dist}(p,M)$ representa la distancia desde desde el punto $P$ al con
 \text{dist}(p,M) = \inf_{x\in M}\|p-x\|
 \end{equation} 
 
-Esto conceptos nos permiten describir un punto de equilibrio asintóticamente estable como el conjunto límite positivo de cualquier solución suficientemente cercana a dicho punto. Un ciclo límite estable, sería el conjunto límite positivo de cualquier solución que comienza suficientemente cerca del ciclo límite. Además, el punto de equilibrio y el ciclo límite son conjuntos invariantes, ya que toda solución que empieza en ellos, permanece en ellos $\forall t \in \mathbb{R}$. El conjunto $\Omega_c =\{x \in \mathbb{R}^n\ |\ V(x)\leq c\}$ para el que se cumple $\dot V \leq 0\ \forall x \in \Omega_c$ es un conjunto invariante positivo puesto que (ver teorema \ref{thm: lyap1}) cualquier solución que empieza en $\Omega_c$ permanece en $\Omega_c, \ \forall t \leq 0$.
+Esto conceptos nos permiten describir un punto de equilibrio asintóticamente estable como el conjunto límite positivo de cualquier solución suficientemente cercana a dicho punto. Un ciclo límite estable, sería el conjunto límite positivo de cualquier solución que comienza suficientemente cerca del ciclo límite. Además, el punto de equilibrio y el ciclo límite son conjuntos invariantes, ya que toda solución que empieza en ellos, permanece en ellos $\forall t \in \mathbb{R}$. El conjunto $\Omega_c =\{x \in \mathbb{R}^n\ |\ V(x)\leq c\}$ para el que se cumple $\dot V \leq c\ \forall x \in \Omega_c$ es un conjunto invariante positivo puesto que (ver teorema \ref{thm: lyap1}) cualquier solución que empieza en $\Omega_c$ permanece en $\Omega_c, \ \forall t \leq 0$.
 
 \begin{lemma}[Sin demostración]\label{lem: L+}
 Si una solución $x(t)$ de \ref{eq: aut}  está acotada, y pertenece a $D$ para $t \geq 0$ entonces su conjunto límite positivo  $L^+ \neq \emptyset$ es un conjunto invariante compacto. Además, $x(t)$ se aproxima a $L^+$ cuando $t \to \infty$.
@@ -426,7 +428,7 @@ Si una solución $x(t)$ de \ref{eq: aut}  está acotada, y pertenece a $D$ para 
 Sea $\Omega \subset D$ un conjunto compacto positivamente invariante  con respecto al sistema \ref{eq: aut}. Sea $V:D\to \mathbb{R}$ una función continua y diferenciable tal que $\dot V \leq 0$ en $\Omega$. Sea $E$ el conjunto de todos los puntos de $\Omega$ para los cuales $\dot V = 0$. Sea $M$ el mayor conjunto invariante en $E$. Entonces, toda solución que empieza en $\Omega$ se aproxima a $M$ cuando $t\to \infty$
 \end{theorem}
 \begin{proof}
-Sea $x(t)$ una solución de \ref{eq: aut} que comienza en $\Omega$,  Puesto que $\dot V\leq 0$ en $\Omega$, $V(x(t))$ es una función decreciente de $t$. Además, dado que $V(x)$ es una función continua en en el conjunto compacto $\Omega$, la función está acotada inferiormente en $\Omega$. Por tanto,  $V(x(t))$ tiene un límite $a$ cuando $t\to \infty$. Por último el conjunto límite positivo de $x(t)$: $L^+ \subset \Omega$, puesto que $	\Omega$ es un conjunto cerrado.  Para cualquier $p \in L^+, \exists \{t_n\}$ con $n\to \infty \ | \ x(t_n)\to p$ cuando $n\to \infty$. Pero, por continuidad de $V(x)$, $V(p)= \lim_{n\to \infty }V(x(t_n))=a$. Por tanto $V(x)=a$ en $L^+$. Puesto que (por el lema \ref{lem: L+}) $L^+$ es un conjunto invariante, $\dot V(x) = 0$ en $L^+$, Así que,
+Sea $x(t)$ una solución de \ref{eq: aut} que comienza en $\Omega$,  Puesto que $\dot V\leq 0$ en $\Omega$, $V(x(t))$ es una función decreciente de $t$. Además, dado que $V(x)$ es una función continua en en el conjunto compacto $\Omega$, la función está acotada inferiormente en $\Omega$. Por tanto,  $V(x(t))$ tienen un límite $a$ cuando $t\to \infty$. Por último el conjunto límite positivo de $x(t)$: $L^+ \subset \Omega$, puesto que $	\Omega$ es un conjunto cerrado.  Para cualquier $p \in L^+, \exists \{t_n\}$ con $n\to \infty \ | \ x(t_n)\to p$ cuando $n\to \infty$. Pero, por continuidad de $V(x)$, $V(p)= \lim_{n\to \infty }V(x(t_n))=a$. Por tanto $V(x)=A$ en $L^+$. Puesto que (por el lema \ref{lem: L+}) $L^+$ es un conjunto invariante, $\dot V(x) = 0$ en $L^+$, Así que,
 \begin{equation*}
 L^+ \subset M \subset E \subset \Omega 
 \end{equation*} 
