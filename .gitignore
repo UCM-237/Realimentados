@@ -25,3 +25,5 @@
 .*.*.swp
 .*.*.swo
 /figuras/Icon*
+.DS_Store
+/manual/.DS_Store
