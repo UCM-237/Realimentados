@@ -175,6 +175,7 @@ de tal manera que podamos calcular que
 \begin{align}
 	exp(At) &= P^{-1}\left(\sum_{k=1}^\infty \frac{t^k}{k!} \begin{bmatrix}J_1^k & 0 & \cdots & 0 \\ 0 & J_2^k & \cdots & 0 \\ \vdots & \vdots & \cdots & \vdots \\ 0 & 0 & \cdots & J_l^k \end{bmatrix} \right) P \nonumber \\
 		&= P^{-1} \begin{bmatrix}exp(J_1t) & 0 & \cdots & 0 \\ 0 & exp(J_2t) & \cdots & 0 \\ \vdots & \vdots & \cdots & \vdots \\ 0 & 0 & \cdots & exp(J_lt) \end{bmatrix} P
+\label{eq: expAJordan}
 \end{align}
 
 Observa que si $J$ es simplemente una matriz diagonal con los autovalores de $A$, i.e., $J_l = \lambda_l \in \mathbb{C}$, entonces $exp(J_lt) = e^{\lambda_lt} \in\mathbb{C}$ es un cálculo trivial.
