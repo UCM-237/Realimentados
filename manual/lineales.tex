@@ -146,7 +146,7 @@ Para continuar, necesitamos el siguiente resultado de álgebra lineal.
 \begin{theorem}
 \textbf{Forma de Jordan}. Para una matriz cuadrada $A\in\mathbb{C}^{n \times n}$, existe un cambio de base no singular $P\in\mathbb{C}^{n \times n}$ que transforma $A$ en
 \begin{equation}
-	J = PAP^{-1} = \begin{bmatrix}
+	J = P^{-1}AP = \begin{bmatrix}
 		J_1 & 0 & 0 & \dots & 0 \\
 		0 & J_2 & 0 & \dots & 0 \\
 		0 & 0 & J_3 & \dots & 0 \\
@@ -167,27 +167,31 @@ donde $J_i$ es el bloque de Jordan con forma
 	en donde cada $\lambda_i$ es un autovalor de $A$, y el número $l$ de bloques de Jordan es igual al número total de autovectores independientes de $A$. La matrix $J$ es única (descontando reordenación de filas/columnas) y es llamada la \textbf{forma normal de Jordan} de $A$.
 \end{theorem}
 
-Partiendo de la observación que $A = P^{-1}JP$ también, entonces es fácil probar que 
+Partiendo de la observación que $A = PJP^{-1}$ también, entonces es fácil probar que 
 \begin{equation}
-	A^k = P^{-1} J^k P,
+	A^k = PJ^kP^{-1},
 \end{equation}
 de tal manera que podamos calcular que
 \begin{align}
-	exp(At) &= P^{-1}\left(\sum_{k=1}^\infty \frac{t^k}{k!} \begin{bmatrix}J_1^k & 0 & \cdots & 0 \\ 0 & J_2^k & \cdots & 0 \\ \vdots & \vdots & \cdots & \vdots \\ 0 & 0 & \cdots & J_l^k \end{bmatrix} \right) P \nonumber \\
-		&= P^{-1} \begin{bmatrix}exp(J_1t) & 0 & \cdots & 0 \\ 0 & exp(J_2t) & \cdots & 0 \\ \vdots & \vdots & \cdots & \vdots \\ 0 & 0 & \cdots & exp(J_lt) \end{bmatrix} P
+	exp(At) &= P\left(\sum_{k=1}^\infty \frac{t^k}{k!} \begin{bmatrix}J_1^k & 0 & \cdots & 0 \\ 0 & J_2^k & \cdots & 0 \\ \vdots & \vdots & \cdots & \vdots \\ 0 & 0 & \cdots & J_l^k \end{bmatrix} \right) P \nonumber \\
+		&= P^{-1} \begin{bmatrix}exp(J_1t) & 0 & \cdots & 0 \\ 0 & exp(J_2t) & \cdots & 0 \\ \vdots & \vdots & \cdots & \vdots \\ 0 & 0 & \cdots & exp(J_lt) \end{bmatrix} P^{-1}
 \label{eq: expAJordan}
 \end{align}
 
-Observa que si $J$ es simplemente una matriz diagonal con los autovalores de $A$, i.e., $J_l = \lambda_l \in \mathbb{C}$, entonces $exp(J_lt) = e^{\lambda_lt} \in\mathbb{C}$ es un cálculo trivial.
+Observa que si $J$ es simplemente una matriz diagonal con los autovalores de $A$, i.e., $J_l = \lambda_l \in \mathbb{C}$, entonces $exp(J_lt) = e^{\lambda_lt} \in\mathbb{C}$ es un cálculo trivial. Es más, si $J$ es diagonal, entonces la solución (\ref{eq: xexp}) puede escribirse como
+\begin{equation}
+	x(t) = \sum_{i=1}^nc_i e^{\lambda_i t}p_i,
+	\label{eq: xtdiag}
+\end{equation}
+donde $p_i\in\mathbb{R}^n$ es la columna $i$ de $P$ representando un autovector de $A$, y $c_i\mathbb{R}$ son coeficientes constantes acorde a la condición inicial $x(0)$.
 
-Now, let us check the consequencues on the following two conditions
 Ahora, veamos las consecuencias de las siguientes dos suposiciones
 \begin{enumerate}
 	\item $J$ es diagonal.
 	\item Todos los autovalores de $A$ tienen parte real negativa.
 \end{enumerate}
 
-Sabiendo que $\lim_{t\to\infty} e^{\lambda t} \to 0$ si $\lambda \in \mathbb{R}_{<0}$, entonces tenemos que $exp(At) \to 0$ según $t\to\infty$ si las dos previas suposiciones se dan. Si echamos un vistazo a (\ref{eq: xexp}), podemos concluir que 
+Sabiendo que $\lim_{t\to\infty} e^{\lambda t} \to 0$ si $\lambda \in \mathbb{R}_{<0}$, entonces tenemos que $exp(At) \to 0$ según $t\to\infty$ si las dos previas suposiciones se dan. Si echamos un vistazo a (\ref{eq: xexp}) o (\ref{eq: xtdiag}, podemos concluir que 
 \begin{equation}
 	\lim_{t\to\infty} x(t) \to 0,
 	\label{eq: xlim}
