@@ -15,7 +15,7 @@ C2 = [1 0];
 Aamp = [A [0;0]; C2 0];
 Bamp = [B; 0];
 
-y2d = -176; % Valor deseado para la posición
+y2d = 23; % Valor deseado para la posición
 
 lambda_des = [-1, -2, -3]; % valores propios deseados para (6.73)
 Kamp = acker(Aamp,Bamp,lambda_des);
