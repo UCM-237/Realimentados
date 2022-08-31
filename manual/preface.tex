@@ -1,1 +1,30 @@
 \chapter{Introducción}
+Estas notas de clase, conforman el contenido de la asignatura "Sistemas Dinámicos y Realimentación". La asignatura está especialmente orientada  a los estudiante del grado en Física y contiene tan solo dos ideas básicas:
+
+\begin{enumerate}
+\item Una parte apreciable --si no toda-- la realidad física que conocemos puede modelarse mediante el uso de lo que denominaremos sistemas dinámicos. Éstos vendrán caracterizados por un conjunto de variables de estado, que describen aspectos mensurables de la realidad y son dinámicos en el sentido de que el valor de las variables de estado evoluciona en el tiempo. Una manera habitual de describir un sistema dinámico, a partir de sus variables de estado, es mediante el uso de ecuaciones diferenciales\footnote{Para sistemas que evolucionan en tiempo continuo $t\in \mathbb{R}^+$. Para sistemas de tiempo discreto $t \in \mathbb{N}$ se emplean ecuaciones en diferencias. Por falta de tiempo, no estudiaremos sistemas de tiempo discreto en esta asignatura, aunque tienen un gran interés tanto en sí mismos como por su relación con los sistemas de tiempo continuo.}:
+
+\begin{equation}
+	\Sigma := \begin{cases}
+		\dot x(t) =& f(t,x(t),u(t)) \\ y(t) =& g(t,x(t),u(t))
+	\end{cases}, 
+\label{eq: sigma}
+\end{equation}
+en donde $\dot x := \frac{\mathrm{d}}{\mathrm{dt}}(x(t))$ es la notación para la derivada total con respecto del tiempo, y $f:\mathbb{R} \times \mathbb{R}^n \times \mathbb{R}^k \to \mathbb{R}^n$ y $g: \mathbb{R} \times \mathbb{R}^n \times \mathbb{R}^k \to \mathbb{R}^m$ son funciones. Las variables de estado se agrupan en el vector $x(t)$.  El vector $u(t)$ agrupa las variables de entrada que representan magnitudes físicas externas al sistema cuyos valores influyen en la evolución de las variables de estado. Por último el vector $y(t)$ representa las salidas del sistema: magnitudes físicas, dependientes de las variables de estado y de las entradas, que pueden ser observadas (medidas). 
+
+\item En muchos sistemas es posible manipular los valores de las variables de entrada de modo que se pueda obtener una evolución deseada de sus variables de estado y, por tanto, de su salida. El estudio de los modos de manipular las variables de entrada para conseguir la evolución deseada del sistema constituye lo que se conoce como \emph{Control de Sistemas}.
+
+Una forma particularmente adecuada y poderosa, de manipular las variables de entrada para controlar la evolución de un sistema, es hacerlas depender de los valores que toman las variables de estado mismas: $u(t) = u(x(t))$ o de las salidas del sistema $u(t) = u(y(t))$. Esta manera de controlar un sistema se conoce como \emph{control por realimentación}.
+\end{enumerate}
+
+Podríamos decir que el estudio de los sistemas dinámicos tiene un carácter transversal ya que es aplicable a fenómenos físicos cualquier naturaleza; mecánicos, eléctricos, ópticos, etc. Además aplicando el conocido principio ''ecuaciones iguales tienen soluciones iguales'', podemos  con facilidad trasladar los resultados obtenidos en sistemas de una determinada naturaleza a otros distintos que puedan ser modelados con ecuaciones equivalentes. Así, por ejemplo, es posible establecer analogías entre sistemas mecánicos y sistemas eléctricos.
+
+Un aspecto particularmente interesante en el estudio de los sistemas dinámicos, es el análisis de su estabilidad. En términos puramente intuitivos podríamos dar una definición preliminar de estabilidad diciendo que un sistema es estable cuando la evolución en el tiempo de sus variables de estado no diverge. A lo largo de la asignatura precisaremos este concepto, estudiaremos formas de establecer la estabilidad o no de un sistema y veremos su relación con la posibilidad de controlar un sistema mediante realimentación.
+
+El concepto de realimentación está presente en la naturaleza. Los sistemas biológicos son capaces de reaccionar a su estado y modificarlo en beneficio propio.  Ejemplos de ello son la regulación del contenido de azúcar en sangre, de la temperatura corporal, o del equilibrio. En todos los casos, se parte del conocimiento del estado actual para actuar modificando el estado de modo que se alcance la situación deseada; a continuación, se vuelve a observar el estado resultante y se vuelve actuar, etc. Este ciclo observación-actuación-observación es un principio muy poderoso y está en la base del desarrollo científico y tecnológico. Los sistemas de control, basados en repetir dicho ciclo, son ubicuos. Están presentes en la industria, en los sistemas de comunicaciones, en el transporte y, por supuesto, en la investigación científica. Por ejemplo, el interferómetro de ondas gravitacionales  (LIGO) funciona gracias a un sofisticado sistema de control para estabilizarlo; el (gran) colisionador de hadrones (LHC) del CERN solo es una realidad gracias a los sistemas de control que permiten controlar los haces, mantener a baja temperatura sus electroimanes, etc.
+
+La asignatura y el contenido de estos apuntes está divido en dos grandes bloques. Los temas 2, 3 y 4, son una introducción al estudio de los sistemas dinámicos no-lineales, su estabilidad y el diseño de algunos controladores básicos para este tipo de sistemas. Los capítulos 5 y 6 se centrar en el estudio de los sistemas lineales y su control por realimentación.  Se ha incluido también un apéndice con algunos ejemplos de uso de Matlab para resolver ejercicios de sistemas dinámicos.
+
+Por último, los apuntes son para vosotros (los que estudiáis la asignatura). Están escritos en \LaTeX\ y todos los archivos fuente están colgados en el repositorio de GitHub \url{https://github.com/UCM-237/Realimentados}. Así que, si os animáis, podéis \emph{clonaros} el \emph{repo} y añadir cambiar y corregir todo lo que queráis a vuestros apuntes. Además, podéis enviarnos un \emph{pull request} cuando corrijáis errores, y así vamos mejorando los apuntes entre todos. Si no os va mucho git y/o \LaTeX\, también podéis enviar sugerencias y correcciones directamente al Campus Virtual o por correo electrónico.
+
+
