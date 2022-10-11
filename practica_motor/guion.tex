@@ -6,6 +6,7 @@
 \usepackage{amssymb}
 \usepackage{steinmetz}
 \usepackage{circuitikz}
+\usepackage[normalem]{ulem}
 %\usepackage{steinmetz}
 %\usepackage[american,siunitx]{circuitikz}
 \usetikzlibrary{arrows,shapes,calc,positioning}
@@ -298,7 +299,7 @@ La figura \ref{f14} muestra una imagen del montaje completo incluyendo el motor,
 \includegraphics[scale=0.15,angle=90]{montaje2.jpg}
 \caption{vista del montaje completo}\label{f14}
 \end{figure}
-\chapter{Descripción del \emph{software} del sistema \protect \footnote{La descripción de software corresponde a la versión de Matlab R2019a.  Es importante destacar que en las versiones posteriores de Matlab, Simulink ha experimentado un gran cambio, por lo que no es posible configurar el software del sistema siguiendo estas instrucciones; Además los modelos de Simulink realizados en versiones posteriores NO son directamente compatibles con la versión R2019a. Por último, esta es la versión instalada en los ordenadores de los laboratorios de DACYA.}}
+\chapter{Descripción del \emph{software} del sistema \protect \footnote{La descripción de software corresponde a la versión de Matlab R2021b.}}
 \section{Uso de Matlab/Simulink para la generación de Código}
 En esta sección describiremos el software que vamos a emplear para el desarrollo de  las prácticas. El procesador empleado por la placa de desarrollo es un ARM. El fabricante suministra diversos entornos de desarrollo y \emph{tool-chains} para elaborar programas en lenguaje C/C++, compilarlos y descargar el ejecutable obtenido en la placa mediante el programador. También es posible programar y compilar a través de EMBED, un entorno de desarrollo disponible a través de la red. Una introducción a las distintas posibilidades de programación se puede encontrar en \cite{STNUCLEOSF}.
 Sin embargo, en las presentes prácticas, no programaremos directamente las placas de desarrollo; dejaremos que Matlab/Simulink lo haga por nosotros. En concreto, Simulink ofrece soporte para la programación de placas de la familia NUCLEO.  Dicho soporte ofrece la posibilidad de emplear bloques de Simulink para leer y escribir en los pines de la placa y ejecutar en la misma modelos desarrollados con bloques de Simulink. Además, permite mantener una conexión a través de un puerto serie entre la placa y Simulink, de modo que es posible leer, representar gráficamente variables generadas en la placa, empleando las herramientas estándar de Simulink.
@@ -323,7 +324,7 @@ Además de la nueva librería para Simulink, también se instala el software nec
 
 Se pueden construir modelos en Simulink, combinando los bloques de la librería específica para las placas Nucleo con el resto de bloques de Simulink. Dependiendo de la configuración que se dé al modelo de Simulink construido pueden suceder varias cosas:
 \begin{itemize}
-\item El Modelo desarrollado se ejecuta en modo \emph{external}. En dicho caso cuando se ejecuta el modelo de Simulink, este convierte todo el modelo en código C/C++, lo compila para la placa y lo descarga en la misma empleando la conexión USB del programador de la placa. Simulink tan solo se encargaría de recibir datos y enviar órdenes a través de la conexión USB que, en este caso, emula un puerto serie. También ejecutaría el código necesario para visualizar variables.  Éste será el modo que emplearemos en estas prácticas.
+\item El Modelo desarrollado se ejecuta en modo \emph{run onboard/external}. En dicho caso cuando se ejecuta el modelo de Simulink, este convierte todo el modelo en código C/C++, lo compila para la placa y lo descarga en la misma empleando la conexión USB del programador de la placa. Simulink tan solo se encargaría de recibir datos y enviar órdenes a través de la conexión USB que, en este caso, emula un puerto serie. También ejecutaría el código necesario para visualizar variables.  Éste será el modo que emplearemos en estas prácticas.
 
 \item El modelo desarrollado se ejecuta en modo \emph{PIL (Procesor In the Loop)}. En este modo, parte del código se ejecuta en Simulink y parte en la placa, intercambiando ambos sistemas información a través de la conexión USB. 
  
@@ -331,53 +332,57 @@ Se pueden construir modelos en Simulink, combinando los bloques de la librería 
 \paragraph{Instalación del driver ST-Link/V2 USB}
 Como se ha indicado antes, para intercambiar datos entre Simulink  y la placa de desarrollo se emplea la conexión USB, sobre la que se emula un puerto serie. Para que funcione correctamente es preciso instalar un \emph{driver} específico suministrado por STMicroelectronics. El \emph{driver} puede descargarse de la página web: \url{https://www.st.com/en/development-tools/stsw-link009.html}.
 \paragraph{Ejemplo de configuración}
-Una vez que todo está instalado correctamente, vamos a ver mediante un ejemplo sencillo como crear y configurar un modelo de Simulink. La figura \ref{f17} muestra los pasos a seguir. En nuestro caso, vamos a crear un modelo que permite mediante un botón deslizable encender y apagar un led de la placa. Para ello hemos seleccionado y conectado los siguientes bloques:
+Una vez que todo está instalado correctamente, vamos a ver mediante un ejemplo sencillo como crear y configurar un modelo de Simulink. 
+Una primera cuestion \emph{MUY IMPORTANTE}: la programación de la placa de control emplea un fichero MAKEFILE para compilar-enlazar-descargar el software. Dicho fichero da problemas si la ruta del archivo de simulink de nuestro modelo tiene nombres con caracteres especiales o con espacio. Para asegurar que el proceso de compilación funcione correctamente lo mejoe es crearse un fichero de trabajo directamente en C:/ y darle un nonbre sencillo: C:/practica. (no acentos, no espacios \sout{C:/Mis prácticas})
+La figura \ref{f17} muestra los pasos a seguir. En nuestro caso, vamos a crear un modelo que permite mediante un botón deslizable encender y apagar un led de la placa. Para ello hemos seleccionado y conectado los siguientes bloques; (ver figura \ref{f17a}):
 \begin{itemize}
 \item Simulink/Sources: Un bloque con una entrada constante.
 \item Simulink/Dashboard: Un bloque Slider Switch
 \item Simulink Coder Support Package for STmicroelectronics Nucleo Boards/Common: Un bloque Digital Write  
 \end{itemize}
-El interruptor deslizable está conectado al bloque de entrada constante de modo que cambia su valor entre cero y uno. El valor del bloque es enviado al pin que configuremos en el bloque Digital Write. Si consultamos el mapa de pines de la placa (figura \ref{f12}) comprobamos que el led1 está conectado al pin D13. Por tanto configuramos la dirección del bloque Digital Write a dicha dirección (basta hacer doble \emph{clik} en el bloque y escribir la dirección). Una vez completado el modelo, necesitamos configurarlo para que Simulink genere el código y lo descarge en la placa.
+El interruptor deslizable está conectado al bloque de entrada constante de modo que cambia su valor entre cero y uno. El valor del bloque es enviado al pin que configuremos en el bloque Digital Write. Si consultamos el mapa de pines de la placa (figura \ref{f12}) comprobamos que el led1 está conectado al pin D13. Por tanto configuramos la dirección del bloque Digital Write a dicha dirección (basta hacer doble \emph{clik} en el bloque y escribir la dirección). Una vez completado el modelo, necesitamos configurarlo para que Simulink genere el código y lo descargue en la placa.
 
 
-En primer lugar conectamos la placa a un puerto USB del ordenador y configuramos el modelo como \emph{external}, (ver figura \ref{f17b}). Esto modifica las opciones de la ventana de configuración de parámetros, que abrimos a continuación, pulsando el botón \emph{Model configuration parameters} (figura \ref{f17c}). 
+En primer lugar conectamos la placa a un puerto USB del ordenador. A continuación en la ventana de Simulink donde hemos construido el modelo, seleccionamos, en la parte superior la ventana la pestaña MODELLING, Esto modifica las opciones de la ventana de configuración de parámetros que, abrimos a continuación pulsando el botón \emph{settings}. En el menú desplegable que aparece pulsamos la opción Model Properties (figura \ref{f17b}).  
 
-En dicha ventana seleccionamos la opción \emph{Hardware implementation} y elegimos de entre las opciones disponibles la que corresponde a nuestra placa: ST32 Nucleo F411RE (figura \ref{f17d}). 
+Se abre una nueva ventana que nos permite configurar los parámetros del modelos.  Seleccionamos la opción \emph{Hardware implementation} y elegimos de entre las opciones disponibles la que corresponde a nuestra placa: ST32 Nucleo F411RE (figura \ref{f17c}). 
 
-Una vez selecionada, y dentro todavía de la opción \emph{Hardware implementation}, desplegamos la pestaña \emph{Target Hardware Resources} y seleccionamos la opción \emph{External mode} (figura \ref{f17e}). Nos aparacerá una ventana en la que se nos indica que la conexión entre ordenador y placa se realizará a través de un puerto serie (emulado sobre el puesto USB). Debemos escribir la dirección de dicho puerto en la entrada marcada como \emph{Serial port}. En la figura \ref{f17f} se ha introducido el puerto \textbf{COM4}. 
+Una vez selecionada, y dentro todavía de la opción \emph{Hardware implementation}, desplegamos la pestaña \emph{Target Hardware Resources} y seleccionamos la opción \emph{External mode} (figura \ref{f17d}). Nos aparecerá una ventana en la que se nos indica que la conexión entre ordenador y placa se realizará a través de un puerto serie (emulado sobre el puesto USB). Debemos escribir la dirección de dicho puerto en la entrada marcada como \emph{Serial port}. En la figura \ref{f17e} se ha introducido el puerto \textbf{COM4}. 
 
 Hay que comprobar en cada caso qué puerto serie ha asignado el ordenador a la placa cuando se conectó al ordenador. Para hacerlo hay que ir a los parámetros de configuración del ordenador y buscar en \emph{Configuración de dispositivos e impresoras} el \emph{driver} de la placa: STM32 STLink (figura \ref{f17g}). Dentro de la propiedades del \emph{driver}, en la pestaña \emph{Hardware}, encontramos el puerto COM asignado al \emph{driver} (figura \ref{f17h}).
+
+Una vez acabado este proceso, y tras salvar los cambios, Volvemos a la ventana del modelo. Si se han realizado los pasos anteriores correctamente, se habrá creado en la ventana del modelo una nueva pestaña con la etiqueta HARDWARE. Esta es la pestaña en la que trabajaremos siempre que usemos la placa (figura \ref{f17f}). 
 
 \begin{figure}
 \begin{subfigure}{0.5\textwidth}
 \centering
-\includegraphics[width = \linewidth]{eje1.jpg}
+\includegraphics[width = \linewidth]{ejemplo1.png}
 \caption{Modelo}\label{f17a}
 \end{subfigure}
 \begin{subfigure}{0.5\textwidth}
 \centering
-\includegraphics[width = \linewidth]{eje2.jpg}
-\caption{Configuración como \emph{external}}\label{f17b}
+\includegraphics[width = \linewidth]{settings1.png}
+\caption{Acceso a la ventana de configuración}\label{f17b}
 \end{subfigure}
 \begin{subfigure}{0.5\textwidth}
 \centering
-\includegraphics[width = \linewidth]{eje3.jpg}
-\caption{Acceso a configuración de parámetros}\label{f17c}
+\includegraphics[width = \linewidth]{settings2.png}
+\caption{Selección de la placa}\label{f17c}
 \end{subfigure}
 \begin{subfigure}{0.5\textwidth}
 \centering
-\includegraphics[width = \linewidth]{eje4.jpg}
-\caption{Selección de la placa}\label{f17d}
-\end{subfigure}
-\begin{subfigure}{0.5\textwidth}
-\centering
-\includegraphics[width = \linewidth]{eje5.jpg}
-\caption{Acceso a parámetros del modo \emph{external}}\label{f17e}
+\includegraphics[width = \linewidth]{settings3.png}
+\caption{Acceso a parámetros de External Mode}\label{f17d}
 \end{subfigure}
 \begin{subfigure}{0.5\textwidth}
 \centering
 \includegraphics[width = \linewidth]{eje6.jpg}
-\caption{Introducción del puerto COM asignado al Driver}\label{f17f}
+\caption{Ajuste del valor de puerto serie (COM) asignado al Driver}\label{f17e}
+\end{subfigure}
+\begin{subfigure}{0.5\textwidth}
+\centering
+\includegraphics[width = \linewidth]{settings4.png}
+\caption{Pestaña HARDWARE de la ventana del modelo}\label{f17f}
 \end{subfigure}
 \begin{subfigure}{0.5\textwidth}
 \centering
@@ -394,7 +399,7 @@ Hay que comprobar en cada caso qué puerto serie ha asignado el ordenador a la p
 \end{figure} 
 
 \paragraph{Compilación, descarga y ejecución del modelo}
-Una vez configurado el modelo, siguiendo los pasos del párrafo anterior, si pulsamos el botón \emph{run} del modelo, Simulink generará el código en C/C++ necesario, lo compilará, lo descargará en la placa y ejecutará el modelo durante el tiempo para el que se haya ajustado la duración del experimento.
+Una vez configurado el modelo, siguiendo los pasos del párrafo anterior, si pulsamos el botón \emph{Monitor \& Tune} del modelo, Simulink generará el código en C/C++ necesario, lo compilará, lo descargará en la placa y ejecutará el modelo durante el tiempo para el que se haya ajustado la duración del experimento.
 
 El proceso de generación/compilación/descarga de código lleva un rato, por lo que hay que tener paciencia hasta que termine. Una vez terminado, Simulink genera una ventana de diagnóstico y lanza la ejecución. Si durante este tiempo cambiamos la posición del botón deslizante, veremos cómo encendemos y apagamos el led verde de la placa.
 
@@ -411,17 +416,17 @@ En la figura se puede observar un bloque de entrada en escalón, que nos permiti
 
 El bloque central ---marcado como Motor--- contiene los bloque necesarios para interactuar con el motor. Lo veremos en detalle a continuación.
 
-Las salidas del bloque Motor están conectadas a \emph{scopes} para poder observar la posición y la velocidad del motor. Es importante observar el símbolo que aparece encima de las líneas que unen el bloque con los \emph{scopes} Dicho símbolo  indica que se ha activado la recogida de los valores que toma dicha señal durante la ejecución del modelo. Ésto permite guardarlos, en archivos de datos, enviarlos al \emph{Workspace} de Matlab y, lo que es quizá más útil de todo observarlos empleando el \emph{Simulation Data Inspector} (Ver ayuda de Simulink).
+Las salidas del bloque Motor están conectadas a \emph{scopes} para poder observar la posición y la velocidad del motor. Es importante observar el símbolo que aparece encima de las líneas que unen el bloque con los \emph{scopes} Dicho símbolo  indica que se ha activado la recogida de los valores que toma dicha señal durante la ejecución del modelo. Ésto permite guardarlos, en archivos de datos, enviarlos al \emph{Workspace} de Matlab y, lo que es quizá más útil de todo, observarlos empleando el \emph{Simulation Data Inspector} (Ver ayuda de Simulink).
  
 \paragraph{El bloque Motor}
-si hacemos doble \emph{click} sobre el bloque Motor del modelo, accederemos a la estructura del subsistema que lo forma. La figura \ref{f19} muestra el el contenido del bloque motor.
+si hacemos doble \emph{click} sobre el bloque Motor del modelo, accederemos a la estructura del subsistema que lo forma. La figura \ref{f19} muestra el contenido del bloque motor.
 \begin{figure}
 \includegraphics[width=\textwidth]{la2.jpg}
 \caption{Estructura del bloque motor}\label{f19}
 \end{figure}
 Está compuesto por los siguientes bloques de Simulink:
 \begin{itemize}
-\item bloque PHA. Se trata de un bloque Digital Write de la librería Simulink Code support Package for STMicroelectronic Nucleo Boards. Recibe directamente el valor de bloque constante del modelo descrito anteriormente. Dicho valor se envía directamente al pin D3, dicho pin corresponde a la entrada de PHA del la placa de expansión que controla el motor y que se encarga de cambiar el sentido de giro del motor (ver tabla \ref{t2} y figura \ref{f10}). Nos permite por tanto controlar manualmente el sentido de giro del motor.
+\item bloque PHA. Se trata de un bloque Digital Write de la librería Simulink Code support Package for STMicroelectronic Nucleo Boards. Recibe directamente el valor del bloque constante del modelo descrito anteriormente. Dicho valor se envía directamente al pin D3, dicho pin corresponde a la entrada de PHA del la placa de expansión que controla el motor y que se encarga de cambiar el sentido de giro del motor (ver tabla \ref{t2} y figura \ref{f10}). Nos permite por tanto controlar manualmente el sentido de giro del motor.
 \item Bloque ENA. Idéntico al anterior. Se ha puesto a un valor fijo 1 y se ha configurado como pin D3. Se encarga de habilitar el puente en H A de la placa de expansión.
 \item Bloque ENB. De nuevo se trata de un bloque de escritura digital en este caso se ha configurado como pin D11, por lo que habilita el puente en H B de la placa de expansión.
 \item Bloque PWDA. Este bloque, pertenece también a la librería Simulink Code support Package for STMicroelectronic Nucleo Boards. Se trata de un bloque que genera una señal de PWM y la envía a un pin de la placa. Tiene dos parámetros de configuración: El pin al que se envía la señal, en nuestro caso se ha configurado como pin D5, por lo que enviará la señal de PWM a la entrada PWDA de la placa de expansión, suministrando por tanto el voltaje de entrada al motor. El segundo parámetro es la frecuencia de la señal. Un valor de prueba adecuado para nuestro sistema sería 5000 Hz. La entrada del bloque permite controlar o modificar el \emph{Duty cicle} de la señal de PWM. El valor se da como un porcentaje del periodo de la señal, es decir, debe tomar un valor entre 0 y 100. La señal enviada a la placa de expansión a través del pin D5 es una señal lógica cuya amplitud vale 0 ó 1. Para el valor 0 no se suministrará tensión al motor, para el valor 1 suministrará el valor de tensión de la fuente de alimentación, en nuestro caso 12 V. Así un \emph{Duty Cicle} de 100, supone alimentar el motor a un voltaje constante de 12 V, mientras que un \emph{Duty Cicle} de 50 supone alimentarlo a una tensión de 6V (ver seccion \ref{sh}). Hay un tercer parámetro de configuración que establece el valor del \emph{Duty Cycle inicial} en nuestro caso puede dejarse a 0.
@@ -505,7 +510,7 @@ Donde hemos sustituido por 0 los valores NA. El bloque espera  en su entrada un 
 
 Como la entrada a este bloque debe ser un índice, es preciso fijar el tipo de variable para la salida del bloque anterior (sumador). Para ello, basta hacer doble 'click' en el bloque sumador, seleccionar la pestaña \emph{signal attributes} y en menu desplagable \emph{output data type} seleccionar la opción 'double'. 
 
-La salida de la tabla está conectada a un bloque \emph{Unit delay} Realimentado, Cada vez que se obtiene un nuevo valor en la tabla, se suma a los valores anteriores, de modo que el lazo actua como un acumulador de pulso, la salida será directamente la posición en grados del eje de la reductora del motor.
+La salida de la tabla está conectada a un bloque \emph{Unit delay} Realimentado, Cada vez que se obtiene un nuevo valor en la tabla, se suma a los valores anteriores, de modo que el lazo actúa como un acumulador de pulsos, la salida será directamente la posición en grados del eje de la reductora del motor.
 
 Por último, la salida del bloque \emph{Unit delay} está también conectada a un bloque \emph{Zero-Order Hold} (retenedor de orden 0) de la librería Simulink/discrete. Este bloque lleva su propio periodo de muestreo que, en nuestro caso hemos fijado en 0.01. El bloque toma una lectura de la entrada ---en este caso la posición calculada a partir de los encoders--- y retiene su valor durante el periodo de muestreo. El bloque alimenta a su vez a un bloque \emph{discrete time derivative} de la librería Simulink/discrete que estima la derivada de la posición y por tanto la velocidad. Se trata en realidad de una aproximación un tanto imprecisa que necesitaría de un posterior filtrado. Pero para una primera aproximación nos puede valer.
 
