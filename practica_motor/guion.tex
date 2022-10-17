@@ -652,7 +652,7 @@ En esta sección vamos a construir un regulador completo para controlar la posic
 
 \section{Un modelo completo del motor}\label{sec41}
 
-\paragraph{Modelo ideal del motor} Empezaremos construyendo un modelo del motor que emplee exactamente las mismas señales de entrada y salida que emplea el motor real. Además, tendremos en cuenta algunas de las no linealidades más características: la existencia de un voltaje máximo que no se puede superar y la existencia de un voltaje mínimo por debajo del cual el motor no funciona.
+\paragraph{Modelo ideal del motor} Vamos a construir un modelo del motor que emplee exactamente las mismas señales de entrada y salida que emplea el motor real. Además, tendremos en cuenta algunas de las no linealidades más características: la existencia de un voltaje máximo que no se puede superar y la existencia de un voltaje mínimo por debajo del cual el motor no funciona.
 
 \begin{figure}[h]
 \centering
@@ -669,7 +669,7 @@ Time Values: linspace(0,T,100)
 Output values: linspace(0,Vmax,100)
 \end{verbatim}
 
-El resultado de la señal de salida del bloque será una sucesión de valores crecientes entre $0$ y Vmax, que se repiten periódicamente cada T segundos. La señal toma por tanto la forma de un diente de sierra. El bloque comparador compara el valor de entrada, Vref,  en cada instante con el valor de el diente de sierra. Vref representa el valor de tensión continua que queremos emular con la señal de PWM. Mientras el valor del diente de sierra sea menos que el de la entrada Vref, la comparación devuelve un $1$, en caso contrario devolverá un $0$. La ganancia multiplica el 1 o el 0, por el valor Vmax. El resultado es que a la salida tendremos un valor igual a Vmax durante un periodo igual al que la entrada es mayor que el valor del diente de sierra, y a partir de ahí y hasta el final de periodo T, valdrá cero. Es fácil comprobar que la señal así construida corresponde a una señal de PWM de valor Vmax y periodo T. El tiempo que la señal está activada (\emph{duty cicle}) corresponde precisamente al tiempo en que la entrada supera en valor a la señal en diente de sierra. Así por ejemplo, si elegimos $\text{Vref} = \text{Vmax}/2$ la señal valdrá Vmax durante un tiempo $t=\text{Vmax}/2$.  
+El resultado de la señal de salida del bloque será una sucesión de valores crecientes entre $0$ y Vmax, que se repiten periódicamente cada T segundos. La señal toma por tanto la forma de un diente de sierra. El bloque comparador compara el valor de entrada, Vref,  en cada instante con el valor de el diente de sierra. Vref representa el valor de tensión continua que queremos emular con la señal de PWM. Mientras el valor del diente de sierra sea menor que el de la entrada Vref, la comparación devuelve un $1$, en caso contrario devolverá un $0$. La ganancia multiplica el 1 o el 0, por el valor Vmax. El resultado es que a la salida tendremos un valor igual a Vmax durante un periodo igual al que la entrada es mayor que el valor del diente de sierra, y a partir de ahí y hasta el final de periodo T, valdrá cero. Es fácil comprobar que la señal así construida corresponde a una señal de PWM de valor Vmax y periodo T. El tiempo que la señal está activada (\emph{duty cicle}) corresponde precisamente al tiempo en que la entrada supera en valor a la señal en diente de sierra. Así por ejemplo, si elegimos $\text{Vref} = \text{Vmax}/2$ la señal valdrá Vmax durante un tiempo $t=\text{Vmax}/2$.  
 \begin{figure}
 \centering
 \includegraphics[scale=1]{pwm_gen.jpg}
@@ -778,7 +778,7 @@ El sistema tiene un polo real negativo y un polo en el origen. Lo que correspond
 
 \paragraph{Realimentación de estados.} Podemos empezar por diseñar un controlador por realimentación de estados, para mover los polos del sistema.  Podemos emplear para calcular las ganancias de la realimentación cualquiera de las funciones definidas en Matlab para este propósito: \texttt{acker} o \texttt{place}. Aunque teóricamente los polos pueden situarse en cualquier lugar del semiplano negativo complejo, hay que tener en cuenta que cuanto más a la izquierda los situemos más grande será el valor de la variable (Vref) demandada por el motor durante el transitorio. Por otro lado, si elegimos polos cercanos al eje imaginario, la respuesta del sistema puede ser muy lenta  y demandar tensiones tan bajas que el motor real entre en su zona muerta y no alcance el estado estacionario. Un posible ajuste inicial, puede ser, situar ambos polos relativamente cerca del valor $p$ obtenido para el polo $p$ del motor durante la identificación realizada en las prácticas anteriores. Por ejemplo podemos calcular cuáles serían las ganancias $k = [k_1, k_2]$ de la realimentación de estados si situamos los polos en $p_1 = 0.5p$ y $p_2 = 0.5p$\footnote{Si colocamos ambos polos en la misma posición será preciso emplear \texttt{acker} para obtener las ganancias}. Podemos además obtener la evolución de los estados si partimos del modelo de motor ideal que diseñamos en la práctica anterior.  
 
-La figura \ref{f31b} muestra los resultados de un ejemplo de dicho sistema. Se ha considerado la posición inicial del motor $x_1 = 2^o$ y la velocidad inicial $x_2= 1^o/s$.  Los valores $K_e = 100$ y $p = 50$ se han tomado arbitrariamente y  no tienen por qué corresponder con los del motor estimado. La entrada con el bloque escalón se ha puesto a cero. La señal $u$ representaría en este modelo el voltaje Vref. suministrado al motor. La realimentación de estados diseñada es capaz de llevar el motor a su posición cero, como era de esperar. Dado que hemos fijado la entrada a cero, la realimentación de estados está respondiendo exclusivamente a los valores iniciales de los estados del sistema.
+La figura \ref{f31b} muestra los resultados de un ejemplo de dicho sistema. Se ha considerado la posición inicial del motor $x_1 = 2^o$ y la velocidad inicial $x_2= 1^o/s$.  Los valores $K_e = 100$ y $p = 50$ se han tomado arbitrariamente y  no tienen por qué corresponder con los del motor estimado (De hecho $K_e$ para el motor real es un orden de magnitud mayor). La entrada con el bloque escalón se ha puesto a cero. La señal $u$ representaría en este modelo el voltaje Vref. suministrado al motor. La realimentación de estados diseñada es capaz de llevar el motor a su posición cero, como era de esperar. Dado que hemos fijado la entrada a cero, la realimentación de estados está respondiendo exclusivamente a los valores iniciales de los estados del sistema.
 \begin{figure}
 \centering
 \begin{subfigure}{\textwidth}
@@ -919,18 +919,18 @@ y(nT) &= Cx(nT) + Du(nT) \label{eq49}
 
 Sin pérdida de generalidad podemos sustituir en las definiciones de las variables $nT$ por $n$, puesto que el periodo de muestreo solo nos indica la relación de las muestras con el instante en que se tomaron. Además es fácil ver que la integral de la ecuación \ref{eq48} es precisamente la convolución sobre un periodo de la matriz de transición de estados con un escalón unitario. Por otro lado, esto no tiene nada de sorprendente puesto que el retenedor convierte la señal de entrada en escalones de duración $T$. Podemos, por tanto, calcular la integral para un periodo,
 \begin{equation}
-\int_{nT}^{(n+1)T} e^{A((n+1)T-\tau)}Bd\tau = i\int_0^Te^{A(T-\tau)}Bd\tau = e^{AT}A^{-1}\left[ I - e^{-AT}\right]
+\int_{nT}^{(n+1)T} e^{A((n+1)T-\tau)}Bd\tau = \int_0^Te^{A(T-\tau)}Bd\tau = e^{AT}\left[\int_0^Te^{-A\tau}d\tau \right]Bu(n)
 \end{equation}
 
 Podemos reescribir las ecuaciones \ref{eq48}, \ref{eq49} como,
 \begin{align}
-x(n+1) &= e^{AT}x(n) + e^{AT}A^{-1}\left[ I - e^{-AT}\right]Bu(n) \label{eq411}\\
+x(n+1) &= e^{AT}x(n) + e^{AT}e^{AT}\left[\int_0^Te^{-A\tau}d\tau \right]Bu(n) \label{eq411}\\
 y(n) &= Cx(n) + Du(n) \label{eq411}
 \end{align}
 
 Podemos  ahora relacionar los resultados obtenidos con los valores de las matrices $F$, $G$, $C$ y $D$ del sistema en variables de estado discreto (ecuaciones \ref{eq42} y \ref{eq43}), 
 \begin{align}
-F = e^{AT} & \ G = e^{AT}A^{-1}\left[ I - e^{-AT}\right]B\\
+F = e^{AT} & \ G = e^{AT}\left[\int_0^Te^{-\tau}d\tau \right]B\\
 C = C\ \ \  & \ D=D
 \end{align}
 
