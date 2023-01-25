@@ -13,7 +13,9 @@
 *.toc
 *.log
 *.aux
-*.pdf
+/manual/*.pdf
+/manual/figuras/*.pdf
+/practica_motor/FIGURAS/*.pdf
 *.idx
 *.gz
 !pdf/realimentados.pdf

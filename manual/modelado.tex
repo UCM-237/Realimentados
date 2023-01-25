@@ -1,11 +1,11 @@
 \chapter{Modelado de sistemas dinámicos}
 
 \section{Sistemas en el espacio de estados}
-Nos vamos a centrar en sistemas que puedan ser descritos por características cuantificables. A estas características las vamos a llamar {\bf estados}, como por ejemplo, una temperatura, una velocidad, o un voltaje. Si estos estados dependen del tiempo, entonces, llamamos {\bf señal} a la sucesión de valores de los estados en el tiempo. Uno podría interaccionar con el sistema a través de una {\bf entrada} cuantificable, y a su vez medir información del sistema a través de una {\bf salida} cuantificable.
+Nos vamos a centrar en sistemas que puedan ser descritos por características cuantificables. A estas características las vamos a llamar {\bf variables de estado}, como por ejemplo, una temperatura, una velocidad, o un voltaje. Si estas variables de estado dependen del tiempo, entonces, llamamos {\bf señal} a la sucesión de valores de las variables de estado en el tiempo. Uno podría interaccionar con el sistema a través de una {\bf entrada} cuantificable, y a su vez medir información del sistema a través de una {\bf salida} cuantificable.
 
-Vamos a definir $x(t)\in\mathbb{R}^n$, $y(t)\in\mathbb{R}^m$ y $u(t)\in\mathbb{R}^k$ como el vector apilado de estados, la salida, y la entrada a un sistema $\Sigma$ respectivamente. En particular, son señales, e.g., $x :[0,\infty) \to \mathbb{R}^n$.
+Vamos a definir $x(t)\in\mathbb{R}^n$, $y(t)\in\mathbb{R}^m$ y $u(t)\in\mathbb{R}^k$ respectivamente, como el vector apilado de variables estados, la salida, y la entrada a un sistema $\Sigma$. En particular, variables de estado, entradas y salidas son señales, e.g., $x :[0,\infty) \to \mathbb{R}^n$.
 
-El sistema $\Sigma$ es un modelo que predice el valor de los estados y la salida a lo largo del tiempo. Esta predicción incorpora la interacción de la entrada con los estados y la salida. En particular, vamos a emplear ecuaciones diferenciales como herramienta para predecir la evolución en el tiempo de los estados del sistema $\Sigma$ como se muestra a continuación
+El sistema $\Sigma$ es un modelo que predice el valor de las variables de estado y la salida a lo largo del tiempo. Esta predicción incorpora la interacción de la entrada con los estados y la salida. En particular, vamos a emplear ecuaciones diferenciales como herramienta para predecir la evolución en el tiempo de los estados del sistema $\Sigma$ como se muestra a continuación
 \begin{equation}
 	\Sigma := \begin{cases}
 		\dot x(t) =& f(t,x(t),u(t)) \\ y(t) =& g(t,x(t),u(t))
@@ -59,9 +59,9 @@ Un caso particular de sistema dinámicos los constituyen los sistemas lineales. 
 
 En el capítulo 5 se estudiarán en detalle los sistemas lineales, cuyas propiedades permiten emplear herramientas de análisis precisas y potentes para su estudio y caracterización. En el caso del resto de los sistemas, es decir todos aquellos que son no-lineales, el análisis resulta más complejo.
 
-Una primera aproximación al estudio de los sistemas no-lineales es linealizarlos en torno a punto de trabajo y estudiar el sistema lineal resultante. Esta aproximación es muy valiosa, como  veremos en la sección (\ref{sec: linear}), sin embargo, solo es válida en las proximidades del punto de trabajo, por tanto no es posible predecir a partir de ella el comportamiento del sistema cuando nos alejamos de dicho punto. Por otro lado, los sistemas no-lineales presentan una dinámica mucho mas rica, con fenómenos que no se dan en los sistemas lineales y, por tanto no pueden describirse con un modelo linealizado del sistema no-lineal. Algunos de éstos fenómenos son:
+Una primera aproximación al estudio de los sistemas no-lineales es linealizarlos en torno a un punto de trabajo y estudiar el sistema lineal resultante. Esta aproximación es muy valiosa, como  veremos en la sección (\ref{sec: linear}), sin embargo, solo es válida en las proximidades del punto de trabajo. Por tanto no es posible predecir a partir de ella el comportamiento del sistema cuando nos alejamos de dicho punto. Por otro lado, los sistemas no-lineales presentan una dinámica mucho mas rica, con fenómenos que no se dan en los sistemas lineales y que no pueden describirse con un modelo linealizado del sistema no-lineal. Algunos de éstos fenómenos son:
 
-\paragraph{Múltiples puntos de equilibrio aislados.} Para un sistema lineal solo es posible encontrar un punto de equilibrio.  Un sistema lineal es asintóticamente estable cuando, partiendo de valores iniciales arbitrarios, sus variables de estado se aproximan al punto de equilibrio con el tiempo. 
+\paragraph{Múltiples puntos de equilibrio aislados.} Para un sistema lineal solo es posible encontrar un punto de equilibrio o una región continua de ellos (rectas, planos, etc).  Un sistema lineal es asintóticamente estable cuando, partiendo de valores iniciales arbitrarios, sus variables de estado se aproximan al punto de equilibrio con el tiempo. 
 
 \begin{equation}
 \lim_{ t \to \infty} x \to \overline x
@@ -74,7 +74,7 @@ Un sistema no lineal puede presentar más de un punto de equilibrio y aproximars
 \begin{equation}
 \lim_{ t \to \infty} x \to \infty
 \end{equation}
-Es posible encontrar sistemas no-lineales inestables que se comportan de modo análogo a los lineales pero además, algunos sistemas lineales divergen, se van a infinito, en un tiempo finito. 
+Es posible encontrar sistemas no-lineales inestables que se comportan de modo análogo a los lineales pero además, algunos sistemas no lineales divergen, se van a infinito, en un tiempo finito. 
 \begin{equation}
 \lim_{ t \to t_e} x \to \infty
 \end{equation}
