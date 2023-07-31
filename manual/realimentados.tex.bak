@@ -1,0 +1,119 @@
+\documentclass[a4paper,10pt]{book}
+\usepackage[pdftex]{graphicx}
+\usepackage{epstopdf}
+\usepackage{subfigure}
+\usepackage{amsmath,amsthm}
+\usepackage{tikz}
+\usepackage{circuitikz}
+\usetikzlibrary{babel}
+\usetikzlibrary{shapes, arrows, patterns, angles, quotes}
+\textwidth= 15cm
+\evensidemargin=0cm
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{textcomp}
+\usepackage{amstext}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{comment}
+\usepackage[hyperindex=true,breaklinks=true,colorlinks=true,linkcolor=blue]{hyperref}
+\renewcommand{\tablename}{Tabla}
+\renewcommand{\listtablename}{\'Indice de Tablas}
+
+\usepackage{listings}
+\usepackage{color} %red, green, blue, yellow, cyan, magenta, black, white
+\definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{mylilas}{RGB}{170,55,241}
+
+\usepackage{multirow}
+\usepackage{makeidx}
+
+%\usepackage{draftwatermark}
+%\SetWatermarkText{Borrador,juan.jimenez@fis.ucm.es}
+%\SetWatermarkScale{2}
+
+% Atajos para el tikz
+\tikzstyle{block} = [draw, rectangle, minimum width=6em]
+\tikzstyle{sum} = [draw, fill=blue!20, circle, node distance=1cm]
+\tikzstyle{input} = [coordinate]
+\tikzstyle{output} = [coordinate]
+\tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
+
+% Entornos para los "teoremas"
+\newtheorem{algo}{Algoritmo}[section]
+\newtheorem{theorem}{Teorema}[section]
+\newtheorem{problem}{Problema}[section]
+\newtheorem{corollary}{Corolario}[section]
+\newtheorem{lemmas}{Lema}[section]
+\newcommand*{\lema}{Lema}
+\newenvironment{lemma}[1][\lema]{\begin{lemmas}[#1]\renewcommand*{\qedsymbol}{\(\Diamond\)}}{\end{lemmas}}
+
+\theoremstyle{definition}
+%\newtheorem{definition}{Definición}[section]
+\newtheorem{definitions}{Definición}[section]
+\newcommand*{\definicion}{Definición}
+\newenvironment{definition}[1][\definicion]{\begin{definitions}[#1]\renewcommand*{\qedsymbol}{\(\bigtriangledown\)}}{\end{definitions}}
+
+\newtheorem{examples}{Ejemplo}[section]
+\newcommand*{\ejemplo}{Ejemplo}
+\newenvironment{example}[1][\ejemplo]{\begin{examples}[#1]\renewcommand*{\qedsymbol}{\(\maltese\)}}{\end{examples}}
+%\renewcommand{\qedsymbol}{\maltese}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Atención}[section]
+
+\graphicspath{{./figuras/}}
+\makeindex
+\begin{document}
+\title{
+\begin{flushleft}
+\includegraphics[width=2.5cm]{ucm2.eps}
+Universidad Complutense de Madrid\\
+---------------------------------------------------------------------\
+\end{flushleft}
+Sistemas din\'amicos y realimentaci\'on}
+\author{ Juan Jim\'enez \\ H\'ector Garc\'ia de Marina}
+
+\maketitle\
+\
+\vspace*{\fill}
+
+\includegraphics[scale=1]{by-sa.eps}\\
+El contenido de estos apuntes est\'e1 bajo licencia Creative Commons Atribution-ShareAlike 4.0\\
+\href{http://creativecommons.org/licenses/by-sa/4.0/}{http://creativecommons.org/licenses/by-sa/4.0/}\\
+\copyright Juan Jim\'enez
+
+\bigskip
+\tableofcontents
+\listoffigures
+%\listoftables
+%\section*{Matlab Code}
+\lstset{language=Matlab,%
+    %basicstyle=\color{red},
+    breaklines=true,%
+    morekeywords={matlab2tikz},
+    keywordstyle=\color{blue},%
+    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+    identifierstyle=\color{black},%
+    stringstyle=\color{mylilas},
+    commentstyle=\color{mygreen},%
+    showstringspaces=false,%without this there will be a symbol in the places where there is a space
+    numbers=left,%
+    numberstyle={\tiny \color{black}},% size of the numbers
+    numbersep=9pt, % this defines how far the numbers are from the text
+    emph=[1]{for,end,break},emphstyle=[1]\color{red}, %some words to emphasise
+    %emph=[2]{word1,word2}, emphstyle=[2]{style},    
+}
+\include{preface}
+\include{introduccion}
+\include{modelado}
+\include{lineales}
+\include{realimentacion}
+\include{ejercicio}
+\include{estabilidad}
+\include{control_nonlinear}
+\include{apendice1}
+
+
+\printindex
+\end{document} 

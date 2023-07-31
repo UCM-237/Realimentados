@@ -1,0 +1,940 @@
+\chapter{Sistemas lineales}\label{lineales}
+
+\section{Mapas lineales}
+
+En este capítulo nos vamos a centrar en una clase de sistema llamado \emph{sistema linea en el espacio de estados}. Primero, necesitamos la noción de que es un \emph{mapa lineal}.
+
+\begin{definition} Considera un mapeado $H: V \to W$. Si $H$ preserva la operación suma y la multiplicación por un escalar, i.e.,
+\begin{align}
+	H(v_1+v_2) &= H(v_1) + H(v_2), \quad v_1, v_2\in\mathbb{V} \nonumber \\
+	H(\alpha v_1) &= \alpha H(v_1), \quad \alpha\in\mathbb{K} \nonumber,
+\end{align}
+	entonces $H$ es un \emph{mapa lineal}.
+\end{definition}
+
+\subsection{Ejercicio: Comprueba si los siguientes mapas son lineales}
+
+\begin{enumerate}
+	\item $H_1(v) := Av, A\in\mathbb{R}^{n\times n}, \quad v\in\mathbb{R}^n$
+	\item $H_2(v) := \frac{\mathrm{d}}{\mathrm{dt}}(v(t)), \quad v\in\mathcal{C}^1$
+	\item $H_3(v) := \int_0^T v(t) dt, \quad v\in\mathcal{C}^1, T\in\mathbb{R}_{\geq 0}$
+	\item $H_4(v) := D(v) := v(t - T), \quad v\in\mathcal{C}^1, T\in\mathbb{R}_{\geq 0}$
+	\item $H_5(v) := Av + b, \quad A\in\mathbb{R}^{n\times n}, v,b\in\mathbb{R}^n$
+\end{enumerate}
+
+\section{Sistemas continuos y lineales en el espacio de estados}
+
+El siguiente sistema define un sistema continuo y lineal en el espacio de estados.
+
+\begin{equation}
+	\Sigma := \begin{cases}
+	\dot x(t) &= A(t)x(t) + B(t)u(t), \quad x\in\mathbb{R}^n, u\in\mathbb{R}^k \\
+	y(t) &= C(t)x(t) + D(t)u(t), \quad y\in\mathbb{R}^m
+	\end{cases}
+	\label{eq: linsys}
+\end{equation}
+
+\subsection{Ejercicio: Escribe un sistema continuo y lineal en el espacio de estados como un diagrama de bloques entrada/salida y comprueba que es un mapa lineal.}
+
+\subsection{Ejercicio: Interconecta sistemas continuos y lineales en el espacio de estados y comprueba que el sistema resultante es otro sistema continuo y lineal en el espacio de estados.}
+
+Reescribe como un único sistema lineal\footnote{Por abreviar, cuando no exista ambiguedad, llamaremos sistema lineal al sistema continuo y lineal en el espacio de estados} como en (\ref{eq: linsys}):
+
+\begin{enumerate}
+	\item La conexión en serie (o en cascada) de dos sistemas lineales, i.e., $y_1(t) = u_2(t)$.
+	\item La conexión en paralelo de dos sistemas lineales, i.e., $y(t) = y_1(t) + y_2(t)$.
+	\item La conexión realimentada, i.e., $u_1(t) = u(t) - y(t)$, asumiendo que $u, y, \in\mathbb{R}^k$.
+\end{enumerate}
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[auto, node distance=3.5cm, >=latex']
+	\node [input, name=input] {};
+	\node [block, right of=input] (system) {$\Sigma_1$};
+	\node [output, right of=system] (output) {};
+	\draw [draw,->] (input) -- node {$u(t) = u_1(t)$} (system);
+	\draw [->] (system) -- node [name=y] {$y_1(t)$}(output);
+	\node [block, right of=output] (system2) {$\Sigma_2$};
+	\node [output, right of=system2] (output2) {};
+	\draw [draw,->] (output) -- node {$u_2(t)$} (system2);
+	\draw [->] (system2) -- node [name=y] {$y_2(t) = y(t)$}(output2);
+\end{tikzpicture}
+	\caption{Conexión en serie de dos sistemas lineales y continuos en el espacio de estados.}
+	\label{fig: series}
+\end{figure}
+
+\section{Solución a sistemas continuos lineales en el espacio de estados}
+La solución a una ecuación diferencial ordinaria viene dada por la suma de dos soluciones: la solución a la parte homogénea, y la solución a la parte no homogénea.
+
+\begin{equation}
+	\dot x(t) = \underbrace{A(t)x(t)}_{\text{homogénea}} + \underbrace{B(t)u(t)}_{\text{no homogénea}}
+	\label{eq: xdyn}
+\end{equation}
+
+\begin{theorem}{Serie de Peano-Barker.}
+La solución única al sistema homogéneo $\dot x = Ax$ viene dada por
+	\begin{equation}
+		x(t) = \Phi(t,t_0)x(t_0), \quad x(t_0)\in\mathbb{R}^n, t\geq 0,
+	\end{equation}
+donde
+	\begin{align}
+		\Phi(t,t_0) := I + \int_{t_0}^t A(s_1)ds_1 + \int_{t_0}^t A(s_1) \int_{t_0}^{s_1} A(s_2)ds_2ds_1 \nonumber \\ + \int_{t_0}^t A(s_1) \int_{t_0}^{s_1} A(s_2)\int_{t_0}^{s_2} A(s_3) ds_3ds_2ds_1 + \dots . \label{eq: ser}
+	\end{align}
+\end{theorem}
+Esbozo de la prueba: \\
+Primero calculamos la siguiente derivada
+	\begin{align}
+		\frac{d}{dt}\Phi(t,t_0) &= A(t) + A(t)\int_{t_0}^{t}A(s_2)ds_2 \nonumber \\ &+ A(t)\int_{t_0}^t A(s_2) \int_{t_0}^{s_2} A(s_3)ds_3ds_2 + \dots \nonumber \\
+		&= A(t) \Phi(t,t_0).
+	\end{align}
+	Afirmamos que la solución a la parte homogénea de (\ref{eq: xdyn}) es $x(t) = \Phi(t,t_0)x_0$ cuya derivada con respecto al tiempo es
+\begin{align}
+	\frac{d}{dt} x &= \frac{d}{dt}\Phi(t,t_0)x_0 \nonumber \\
+	&= A(t) \Phi(t,t_0) x_0 \nonumber \\
+	&= A(t)x(t),
+\end{align}
+lo cual prueba la identidad $\dot x = A(t)x(t)$ dado que $x(t) = \Phi(t,t_0)x_0$. Para terminar la prueba, necesitaríamos probar que la serie (\ref{eq: ser}) converge para todo $t\geq t_0$.
+
+La matriz $\Phi(t,t_0)$ es llamada \textbf{\emph{matriz de transición de estados}}. Dada una condición inicial $x_0$, podemos predecir $x(t)$ en (\ref{eq: xdyn}) iterando $\Phi(t,t_0)$ en el caso de que no existiera ninguna interacción con el sistema, i.e., $u(t) = 0, t\geq t_0$.
+
+\subsection{Ejercicio}
+Comprobar que
+\begin{align}
+	x(t) &= \Phi(t,t_0)x_0 + \int_{t_0}^t \Phi(t,\tau)B(\tau)u(\tau)d\tau  \label{eq: solx} \\
+	y(t) &= C(t)\phi(t,t_0)x_0 + \int_{t_0}^t C(t)\Phi(t,\tau)B(\tau)u(\tau)d\tau + D(t)u(t), \label{eq: soly}
+\end{align}
+son las soluciones a
+
+\begin{align}
+	\dot x(t) &= A(t)x(t) + B(t)u(t)  \nonumber \\
+	y(t) &= C(t)x(t) + D(t)u(t).  \nonumber
+\end{align}
+
+\section[Solución a sistemas LTI en el espacio de estados]{Solución a sistemas invariantes en el tiempo, continuos y lineales en el espacio de estados}\label{5:lti}
+
+Comunmente conocidos como sistemas \emph{lti} (linear time invariant), son los sistemas en los que nos centraremos principalmente en el resto del curso. La matriz $\Phi(t,t_0)$ puede ser hallada analíticamente cuando $A$ es una matriz de coeficientes constantes. Si $A$ es constante, entonces podemos sacarla de las integrales en (\ref{eq: ser}), quedando
+\begin{align}
+	\Phi(t,t_0) := I + A \int_{t_0}^t ds_1 + A^2 \int_{t_0}^t \int_{t_0}^{s_1} ds_2ds_1 \nonumber \\ + A^3 \int_{t_0}^t \int_{t_0}^{s_1} \int_{t_0}^{s_2} ds_3ds_2ds_1 + \dots \label{eq: phi},
+\end{align}
+y observando que las siguientes integrales tienen solución analítica
+\begin{align}
+	\int_{t_0}^t ds_1 &= (t-t_0) \nonumber \\
+	\int_{t_0}^t\int_{t_0}^{s_1} ds_2ds_1 &= \frac{(t-t_0)^2}{2} \nonumber \\
+	\vdots \nonumber \\
+	\int_{t_0}^t\int_{t_0}^{s_1} \cdots \int_{t_0}^{s_{k-2}}\int_{t_0}^{s_{k-1}}ds_k ds_{k-1} \cdots ds_2ds_1 &= \frac{(t-t_0)^k}{k!}, \nonumber
+\end{align}
+entonces tenemos que (\ref{eq: phi}) es calculada como
+\begin{equation}
+	\Phi(t,t_0) = \sum_{k=0}^{\infty} \frac{(t-t_0)^k}{k!}A^k,
+\end{equation}
+lo cual es familiar a la serie de Taylor de una función exponencial. Por ejemplo, para un escalar $x$, tenemos que $e^x := \sum_{k=0}^{\infty}\frac{1}{k!}x^k = 1 + x + \frac{x^2}{2} + \frac{x^3}{3!} + \dots $. De hecho, la definición de la \emph{exponencial de una matriz} es
+\begin{equation}
+	exp(A) = I + A + \frac{1}{2} A^2 + \frac{1}{3!} A^3 + \dots
+\end{equation}
+Fijemos $t_0 = 0$ por conveniencia, entonces
+\begin{align}
+	\Phi(t,0) &= I + tA + \frac{t^2}{2} A^2 + \frac{t^3}{3!} A^3 + \dots \nonumber \\
+	&= exp(At),
+\end{align}
+por lo tanto, la solución a la parte homogénea (\ref{eq: xdyn}) teniendo $A$ con coeficientes constantes y fijando $t_0 = 0$ es
+\begin{equation}
+	x(t) = exp(At)x_0,\quad t\geq 0.
+	\label{eq: xexp}
+\end{equation}
+
+Para continuar, necesitamos el siguiente resultado de álgebra lineal.
+\begin{theorem}
+\textbf{Forma de Jordan}. Para una matriz cuadrada $A\in\mathbb{C}^{n \times n}$, existe un cambio de base no singular $P\in\mathbb{C}^{n \times n}$ que transforma $A$ en
+\begin{equation}
+	J = P^{-1}AP = \begin{bmatrix}
+		J_1 & 0 & 0 & \dots & 0 \\
+		0 & J_2 & 0 & \dots & 0 \\
+		0 & 0 & J_3 & \dots & 0 \\
+		\vdots & \vdots & \vdots & \cdots & \vdots \\
+		0 & 0 & 0 & \cdots & J_l
+	\end{bmatrix},
+\end{equation}
+donde $J_i$ es el bloque de Jordan con forma
+	\begin{equation}
+	J_i = \begin{bmatrix}
+\lambda_i & 1 & 0 & \dots & 0 \\
+		0 & \lambda_i & 1 & \dots & 0 \\
+		0 & 0 & \lambda_i & \dots & 0 \\
+		\vdots & \vdots & \vdots & \cdots & \vdots \\
+		0 & 0 & 0 & \cdots & \lambda_i
+	\end{bmatrix}_{n_i\times n_i},
+	\end{equation}
+	en donde cada $\lambda_i$ es un autovalor de $A$, y el número $l$ de bloques de Jordan es igual al número total de autovectores independientes de $A$. La matrix $J$ es única (descontando reordenación de filas/columnas) y es llamada la \textbf{forma normal de Jordan} de $A$.
+\end{theorem}
+
+Partiendo de la observación que $A = PJP^{-1}$ también, entonces es fácil probar que 
+\begin{equation}
+	A^k = PJ^kP^{-1},
+\end{equation}
+de tal manera que podamos calcular que
+\begin{align}
+	exp(At) &= P\left(\sum_{k=1}^\infty \frac{t^k}{k!} \begin{bmatrix}J_1^k & 0 & \cdots & 0 \\ 0 & J_2^k & \cdots & 0 \\ \vdots & \vdots & \cdots & \vdots \\ 0 & 0 & \cdots & J_l^k \end{bmatrix} \right) P^{-1} \nonumber \\
+		&= P \begin{bmatrix}exp(J_1t) & 0 & \cdots & 0 \\ 0 & exp(J_2t) & \cdots & 0 \\ \vdots & \vdots & \cdots & \vdots \\ 0 & 0 & \cdots & exp(J_lt) \end{bmatrix} P^{-1}
+\label{eq: expAJordan}
+\end{align}
+
+Observa que si $J$ es simplemente una matriz diagonal con los autovalores de $A$, i.e., $J_l = \lambda_l \in \mathbb{C}$, entonces $exp(J_lt) = e^{\lambda_lt} \in\mathbb{C}$ es un cálculo trivial. Es más, si $J$ es diagonal, entonces la solución (\ref{eq: xexp}) puede escribirse como
+\begin{equation}
+	x(t) = \sum_{i=1}^nc_i e^{\lambda_i t}p_i,
+	\label{eq: xtdiag}
+\end{equation}
+donde $p_i\in\mathbb{R}^n$ es la columna $i$ de $P$ representando un autovector de $A$, y $c_i\in\mathbb{R}$ son coeficientes constantes acorde a la condición inicial $x(0)$.
+
+Ahora, veamos las consecuencias de las siguientes dos suposiciones
+\begin{enumerate}
+	\item $J$ es diagonal.
+	\item Todos los autovalores de $A$ tienen parte real negativa.
+\end{enumerate}
+
+Sabiendo que $\lim_{t\to\infty} e^{\lambda t} \to 0$ si $\lambda \in \mathbb{R}_{<0}$, entonces tenemos que $exp(At) \to 0$ según $t\to\infty$ si las dos previas suposiciones se dan. Si echamos un vistazo a (\ref{eq: xexp}) o (\ref{eq: xtdiag}, podemos concluir que 
+\begin{equation}
+	\lim_{t\to\infty} x(t) \to 0,
+	\label{eq: xlim}
+\end{equation}
+por tanto, podemos predecir la evolución de $x(t)$ con sólamente mirar los autovalores de $A$. Si $J$ no es diagonal, podremos concluir más resultados. Lo veremos en la sección siguiente a la linearización de sistemas en el espacio de estados.
+
+
+\section{Linearización de sistemas en el espacio de estados}\label{sec: linear}
+Desafortunadamente, es realmente dificil (cuando no imposible) calcular una solución analítica para $x(t)$ e $y(t)$ para un sistema arbitrario $\Sigma$ como en (\ref{eq: sigma}). No obstante, hemos visto que sí se puede calcular una solución analítica para $x(t)$ e $y(t)$ cuando $\Sigma$ es un sistema invariante en el tiempo, continuo y lineal en el espacio de estados.
+
+Será de gran utilidad encontrar una relación entre ambos sistemas.
+
+Si $f(x,t)$ y $g(x,t)$ son reales analíticas en un entorno a un punto específico $(x^*,u^*)$, entonces podemos trabajar con aproximaciones de Taylor de $f(x,t)$ y $g(x,t)$ en ese mismo entorno. Cuando nos quedamos en orden uno en la aproximación es lo que se conoce como \emph{linearización}.
+\begin{equation}
+	\Sigma := \left.\begin{cases}
+	\dot x(t) =& f(x(t),u(t)) \\ y(t) =& g(x(t),u(t))
+	\end{cases}\right|_{x\approx x^*, u\approx u^*} \approx
+	\begin{cases}
+		x(t) &= x^* + \delta x(t) \\
+		u(t) &= u^* + \delta u(t) \\
+	\delta \dot x(t) &= A(t)\delta x(t) + B(t)\delta u(t) \\
+	\delta y(t) &= C(t)\delta x(t) + D(t)\delta u(t)
+	\end{cases}, \nonumber
+\end{equation}
+donde
+\begin{align}
+	A(t) &= \begin{bmatrix}
+		\frac{\partial f_1}{\partial x_1} & \dots & \frac{\partial f_1}{\partial x_n} \\
+		\vdots & \vdots & \vdots \\
+		\frac{\partial f_n}{\partial x_1} & \dots & \frac{\partial f_n}{\partial x_n}
+	\end{bmatrix}_{|_{x=x^*, u=u^*}} \quad
+	&B(t) = \begin{bmatrix}
+		\frac{\partial f_1}{\partial u_1} & \dots & \frac{\partial f_1}{\partial u_k} \\
+		\vdots & \vdots & \vdots \\
+		\frac{\partial f_k}{\partial u_1} & \dots & \frac{\partial f_k}{\partial u_k}
+	\end{bmatrix}_{|_{x=x^*, u=u^*}} \nonumber \\
+	C(t) &= \begin{bmatrix}
+		\frac{\partial g_1}{\partial x_1} & \dots & \frac{\partial g_1}{\partial x_n} \\
+		\vdots & \vdots & \vdots \\
+		\frac{\partial g_m}{\partial x_1} & \dots & \frac{\partial g_m}{\partial x_n}
+	\end{bmatrix}_{|_{x=x^*, u=u^*}} \quad
+	&D(t) = \begin{bmatrix}
+		\frac{\partial g_1}{\partial u_1} & \dots & \frac{\partial g_1}{\partial u_k} \\
+		\vdots & \vdots & \vdots \\
+		\frac{\partial g_m}{\partial u_1} & \dots & \frac{\partial g_m}{\partial u_k}
+	\end{bmatrix}_{|_{x=x^*, u=u^*}}. \nonumber
+\end{align}
+Informalmente, estamos calculando la sensibilidad (hasta primer orden) de $f$ y $g$ cuando hacemos una variación pequeña de $x$ y $u$ alrededor de $(x^*,u^*)$. Como de pequeña ha de ser esa variación depende del sistema $\Sigma$. En particular, cuando diseñemos controladores basados en linearizar alrededor de un punto, daremos cotas para $\delta x$ y $\delta u$ de tal manera que el controlador pueda garantizar estabilidad.
+
+\subsection{Ejercicio. Linearización del péndulo invertido}
+Más adelante, veremos que podemos diseñar una entrada de control $u(t)$, i.e., una señal que ha de seguir el torque $T$ en (\ref{eq: f}) de tal manera que $\theta$ y $\dot\theta$ converjan a unos valores constantes o trayectorias deseadas.
+
+Por ejemplo, vamos a fijar un punto constante de interés $x^* = \begin{bmatrix}\theta^* \\ 0\end{bmatrix}$, por lo que la velocidad angular se marca a cero. Esta situación corresponde a una situación de equilibrio para el ángulo $\theta$. Para hallar el $u^*(t)$ en (\ref{eq: f}) necesario para tal equilibrio necesitamos que $\frac{\mathrm{d}}{\mathrm{dt}}\left(\begin{bmatrix}\theta \\ \dot\theta \end{bmatrix}\right) = \begin{bmatrix}0 \\ 0 \end{bmatrix}$. Una inspección a la dinámica (\ref{eq: dyn}) nos responde que
+\begin{equation}
+	u^* = T^* = -\frac{g}{l}\sin\theta^*,
+\end{equation}
+por ejemplo, para una posición totalmente vertical correspondiente a $\theta^* = 0$ tenemos que $T^*=0$, i.e., $x^* = \begin{bmatrix}0\\0\end{bmatrix}$ y $u^* = 0$.
+
+El cáclulo de las matrices $A,B,C,$ y $D$ son los Jacobianos de $(\ref{eq: f})$ y $(\ref{eq: g})$, i.e.,
+
+\begin{align}
+\frac{\partial f_1}{\partial x_1} &= 0 \nonumber \\
+\frac{\partial f_1}{\partial x_2} &= 1 \nonumber \\
+\frac{\partial f_2}{\partial x_1} &= \frac{g}{l}\cos\theta \nonumber \\
+\frac{\partial f_2}{\partial x_2} &= -\frac{b}{ml^2} \nonumber \\
+\frac{\partial f_1}{\partial u_1} &= 0 \nonumber \\
+\frac{\partial f_2}{\partial u_1} &= 1 \nonumber \\
+\frac{\partial g_1}{\partial x_1} &= 1 \nonumber \\
+\frac{\partial g_1}{\partial x_2} &= 0 \nonumber \\
+\frac{\partial g_1}{\partial u_1} &= 0, \nonumber
+\end{align}
+por lo que podemos llegar a
+\begin{align}
+	\frac{\mathrm{d}}{\mathrm{dt}}\left(\begin{bmatrix}\delta\theta \\ \dot\delta\theta \end{bmatrix}\right) &= \begin{bmatrix}0 & 1 \\ \frac{g}{l}\cos\theta & -\frac{b}{ml^2} \end{bmatrix}_{|_{\theta=\theta^*}} \begin{bmatrix}\delta\theta \\ \dot\delta\theta \end{bmatrix} + \begin{bmatrix}0 \\ 1 \end{bmatrix} \delta T \nonumber \\
+		\delta y &= \begin{bmatrix}1 & 0\end{bmatrix}\begin{bmatrix}\delta\theta \\ \dot\delta\theta \end{bmatrix} + 0 \, \delta T,
+\end{align}
+para modelar una aproximación a la dinámica de $x(t)$ y la salida $y(t)$ alrededor de los puntos $x^*$ y $u^*$.
+
+\begin{comment}
+\section{(Internal or Lyapunov) Stability}
+\label{sec: sta}
+
+Decimos que el sistema lineal (\ref{eq: linsys}) \emph{en el sentido de Lyapunov}
+\begin{enumerate}
+	\item es \emph{(marginalmente) estable} si para cada condición inicial $x_0$, entonces $x(t) = \Phi(t,t_0) x_0$ está acotada uniformamente para todo $t>t_0$.
+	\item es \emph{asintóticamente estable} si además $x(t) \to 0$ según $t\to\infty$.
+	\item es \emph{exponencialmente estable} si además $||x(t)|| \leq c e^{\lambda(t-t_0)}||x(t_0)||$ para algunas constantes $c,\lambda > 0$.
+	\item is \emph{inestable} si no es marginalmente estable.
+\end{enumerate}
+
+%In control, it is very common to focus on \emph{error signals}, e.g., $e(t) := x(t) - x^*(t)$, where $x^*(t)$ is a trajectory goal. Note that if $x^*$ is constant, then $\dot e(t) = \dot x(t)$, and this is why we focus on having $x(t) \to 0$ as $t\to\infty$ in the above definitions for (\ref{eq: sigmalin}).
+
+Centrémonos en sistemas \emph{lti}, es decir, cuando $A$ tiene coeficientes constantes o $\Phi(t,t_0) = e^{A(t-t_0)}$. Entonces, podemos establecer una clara relación entre los autovalores de $A$ y las definiciones de estabilidad en el sentido de Lyapunov únicamente inspeccionando la solución a $\dot x(t) = Ax(t)$ dada por (\ref{eq: solx}).
+
+El sistema $\dot x(t) = Ax(t)$
+\begin{enumerate}
+	\item es marginalmente estable si y solo si todos los autovalores de $A$ tienen parte real negativa. Si algún autovalor tiene parte real nula, entonces su bloque de Jordan ha de ser $1\times 1$.
+	\item es asintóticamente estable si y solo si todos los autovales de $A$ tienen estrictamente parte real negativa.
+	\item es exponencialmente estable si es asintóticamente estable.
+	\item es inestable si y solo si al menos un autovalor de $A$ tiene parte real positiva, o al menos uno de los autovalores con parte real nula tiene un bloque de Jordan mayor de $1\times 1$.
+\end{enumerate}
+
+Comprobando las soluciones (\ref{eq: solx})-(\ref{eq: soly}), podemos decir que si $A$ tiene coeficientes constantes y $\dot x = Ax$ es asintóticamente estable, entonces $x(t) \to \int_{t_0}^t e^{A(t-\tau)}B(\tau)u(\tau)d\tau$ según $t\to\infty$. 
+
+\subsection{Estabilidad local de sistemas linearizados}
+Si $x(t)$ es asintóticamente (exponencialmente) estable en $\dot x(t) = Ax(t)$, entonces, existe una única $P$ que satisface la \emph{ecuación de Lyapunov}
+\begin{equation}
+A^TP + PA = -Q, \quad \forall Q \succ 0.
+	\label{eq: lya}
+\end{equation}
+Uno puede probar (\ref{eq: lya}) si considera
+\begin{equation}
+	P:= \int_0^\infty e^{A^Tt}Qe^{At}dt.
+	\label{eq: P}
+\end{equation}
+Pista: Primero, sustituye $P$ en (\ref{eq: lya}), y después verifica el cálculo  $\frac{\mathrm{d}}{\mathrm{dt}}\left(e^{A^Tt}Qe^{At}\right)$. Si uno prueba que $P$ es única, entonces $P$ ha de ser positiva definida acorde a su definición (\ref{eq: P}).
+
+Ahora vamos a considerar un sistema continuo, autónomo y no lineal en general
+\begin{equation}
+	\dot x(t) = f(x(t)), \quad x\in\mathbb{R}^n,
+	\label{eq: non}
+\end{equation}
+con un punto de equilibrio $x^*\in\mathbb{R}^n$, i.e, $f(x^*) = 0$. La dinámica de $x(t)$ puede ser aproximada considerando $x(t) = x^* + \delta x(t)$ donde 
+\begin{equation}
+	\dot{\delta x(t)} = A\,\delta x(t), \quad A:=\frac{\partial f(x)}{\partial x}.
+	\label{eq: delta}
+\end{equation}
+
+¿Cómo de buena es esta aproximación?
+
+\begin{theorem}
+	\label{thm: tayl}
+	Asume que $f(x)$ is dos veces diferenciable. Si (\ref{eq: delta}) es exponencialmente estable, entonces, existe un entorno $\mathcal{B}$ alrededor de $x^*$ y constantes $c, \lambda > 0$ tal que para cada solución $x(t)$ del sistema (\ref{eq: non}) que empiece con $x(t_0)\in\mathcal{B}$, tenemos que
+	\begin{equation}
+	||x(t) - x^*|| \leq ce^{\lambda(t-t_0)} ||x(t_0) - x^*||, \quad \forall t\geq t_0.
+	\end{equation}
+\end{theorem}
+
+\subsubsection{¿Cómo de grande es $\mathcal{B}$? ¿Podemos estimarlo? Esbozo de la prueba del Teorema \ref{thm: tayl}}
+
+Como $f$ es dos veces diferenciable, de su desarrollo de Taylor tenemos que
+\begin{equation}
+	r(x) := f(x) - (f(x^*) + A(x - x^*)) = f(x) - A\,\delta x = O(||\delta x||^2),
+\end{equation}
+lo cual significa que existe una constante $c$ y una bola $\bar B$ alrededor de $x^*$ tal que 
+\begin{equation}
+	||r(x)|| \leq c||\delta x||^2, \quad x\in\bar B.
+\end{equation}
+Si el sistema linearizado es exponencialmente estable, tenemos que
+\begin{equation}
+A^TP + PA = -I.
+\end{equation}
+Ahora considera la siguiente señal escalar
+\begin{equation}
+	v(t) := (\delta x)^T P \delta x, \quad \forall t\geq 0.
+\end{equation}
+Observa que $\delta x(t) = x(t) - x^*$, entonces $\dot{\delta x(t)} = \dot x(t) = f(t)$. Por lo tanto, la derivada con respecto del tiempo de $v(t)$ satisface
+\begin{align}
+	\dot v &= f(x)^T P \delta x + (\delta x)^T P f(x) \nonumber \\
+	&= (A\delta x + r(x))^T P \delta x + (\delta x)^T P (A\delta x + r(x)) \nonumber \\
+	&= (\delta x)^T(A^T P + PA)\delta x + 2(\delta x)^T P r(x) \nonumber \\
+	&= -||\delta x||^2 + 2(\delta x)^T P r(x) \nonumber \\
+	&\leq -||\delta x||^2 + 2 ||P||\, ||\delta x|| \, ||r(x)||.
+\end{align}
+
+Sabemos que $v(t)$ es positiva excepto cuando $\delta x = 0$. Si podemos garantizar que $\dot v(t) < 0$ y que $\dot v(t) = 0$ solo cuando  $\delta x = 0$, entonces $v(t) \to 0$ as $t\to\infty$, lo cual implica que  $\delta x(t) \to 0$ as $t\to\infty$.
+
+Ahora, si $x\in\mathcal{\bar B}$, entonces
+
+\begin{equation}
+	\dot v \leq -\Big(1 - 2c\,||P||\,||\delta x||\Big)||\delta x||^2,
+\end{equation}
+Por lo tanto, si la desviación  $\delta x$ es suficientemente pequeña, i.e., 
+\begin{equation}
+||\delta x|| < \frac{1}{2c||P||},
+\end{equation}
+entonces  $\dot v(t) < 0$ si $\delta x(0) \neq 0$ y $\delta x(0) < \frac{1}{2c||P||}$.
+
+Podemos concluir que una estimación de $\mathcal B$ es
+\begin{equation}
+	\mathcal{B} := \{ \delta x : ||\delta x|| < \frac{1}{2c||P||} \}.
+	\label{eq: Bregion}
+\end{equation}
+
+\section{Controlabilidad}
+\subsection{Subespacios alcanzables y controlables}
+Recordemos que cueando aplicamos una entrada genérica $u(\cdot)$ a (\ref{eq: linsys}), transferimos el sistema de un estado $x(t_0):=x_0$ a un estado $x(t_1):=x_1$, que además podemos calcular con la expresión
+\begin{equation}
+	x_1 = \Phi(t_1,t_0)x_0 + \int_{t_0}^{t_1} \Phi(t_1,\tau)B(\tau)u(\tau)d\tau,
+\end{equation}
+donde recordemos que $\Phi(\cdot)$ es la matriz de transición de estados del sistema.
+
+Preguntas:
+\begin{enumerate}
+	\item ¿Qué estados puedo alcanzar desde $x_0$?
+	\item ¿Existe siempre una entrada $u(\cdot)$ que transfiera un estado arbitrario $x_0$ a otro $x_1$?
+\end{enumerate}
+
+Estas dos preguntas llevan a acuñar las definiciones de (sub)espacios alcanzables y controlables.
+
+\begin{definition}[Subespacio alcanzable]
+	Dados dos instantes de tiempo $t_1>t_0\geq 0$, el subespacio alcanzable (o controlable desde el origen) $\mathcal{R}[t_0,t_1]$ consiste en todos los estados $x_1$ por los que existe una entrada $u:[t_0,t_1]\to \mathbb{R}^k$ que transfiere el estado $x_0 = 0$ a  $x_1 \in\mathbb{R}^n$; i.e.,
+	\begin{equation}
+		\mathcal{R}[t_0,t_1] := \Big\{x_1\in\mathbb{R}^n : \exists u(\cdot),\, x_1 = \int_{t_0}^{t_1} \Phi(t_1,\tau)B(\tau)u(\tau)d\tau \Big\}. \label{eq: rs}
+	\end{equation}
+\end{definition}
+
+\begin{definition}[Subespacio controlable]
+	Dados dos instantes de tiempo $t_1>t_0\geq 0$, el subespacio controlable (or controlable hacia el origen) $\mathcal{C}[t_0,t_1]$ consiste en todos los estados $x_0$ por los que existe una entrada $u:[t_0,t_1]\to \mathbb{R}^k$ que transfiera un estado $x_0\in\mathbb{R}^n$ a $x_1 = 0$; i.e.,
+	\begin{equation}
+		\mathcal{C}[t_0,t_1] := \Big\{x_0\in\mathbb{R}^n : \exists u(\cdot),\, 0 = \Phi(t_1,t_0)x_0 + \int_{t_0}^{t_1} \Phi(t_1,\tau)B(\tau)u(\tau)d\tau \Big\}.
+	\end{equation}
+\end{definition}
+
+¿Cómo podemos calcular $\mathcal{R}[t_0,t_1]$ y $\mathcal{C}[t_0,t_1]$? Para ello vamos a introducir y explotar las siguientes dos matrices llamadas \emph{Gramianos}.
+
+\begin{definition}[Gramianos de alcanzabilidad y controlabilidad]
+	\begin{align}
+		W_R(t_0,t_1) &:= \int_{t_0}^{t_1} \Phi(t_1,\tau)B(\tau)B(\tau)^T\Phi(t_1,\tau)^Td\tau \\
+		W_C(t_0,t_1) &:= \int_{t_0}^{t_1} \Phi(t_0,\tau)B(\tau)B(\tau)^T\Phi(t_0,\tau)^Td\tau 
+	\end{align}
+\end{definition}
+
+\begin{theorem}
+Dados dos instantes de tiempo $t_1 > t_0 \geq 0$,
+	\begin{align}
+		\mathcal{R}[t_0,t_1] &= \text{Im}\{W_R(t_0,t_1)\} \label{RI} \\
+		\mathcal{C}[t_0,t_1] &= \text{Im}\{W_C(t_0,t_1)\} \label{CI},
+	\end{align}
+	donde $\text{Im}\{A\}:= \Big\{y\in\mathbb{R}^m: \exists x\in\mathbb{R}^n, y = Ax\Big\}$ para una matriz $A\in\mathbb{R}^{m\times n}$.
+\end{theorem}
+\begin{proof}
+	Solo vamos a probar (\ref{RI}) porque (\ref{CI}) tiene una prueba similar.
+	Necesitamos mostrar ambas implicaciones: primero, si $x_1 \in \text{Im}\{W_R(t_0,t_1)$, entonces $x_1 \in \mathcal{R}[t_0,t_1]$; segundo, si $x_1 \in \mathcal{R}[t_0,t_1]$ entonces $x_1 \in \text{Im}\{W_R(t_0,t_1)$.\\
+	Cuando  $x_1 \in \text{Im}\{W_R(t_0,t_1)$, existe un vector $\mu_1\in\mathbb{R}^n$ tal que
+	\begin{equation}
+	x_1 = W_R(t_0,t_1)\eta_1.
+	\end{equation}
+	Escoge $u(\tau) = B(\tau)^T\Phi(t_1, \tau)^T\eta_1$, y sustitúyelo en (\ref{eq: rs}), entonces tenemos que 
+	\begin{equation}
+	x_1 = \int_{t_0}^{t_1} \Phi(t_1,\tau)B(\tau) B(\tau)^T\Phi(t_1, \tau)^T \eta_1d\tau = W_R(t_0,t_1)\eta_1.
+	\end{equation}
+	Cuando $x_1 \in \mathcal{R}[t_0,t_1]$, existe una entrada $u(\cdot)$ para la cual 
+	\begin{equation}
+		x_1 = \int_{t_0}^{t_1} \Phi(t_1,\tau)B(\tau)u(\tau)d\tau.
+		\label{x1}
+	\end{equation}
+	Si (\ref{x1}) es en $\text{Im}\{W_R(t_0,t_1)\}$, entonces $x_1^T\mu = 0, \, \mu \in \text{Ker}\{W_R(t_0,t_1)\}$\footnote{If $x\in\text{Ker}\{A^T\}$, por lo que $A^Tx = 0$. Si $y\in\text{Im}\{A\}$, entonces  $y = A\eta$. Por lo tanto, $x^Ty = x^TA\eta = \eta^TA^Tx = \eta \cdot 0 = 0$. Observa que $W_R^T = W_R$ por definción.} Vamos a calcular 
+	\begin{equation}
+		x_1^T\mu = \int_{t_0}^{t_1}u(\tau)^TB(\tau)^T\Phi(t_1,\tau)^T\mu \, d\tau. \label{eq: x1eta1}
+	\end{equation}
+	Y observando que 
+	\begin{align}
+	\mu \in \text{Ker}\{W_R(t_0,t_1)\} \implies \mu^TW_R(t_0,t_1)\mu &= 0 \nonumber \\ &= \int_{t_0}^{t_1}\mu^T \Phi(t_1,\tau)B(\tau)B(\tau)^T\Phi(t_1,\tau)^T \mu \, d\tau \nonumber \\ &= \int_{t_0}^{t_1} ||B(\tau)^T\Phi(t_1,\tau)^T \mu||^2 d \tau,
+	\end{align}
+	obtenemos que $B(\tau)^T\Phi(t_1,\tau)^T \mu  = 0$, llevando a (\ref{eq: x1eta1}) ser igual a cero.
+\end{proof}
+\begin{remark}
+	Observa que hemos probado que $u(\tau) = B(\tau)^T\Phi(t_1,\tau)^T \eta_1$ puede ser como una entrada de control para transferir $x_0 = 0$ a $x_1\in\mathbb{R}^n$ en un tiempo finito $(t_1 - t_0)$. De hecho, esta es la señal de control \emph{en lazo abierto de mínima energía}.
+\end{remark}
+Vamos a ver este hecho en más detalle. Considera otra señal de control  $\bar u(t)$ tal que 
+\begin{equation}
+x_1 = \int_{t_0}^{t_1} \Phi(t_1,\tau)B(\tau)u(\tau)d\tau = \int_{t_0}^{t_1} \Phi(t_1,\tau)B(\tau)\bar u(\tau)d\tau.
+\end{equation}
+Para que sea cierto, debemos tener
+For this to hold, we must have
+\begin{equation}
+	\int_{t_0}^{t_1} \Phi(t_1,\tau)B(\tau)v(\tau) \, d\tau = 0,
+	\label{eq: ve}
+\end{equation}
+donde $v(\tau) = u(\tau) - \bar u(\tau)$.
+Vamos a ver la energía asociada a $\bar u$
+\begin{align}
+\int_{t_0}^{t_1}||\bar u(\tau)||^2 d\tau &= \int_{t_0}^{t_1} || B(\tau)^T\Phi(t_1,\tau)^T \eta_1 + v(\tau)||^2 d\tau \nonumber \\ 
+&= \eta_1^T W_R(t_0,t_1)\eta_1 + \int_{t_0}^{t_1} ||v(\tau)||^2 d \tau + 2\eta_1^T \int_{t_0}^{t_1}B(\tau)\Phi(t_1,\tau)v(\tau) d \tau,
+\end{align}
+donde el tercer término es cero por (\ref{eq: ve}). Por lo tanto, si $\bar u(t)$ difiere $v(t)$ de $u(t)$, gastará $\int_{t_0}^{t_1} ||v(\tau)||^2 d\tau$ más energía que $u(t)$.
+
+\subsection{Matriz de controlabilidad para un sistema lti}
+
+Consideremos un sistema lineal (\ref{eq: linsys}) con $A$ y $B$ con coeficientes constantes.
+
+El teorema de Cayley-Hamilton nos permite escribir
+\begin{equation}
+	e^{At} = \sum_{i=0}^{n-1}\alpha_i(t)A^i, \quad \forall t\in\mathbb{R},
+\end{equation}
+para algunas funciones escalares apropiadas $\alpha_i(t)$. Tenemos también que si $A$ y $B$ tienen coeficientes constantes, entonces
+\begin{align}
+	x_1 &= \int_{0}^{t_0-t_1} e^{At}Bu(t) dt \nonumber \\
+	&= \sum_{i=0}^{n-1} A^iB \Big(\int_{0}^{t_1-t_0}\alpha_i(t)u(t)dt \Big) \nonumber \\
+	&= \mathcal{C} \begin{bmatrix}\int_{0}^{t_1-t_0}\alpha_0(t)u(t)dt \\ \vdots \\ \int_{0}^{t_1-t_0} \alpha_{n-1}(t)u(t)dt \end{bmatrix},
+\end{align}
+donde
+\begin{equation}
+\mathcal{C}:=\begin{bmatrix}B & AB & A^2B & \cdots & A^{n-1}B
+\end{bmatrix}_{n\times (kn)},
+	\label{eq: conmat}
+\end{equation}
+es la llamada matrix de controlabilidad del sistema lti.
+\begin{remark}Observa que $\mathcal{C}[t_0,t_1]$ y $\mathcal{C}$  son diferentes objetos. El primero es un (sub)espacio, mientras que el segundo es una matriz.
+\end{remark}
+
+Observa que acabamos de probar que la imagen de $\mathcal{C}$ es la misma que la imagen de $W_R(t_0,t_1)$. La siguiente afirmación más general puede probarse también:
+\begin{theorem}
+	\label{thm: spcon}
+Dados dos instantes de tiempo $t_0, t_1$, con $t_1 > t_0$, tenemos que
+	\begin{equation}
+		\mathcal{R}[t_0,t_1] = \text{Im}\{W_R(t_0,t_1)\} = \text{Im}\{\mathcal{C}\} = \text{Im}\{W_C(t_0,t_1)\} = \mathcal{C}[t_0,t_1],
+	\end{equation}
+\end{theorem}
+
+Podemos extraer dos importantes consecuencias del Teorema \ref{thm: spcon} para sistemas lti. ¡Observa que $\text{Im}\{\mathcal{C}\}$ no depende de ninguna variable tiempo!
+
+\begin{enumerate}
+	\item \emph{Reversibilidad temporal}: Si uno puede alcanzar $x_1$ desde el origen, entonces uno puede alcanzar el origen desde $x_1$. Es decir, los subespacios de alcanzabilidad y controlabilidad son el mismo subespacio.
+	\item \emph{Escalado de tiempo}: La alcanzabilidad y la controlabilidad no dependen del tiempo. Si uno puede transferir el estado de $x_0$ and $x_1$ en $t$ segundos, entonces también puedes hacerlo en $\bar t \neq t$ segundos.
+\end{enumerate}
+
+\begin{definition}
+	Dados dos instantes de tiempo $t_1 > t_0 \geq 0$, el par $(A,B)$ del sistema (\ref{eq: linsys}) se dice \emph{alcanzable} en $[t_0, t_1]$ si $\mathcal{R}[t_0,t_1] = \mathbb{R}^n$. Es decir, si podemos alcanzar cualquier estado en tiempo finito partiendo desde el origen.
+\end{definition}
+
+\begin{definition}
+	\label{def: con}
+	Dados dos instantes de tiempo $t_1 > t_0$, el par del sistema (\ref{eq: linsys}) se dice \emph{controlable} en $[t_0, t_1]$ si $\mathcal{C}[t_0,t_1] = \mathbb{R}^n$. Es decir, si podemos alcanzar el origen partiendo desde cualquier estado en tiempo finito.
+\end{definition}
+
+\subsection{Tests de controlabilidad}
+El siguiente teorema es el resultado de combinar la Definición \ref{def: con} con el Teorema \ref{thm: spcon}:
+\begin{theorem}
+	El par (constante) $(A,B)$ es controlable si y solo si el rango de $\mathcal{C}$ es $n$.
+\end{theorem}
+
+El siguiente teorema se puede comprobar numéricamente a partir de los siguientes resultados.
+\begin{theorem}
+	\label{thm: atbt}
+	El par (constante) $(A,B)$ es controlable si y solo si no existe ningún autovector de $A^T$ en el kernel de $B^T$.
+\end{theorem}
+El siguiente teorema es una reescritura del anterior.
+\begin{theorem}
+El par (constante) $(A,B)$ es controlable si y solo si el dango de $\begin{bmatrix}A-\lambda I & B\end{bmatrix}$ es $n$.
+\end{theorem}
+
+\begin{remark}
+	Observa que el tener un sistema asintóticamente estable no implica el tener 
+	un sistema lti controlable. Por ejemplo, 
+\begin{equation}
+	\dot x = \begin{bmatrix}-3 & 0 \\ 0 & -7\end{bmatrix}x + \begin{bmatrix}0 \\ 1\end{bmatrix}u, \quad x\in\mathbb{R}^2, u\in\mathbb{R}.
+\end{equation}
+	El kernel de $B^T$ es generado por $\begin{bmatrix}1 \\ 0\end{bmatrix}$, el cual es proporcional a un autovector de $A = A^T$. Entonces, el sistema no es controlable acorde al teorema \ref{thm: atbt}. Observa, que no tenemos autoridad ninguna sobre $x_1$ a través de $u$. Sin embargo, es asintóticamente estable. Uno puede ver que $x_{\{1,2\}}(t) \to 0$ según $t\to\infty$ cuando $u = 0$. Recuerda que la controlabilidad trata de transferir estados en \textbf{tiempo finito}.
+\end{remark}
+
+\section{Estabilización de un sistema lti por realimentación de estados}
+\label{sec: reak}
+\subsection{Test de Lyapunov para la estabilización de un sistema lti}
+\begin{definition}
+	Si el sistema (\ref{eq: linsys}) es lti, entonces es estabilizable si existe una entrada $u(t)$ para cualquier $x(0)$ tal que $x(t)\to 0$ as $t\to\infty$.
+\end{definition}
+Esta definición es una versión de \emph{sistema controlable} pero para tiempo infinito. En el siguiente teorema veremos que \emph{estabilizable} es menos restrictivo que \emph{controlable}.
+
+\begin{theorem}
+	Si el sistema (\ref{eq: linsys}) es lti, entonces es estabilizable si y solo si todos los autovectores de $A^T$ correspondientes a autovalores con parte real no negativa pertenecen al kernel de $B^T$.
+\end{theorem}
+
+La proyección de $x(t)$ sobre el espacio generado por los autovectores de $A^T$ asociados a autovalores con parte real negativa van a cero sin necesidad de la \emph{asistencia} de ninguna entrada. Entonces, la entrada $u(t)$ debe asistir a las proyecciones de $x(t)$ en el resto de autovectores de $A^T$. Por ejemplo,
+
+\begin{equation}
+	\dot x = \begin{bmatrix}-3 & 0 \\ 0 & 7\end{bmatrix}x + \begin{bmatrix}0 \\ 1\end{bmatrix}u, \quad x\in\mathbb{R}^2, u\in\mathbb{R},
+\end{equation}
+mientras que no tenemos ninguna \emph{autoridad} sobre $x_1(t)$, podemos emplear $u(t)$ para lleva a $x_2(t)$ a cero de tal manera que $x(t)\to 0$ según $t\to\infty$.
+\begin{theorem}
+	Si el sistema (\ref{eq: linsys}) es lti, entonces es estabilizable si y solo si hay una matriz positiva definida $P$ a la siguiente desigualdad
+	\begin{equation}
+	AP + PA^T - BB^T \prec 0
+		\label{eq: lb}
+	\end{equation}
+\end{theorem}
+\begin{proof}
+	Solo vamos a ver una dirección de la prueba. No confundir (\ref{eq: lb}) con la ecuación de Lyapunov\footnote{Observa el orden de las matrices traspuestas, y observa también el signo opuesto de $-BB^T$ y $+I$ en las dos ecuaciones.} $PA+A^TP \prec -I$ en (\ref{eq: lya}).
+
+Conisdera $x$ como un autovector asociado al autovalor $\lambda$ de $A^T$ con parte real no negativa. Entonces,
+	\begin{equation}
+	x^*(AP+PA^T)x < x^*BB^Tx = ||B^Tx||^2,
+		\label{eq: aux}
+	\end{equation}
+	donde $x^*$ es el complejo conjugado de $x$. Pero el lado izquierdo de (\ref{eq: aux}) es igual a 
+	\begin{equation}
+		(A^T(x^*)^T)^TPx + x^*PA^Tx = \lambda^*x^*Px + \lambda x^*Px = 2\text{Real}\{\lambda\}x^*Px.
+	\end{equation}
+	Como $P$ es positiva definida, y $\text{Real}\{\lambda\} \geq 0$, podemos concluir que 
+\begin{equation}
+0 \leq 2\text{Real}\{\lambda\}x^*Px < ||B^Tx||^2,
+\end{equation}
+y por tanto $x$ no debe pertenecer al kernel de $B$, ya que si tendríamos que 
+\begin{equation}
+0 \leq 2\text{Real}\{\lambda\}x^*Px < 0,
+\end{equation}
+y eso no es posible.
+\end{proof}
+
+\subsection{Controlador por realimentación de estados}
+Realimentación de estados implica el escoger una señal de entrada que dependa únicamente de los estados del sistema, es decir, diseñar una
+\begin{equation}
+u(t) = -Kx(t),
+	\label{eq: kx}
+\end{equation}
+donde $K\in\mathbb{R}^{n\times k}$, tal que $x(t) \to 0$ en (\ref{eq: linsys}) exponencialmente rápido según $t\to\infty$.
+
+Define la ganancia matriz de control
+\begin{equation}
+	K:=\frac{1}{2}B^TP^{-1}, \label{eq: K}
+\end{equation}
+donde $P$ se calcula en (\ref{eq: lb}) si y solo si un sistema lti es estabilizable. Por lo tanto, podemos rescribir (\ref{eq: lb}) como
+\begin{equation}
+	(A - \frac{1}{2}BB^TP^{-1})P + P(A - \frac{1}{2}BB^TP^{-1})^T = (A-BK)P+P(A-BK)^T \prec 0,
+\end{equation}
+y multiplicando a la izquierda y derecha por $Q:=P^{-1}$ tenemos que
+\begin{equation}
+	Q(A-BK)+(A-BK)^TQ \prec 0,
+\end{equation}
+la cual es una ecuación de Lyapunov. Por lo tanto, podemos concluir que $(A-BK)$ tiene todos sus autovalores \emph{estables}, esto es, si uno escoge la entrada
+\begin{equation}
+	u = -Kx = -\frac{1}{2}B^TP^{-1}x, \label{eq: conK}
+\end{equation}
+en el sistema lti estabilizable, entonces $x(t) \to 0$ exponencialmente rápido según $t\to\infty$.
+
+Encontrar la matrix $P$ en (\ref{eq: K}) requiere resolver la \emph{linear matrix inequality} (LMI) en (\ref{eq: lb}). Para ello existen herramientas numéricas \emph{LMI solvers} disponibles en Matlab o Python.
+
+Si el sistema lti es controlable (recordemos que es más restrictivo que estabilizable), la matriz $K$ en (\ref{eq: kx}) puede explotar el Teorema \ref{thm: atbt}. Es decir, podemos encontrar una matriz $K$ tal que $(A-BK)$ tenga sus autovalores donde nosotros queramos por diseño. Por ejemplo, a través del Teorema de Ackermann.
+\begin{theorem}
+	\label{thm: ack}
+	Si el sistema lti es controlable, entonces $(A-BK)$ tiene como autovalores un conjunto deseado $\Lambda$ si
+	\begin{equation}
+		K = \begin{bmatrix}0 & \dots & 0 & 0 & 1\end{bmatrix}\mathcal{C}^{-1} \Delta(A),
+	\end{equation}
+	en donde $\mathcal{C}$ es la matrix de controlabilidad (\ref{eq: conmat}) y $\Delta$ es el polinomio característico que satisface $\Lambda$.
+\end{theorem}
+Obviamente, al requerir la inversa de la matriz de contolabilidad, se requiere por tanto que $\mathcal{C}$ sea de rango máximo. Es decir, el sistema lti ha de ser controlable para poder aplicar el Teorema \ref{thm: ack}.
+
+
+\section{Observabilidad en sistemas lti}
+\subsection{Subespacio inobservable y el Gramiano de observabilidad}
+\begin{definition}
+	El subespacio inobservable $\mathcal{UO}$ de un sistema lti consiste en todos aquellos estados que satisfacen
+	\begin{equation}
+	C e^{A} x_0 = 0.
+		\label{eq: ce}
+	\end{equation}
+\end{definition}
+Esta definición está motivada por los siguientes hechos.
+Recuerda que en (\ref{eq: soly}) podemos derivar que
+\begin{align}
+	y(t) &= Ce^{At}x_0 + \int_0^tCe^{A(t-\tau)}Bu(\tau)d\tau + Du(t) \nonumber \\
+	\tilde y(t) &:= y(t) - \int_0^tCe^{A(t-\tau)}Bu(\tau)d\tau - Du(t) = Ce^{At}x_0. \label{eq: y}
+\end{align}
+En el lado izquierdo de (\ref{eq: y}) tenemos un par entrada/salida, y en el lado derecho de (\ref{eq: y}) tenemos el estado inicial $x_0$. De (\ref{eq: y}) podemos observar dos propiedades interesantes:
+\begin{enumerate}
+	\item Cuando un particular $x_0$ es compatible con un par entrada/salida, entonces todo estado inicial de la forma $x_0 + x_u, \, x_u\in\mathcal{UO}$ también es compatible con la misma entrada/salida.
+	\item Cuando $\mathcal{UO}$ contiene únicamente el vector cero, entonces existe al menos un estado inicial $x_0$ compatible con un par entrada/salida.
+\end{enumerate}
+
+\begin{definition}
+	Un sistema lti es observable si su $\mathcal{UO}$ contiene solo el vector cero.
+\end{definition}
+
+\begin{definition}
+	Dados dos instantes de tiempo $t_1>t_0\geq 0$, el Gramiano de observabilidad viene definido por
+	\begin{equation}
+		W_O(t_0,t_1) := \int_{t_0}^{t_1}e^{A^T(\tau - t_0)} C^T Ce^{A(\tau - t_0)}d\tau
+	\end{equation}
+\end{definition}
+Partiendo de (\ref{eq: ce}), se puede llegar a
+\begin{equation}
+	\operatorname{Ker}W_O(t_0,t_1) = \mathcal{UO}.
+\end{equation}
+
+\subsection{Tests de observabilidad}
+Lo siguiente se puede demostrar formalmente apoyándonos en el teorema de Cayley-Hamilton. Por ejemplo, para ver por qué paramos en $(n-1)$. Vamos a ver la sensibilidad con respecto de los estados $x$ de $y$ y de sus derivadas con respecto del tiempo \footnote{Observa como $B$ y $D$ no juegan ningún papel aquí} cuando $u(t) = 0$.
+\begin{align}
+	y(t) = Cx(t) &\implies \dot y(t) = C\dot x(t) = CAx(t) \implies \ddot y(t) = C A^2 x(t) \quad \dots \nonumber \\ &\implies \frac{\mathrm{d}^{n-1}y}{\mathrm{dt}^{n-1}} = CA^{n-1}x(t), \nonumber
+\end{align}
+Si no queremos perder ninguna información sobre la señal $x(t)$, entonces la matriz
+\begin{equation}
+	\mathcal{O} = \begin{bmatrix}C \\ CA \\ \vdots \\ CA^{n-1}\end{bmatrix}_{(kn)\times n}, \label{eq: O}
+\end{equation}
+debe de ser de rango máximo en sus columnas. Vamos a introducir los siguientes resultados equivalentes
+\begin{theorem}
+	Un sistema lti es observable si y solo si el rango de $\mathcal{O}$ es igual a $n$.
+\end{theorem}
+\begin{theorem}
+	Un sistema lti es observable si y solo si no hay ningún autovector de $A$ en el kernel de $C$.
+\end{theorem}
+
+Fíjate que de (\ref{eq: O}) podemos derivar un test de controlabilidad
+\begin{equation}
+	\mathcal{O}^T = \begin{bmatrix}C^T & A^TC^T & \cdots & (A^{n-1})^TC^T \end{bmatrix}_{n \times (kn)}, 
+\end{equation}
+que vendría dado por el siguiente sistema lti \emph{dual}
+\begin{equation}
+	\Sigma_{\text{dual}} := \begin{cases}
+		\dot{\bar x}(t) &= A^T \bar x(t) + C^T \bar u(t) \\
+		\bar y(t) &= B^T\bar x(t) + D^T\bar u(t)
+	\end{cases}.
+\label{eq: sigmadual}
+\end{equation}
+Por lo tanto, podemos formular el siguiente resultado
+\begin{theorem}
+	Un sistema lti es observable si y solo si su sistema dual (\ref{eq: sigmadual}) es controlable.
+\end{theorem}
+No haría falta ningún test nuevo para concluir la observabilidad de un sistema lti. Simplemente, construimos su sistema dual y estudiamos su controlabilidad.
+
+\section{Estimación de estados en sistemas lti}
+El estimador más simple consiste en hacer una copia de la dinámica del sistema lti
+\begin{equation}
+	\Sigma_{\text{estimator}} := \begin{cases}
+		\dot{\hat x}(t) &= A \hat x(t) + B u(t) \\
+		\hat y(t) &= C\hat x(t) + D u(t)
+	\end{cases},
+\label{eq: sigmaest}
+\end{equation}
+en donde $\hat x\in\mathbb{R}^nm y\in\mathbb{R}^m$ será nuestra estimación de los estados y de la salida del sistema lti respectivamente. Ahora, definamos la señal de error
+\begin{equation}
+e(t) := \hat x(t) - x(t),
+\end{equation}
+por lo tanto, cuando el error $e$ sea cero, querrá decir que estamos estimando los estados del sistema lti correctamente. Vamos a ver, la dinámica de la señal de error
+\begin{equation}
+	\dot e(t) = \dot{\hat x}(t) - \dot x(t) = A\hat x + Bu - Ax - Bu = Ae(t),
+\end{equation}
+por lo que $e(t)\to 0$ según $t\to\infty$ exponencialmente rápido si $A$ es una matriz \emph{estable} para toda entrada $u(t)$.
+
+¿Y si $A$ no es una matriz estable? Entonces considera el siguiente estimador
+\begin{equation}
+	\Sigma_{\text{estimator2}} := \begin{cases}
+		\dot{\hat x}(t) &= A \hat x(t) + B u(t) - L(\hat y(t) - y(t)) \\
+		\hat y(t) &= C\hat x(t) + D u(t)
+	\end{cases},
+\label{eq: sigmaest2}
+\end{equation}
+en donde tenemos dos entradas $u$ y $(\hat y - y)$ a la dinámica de $\hat x$, y $L\in\mathbb{R}^{n\times m}$ es una matriz de ganancias. Observa que la señal $y$ viene del sistema lti original, y es algo que podemos medir al ser su salida. Ahora, veamos la nueva dinámica para la señal de error $e(t)$.
+\begin{equation}
+	\dot e = A\hat x + Bu - L(\hat y - y) - (Ax + Bu) = (A-LC)e,\label{eq: ed} 
+\end{equation}
+por lo tanto, si $(A-LC)$ es una matriz de estabilidad, entonces $e(t)\to 0$ según $t\to\infty$ exponencialmente rápido para cualquier señal $u(t)$.
+
+Para el cálculo de $L$ bastaría con calcular $K$ para el sistema dual utilizando los resultados de la sección \ref{sec: reak}. En particular $L = K^T_{\text{dual}}$, y $K = L^T_{\text{dual}}$.
+
+A continuación, los resultados \emph{duales} para observabilidad.
+\begin{theorem}
+	Un sistema lti es \emph{detectable} si y solo si los autovectores de $A$ correspondientes a autovalores inestables no están en el kernel de $C$.
+\end{theorem}
+Si un sistema es detectable, entonces su dual es estabilizable, y viceversa.
+\begin{theorem}
+	Cuando un par $(A,C)$ es detectable, entonces es siempre posible encontrar una matriz $L$ tal que $(A-LC)$ es una matriz de estabilidad.
+\end{theorem}
+\begin{theorem}
+	Cuando un par $(A,C)$ es observable, entonces es siempre posible encontrar una matrix $L$ tal que los autovalores de $(A-LC)$ puedan estar donde queramos.
+\end{theorem}
+
+\section{Estabilización de sistemas lti con realimentación a través de su salida}
+
+Si $C$ no es invertible, entonces no tenemos un cálculo directo de los estados $x$ de un sistema lti; por lo tanto no podemos aplicar la señal de control $u = -Kx$ como en la sección \ref{sec: realk}.
+
+¿Qué ocure si el sistema lti es observable, o al menos detectable? Entonces, vamos a mostrar que podemos utilizar como controlador la señal
+\begin{equation}
+	u = -K \hat x, \label{eq: uh}
+\end{equation}
+donde $\hat x$ son los estados de nuestro estimador (\ref{eq: sigmaest2}). Vamos a aplicar (\ref{eq: uh}) a un sistema lti, por lo que la dinámica será
+\begin{equation}
+	\dot x = Ax - BK\hat x = Ax - BK(e + x) = (A -BK)x -BKe,
+\end{equation}
+que junto con (\ref{eq: ed}) nos lleva al siguiente sistema autónomo
+\begin{equation}
+	\begin{bmatrix}\dot x \\ \dot e\end{bmatrix} = \begin{bmatrix}A-BK & -BK \\ 0 & A-LC\end{bmatrix}\begin{bmatrix}x \\ e\end{bmatrix},
+\end{equation}
+el cual es un sistema triangular, y será exponencialmente estable porque $(A-BK)$ y $(A-LC)$ son matrices diseñadas para tener todos sus autovalores estables.
+
+\section{Regulador cuadrático lineal o LQR}
+Si el par $(A,B)$ es controlable, entonces hemos visto que podemos colocar los autovalores de $(A-BK)$ donde queramos. Entonces uno podría preguntarse ¿cuál es el mejor lugar para los autovalores?
+
+El \emph{mejor} lugar responde al siguiente criterio de diseño. Considera que tenemos la siguiente salida de interés
+\begin{equation}
+	z(t) = G x(t) + H u(t) \label{eq: z}.
+\end{equation}
+Por supuesto $z(t)\in\mathbb{R}^l$ puede ser la señal de salida $y(t)$, pero no tiene por qué. En particular, debemos distinguir que $y(t)$ la usaremos para alimentar el estimador/controlador, y $z(t)$ la usaremos para optimizar nuestro criterio sobre \emph{el mejor} lugar para los autovalores de $(A-BK)$.
+
+El problema LQR está definido de la siguiente manera:
+\begin{problem}
+	Encontrar una entrada $u(t), t\in[0,\infty)$ que minimice la siguiente función de coste
+\begin{equation}
+	J := \int_0^\infty z(t)^T \bar Q z(t) + \rho \, u(t)^T \bar R u(t) dt,
+	\label{eq: J}
+\end{equation}
+	donde $\bar Q\in\mathbb{R}^{l\times l}$ y $\bar R\in\mathbb{R}^{m\times m}$ son matrices positivas definidas, y $\rho$ es una constante positiva para relativizar ambos términos en (\ref{eq: J}).
+\end{problem}
+
+Como $z = Gx + Hu$, entonces $J$ puede ser rescrito como
+\begin{equation}
+	J := \int_0^\infty x(t)^T Q x(t) + \, u(t)^T R u(t) + 2x(t)^T N u(t)dt,
+	\label{eq: J2},
+\end{equation}
+donde $Q = G^T\bar Q G$, $R = H^T\bar QH + \rho \bar R$, y $N = G^T\bar Q H$.
+
+Observa como $\bar Q$, $\bar R$ y $\rho$ determinan como de importante es el minimizar los elementos de $z$ y $u$.
+
+Si somos capaces de encontrar una matriz positiva definida $P$ tal que satisface la \emph{ecuación algebraica de Ricatti}
+\begin{equation}
+	A^TP + PA + Q - (PB + N)R^{-1}(B^TP + N^T) = 0,
+\end{equation}
+entonces
+\begin{theorem}
+	Si $A - BR^{-1}(B^TP+N^T)$ es una matriz de estabilidad. Entonces, la señal de entrada
+	\begin{equation}
+	u(t) = -R^{-1}(B^TP+N^T) x(t),
+	\end{equation}
+	minimiza $J$, es más, $J = x(0)^T P x(0)$.
+\end{theorem}
+
+La \emph{regla de Bryson} nos orienta para unos valores razonables de $\bar Q$ y $\bar R$:
+\begin{align}
+	\bar Q_{ii} &= \frac{1}{\text{valor máximo aceptable de}\, z_i^2} \nonumber \\
+	\bar R_{jj} &= \frac{1}{\text{valor máximo aceptable de}\, u_j^2}. \nonumber
+\end{align}
+
+
+\section{Resumen para la estabilización de un punto en un sistema no lineal}
+Dado el siguiente sistema no lineal
+\begin{equation}
+	\Sigma :=
+\begin{cases}
+	\dot x &= f(x,u) \\
+	y &= g(x,u)
+\end{cases}, \label{eq: sisnl}
+\end{equation}
+donde $x\in\mathbb{R}^n$ es el estado del sistema, $u\in\mathbb{R}^k$ es la entrada al sistema, $y\in\mathbb{R}^m$ es la salida del sistema, y $f(x,u): \mathbb{R}^n\times\mathbb{R}^k \to \mathbb{R}^n$ y  $g(x,u): \mathbb{R}^n\times \times\mathbb{R}^k \to \mathbb{R}^m$ son funciones arbitrarias.
+
+El siguiente algoritmo nos permite estabilizar un punto arbitrario $x^*$ del sistema (\ref{eq: sisnl}).
+
+\begin{enumerate}
+	\item Escoge un punto de interés $x^*$, y entonces calcula $u^*$ de tal manera que  $f(x^*,u^*) = 0$.
+	\item Lineariza (\ref{eq: sisnl}) alrededor de  $x^*$ y $u^*$, i.e., calcula sus Jacobianos $A:=\frac{\partial f(x,u)}{\partial x}$ y $B:=\frac{\partial f(x,u)}{\partial u}$ y evalúalos en $x=x^*$ y $u=u^*$. Observa, que si un Jacobiano no existe, e.g., $f(x,u)$ no es real analítica, entonces, no podemos continuar.
+	\item Comprobar si $(A,B)$ es controlable. Si este test falla, entonces comprueba si es almenos estabilizable. Si ambos tests fallan, no podemos continuar.
+	\item Calcular el Jacobiano $C:=\frac{\partial g(x,u)}{\partial x}$. Si $C$ no es invertible, entonces necesitaremos un observador/estimador. Si $C$ es invertible, entonces ves al paso \ref{step}.
+	\item Si necesitamos un estimador, entonces comprueba que $(A,C)$ es observable. Si no, comprueba que $(A,C)$ es detectable. Si ambos tests fallan, no podemos continuar.
+	\item Si $(A,C)$ es observable, entonces contruye el estimador (\ref{eq: sigmaest2}), con $D:=\frac{\partial g(x,u)}{\partial u}$, y calcula $L$ de tal manera que $(A-LC)$ sea una matriz estable. Por ejemplo, con el Teorema \ref{thm: ack}.
+	\item Si $(A,C)$ no es observable pero sí detectable, entonces, calcula $L$ a través del sistema dual con el test de Lyapunov para la estabilización como en (\ref{eq: K}). Recuerda, que entonces $L = K^T$.
+	\item \label{step} Si el par $(A,B)$ es controlable, entonces podemos calcular $K$ de tal manera que $(A-BK)$ sea una matriz estable. Por ejemplo, con el Teorema \ref{thm: ack}.
+	\item Si $(A,B)$ no es controlable, pero estabilizable. Entonces calcula $K$ a través del test de Lyapunov para la estabilización como en (\ref{eq: K}).
+	\item Felicidades! Escoge\footnote{Recuerda que nos referimos muchas veces a $u(t)$ como la entrada al sistema lti, para el sistema lineal no olvides que es $u(t) = u^*(t) + \delta u(t)$, i.e., para el sistema no lineal tendríamos que $u(t) = u^* -K\delta x$.}  $u(t) = -Kx(t)$ o $u(t) = -K\hat x(t)$ si has necesitado de un estimador.
+	\item Por último recuerda que el controlador ha sido diseñado para un sistema no lineal. Por lo que existe una región dada en (\ref{eq: Bregion}) que garantiza la convergencia. Fuera de ahí, no podemos decir nada con seguridad.
+\end{enumerate}
+
+\section{Seguimiento por parte de la salida de una consigna constante}
+
+Considera el siguiente sistema lti con dos señales de salida
+\begin{equation}
+	\Sigma := \begin{cases}
+	\dot x(t) &= Ax(t) + Bu(t), \quad x\in\mathbb{R}^n, u\in\mathbb{R}^k \\
+	y_1(t) &= C_1x(t), \quad y_1\in\mathbb{R}^m \\
+	y_2(t) &= C_2x(t), \quad y_2\in\mathbb{R}^l
+	\end{cases}.
+	\label{eq: linsys2}
+\end{equation}
+Hasta ahora nos hemos centrado en hacer el origen del vector de estados en (\ref{eq: linsys2}) estable, y por lo tanto las señales de salida $y_{1,2}(t) = C_{1,2}x(t)$ convergen a cero si $x(t) \to 0$ según $t\to\infty$.
+
+Por mantener esta sección corta, vamos a considerar que $C_1 = I$, es decir, que podemos medir todos los estados $x$ a partir de la salida $y_1$. Vamos a utilizar esta señal para después diseñar un controlador de realimentación de estados. Si $C_1$ fuera una matriz arbitraria, pero el par $(A,C_1)$ fuera observable, la técnica explicada en esta sección seguiría siendo aplicable con el uso de un estimador.
+
+En esta sección vamos a centrarnos en que dada una consigna constante $y_d\in\mathbb{R}^l$, entonces que el objetivo sea $y_2(t) \to y_d$ según $t\to\infty$.
+
+\begin{remark}
+Observa que para que $y_2(t)$ pueda alcanzar un valor arbitrario $y_d$, entonces ha de existir un estado $x_d\in\mathbb{R}^n$ tal que $y_d = C_2x_d$. Es decir, necesitamos la condición de que $C_2$ sea de rango máximo para poder imponer sin problemas un $y_d$ arbitrario.
+\end{remark}
+
+Considera el cambio de variable $\tilde x(t) = x(t) - x_d$, entonces el sistema (\ref{eq: linsys2}) se puede reescribir como
+\begin{equation}
+	\Sigma := \begin{cases}
+		\dot{\tilde x}(t) &= A\tilde x(t) + Bu(t) + Ax_d \\
+	\tilde y_1(t) &= \tilde x(t)  \\
+	\tilde y_2(t) &= C_2\tilde x(t)
+	\end{cases},
+	\label{eq: linsys3}
+\end{equation}
+y si existe una solución $u^*$ tal que $Bu^* = -Ax_d$, entonces con una entrada $u = \tilde u + u^*$ tenemos que
+\begin{equation}
+	\Sigma := \begin{cases}
+		\dot{\tilde x}(t) &= A\tilde x(t) + B\tilde u(t)  \\
+	\tilde y_1(t) &= \tilde x(t)  \\
+	\tilde y_2(t) &= C_2\tilde x(t) 
+	\end{cases},
+	\label{eq: linsys4}
+\end{equation}
+para el cual podemos encontrar una matriz $K\in\mathbb{R}^{n\times n}$ tal que $u(t) = K (x(t) - x_d) + u^*$ haga el origen de (\ref{eq: linsys4}) asintóticamente estable. Observa que si $\tilde y_2 \to 0$ según $t\to\infty$, entonces $y_2(t) \to y_d$ también. También observa que para el diseño de $K$, las matrices $A$ y $B$ de (\ref{eq: linsys4}) son las mismas que en (\ref{eq: linsys2}). Vamos a resumir este resultado en el siguiente teorema
+\begin{theorem}
+	Dado el sistema lti (\ref{eq: linsys2}) con $C_1 = I$, entonces $y_2(t) \to y_d\in\mathbb{R}^l$ según $t\to\infty$ con la siguiente ley de control
+	$$
+	u(t) = K (x(t) - x_d) + u^*,
+	$$
+	donde $x_d$ y $u^*$ han de existir como soluciones a 
+$$
+	\begin{cases}
+		y_d &= C_2x_d \\
+		Bu^* &= -Ax_d
+	\end{cases}.
+	$$\label{thm: ff}
+\end{theorem}
+
+
+\subsubsection{Control integral}
+El Teorema (\ref{thm: ff}) se basa fundamentalmente en que hay que conocer con exactitud las matrices $A$ y $B$ para poder calcular una señal en \emph{lazo abierto} $u^*$. Cualquier error de modelado puede hacernos calcular la $u^*$ equivocada y consecuentemente $y_2(t)$ puede no converger al valor deseado $y_d$.
+
+Vamos a utilizar la técnica conocida como \emph{control integral} para garantizar que $y_2(t) \to y_d$ aún bajo errores de modelado. Definamos la siguiente señal (integral)
+\begin{equation}
+	e_i(t) := \int_0^t (y_2(t) - y_d) \mathrm{dt},
+	\label{eq: ei}
+\end{equation}
+cuya dinámica viene dada por
+\begin{equation}
+	\dot e_i(t) = y_2(t) - y_d + e_i(0), \quad e_i(0)\in\mathbb{R}^l,
+	\label{eq: dei}
+\end{equation}
+donde $e_i(0)$ por conveniencia tenemos la libertad de igualarla a cero. Observa que cuando $y_2 = y_d$, entonces (\ref{eq: ei}) es cero, i.e., la señal $e_i(t)$ está en equilibrio. Vamos a apilar las señales $x$ y $e_i$ y analizar su dinámica.
+\begin{equation}
+	\begin{bmatrix}\dot x \\ \dot e_i\end{bmatrix} = \begin{bmatrix}A & 0 \\ C_2 & 0\end{bmatrix}\begin{bmatrix}x \\ e_i\end{bmatrix} + \begin{bmatrix}B \\ 0 \end{bmatrix} u + \begin{bmatrix}0 \\ -I\end{bmatrix} y_d.
+	\label{eq: xei}
+\end{equation}
+Ahora vamos a proponer la siguiente ley de control $u = -\begin{bmatrix}K & K_I\end{bmatrix}\begin{bmatrix}x \\ e_i \end{bmatrix} = -Kx -K_Ie_i$, entonces tenemos que
+	\begin{equation}
+	\begin{bmatrix}\dot x \\ e_i \end{bmatrix} = \begin{bmatrix}A-BK & -K_I \\ C_2 & 0\end{bmatrix}\begin{bmatrix} x \\ e_i \end{bmatrix} + \begin{bmatrix}0 \\ -I\end{bmatrix} y_d.
+	\label{eq: xeta2}
+	\end{equation}
+
+Si los autovalores de la matriz $\begin{bmatrix}A-BK & -K_I \\ C_2 & 0\end{bmatrix}$ son estables, entonces el sistema (\ref{eq: xeta2}) es exponencialmente estable pero el equilibrio no estará en el origen ya que está forzado por el término $\begin{bmatrix}0 \\ -I\end{bmatrix} y_d$. Independientemente del nuevo equilibrio\footnote{Si $\begin{bmatrix}A-BK & -K_I \\ C_2 & 0\end{bmatrix}$ es una matriz de estabilidad, y $C_2$ es de rango máximo, el conjunto de equilibrio de (\ref{eq: xeta2}) puede demostrarse como $\mathcal{E} := \{x, e \, : \, C_2x = y_d, \, x = (A-BK)^{-1}K_Ie, \, y_d\in\mathbb{R}^l\}$, es decir $[x(t),e(t)] \to \mathcal{E}$ según $t\to\infty$.
+	} \emph{forzado}, lo que si es cierto es que en el equilibrio tenemos que $\dot e_i = 0$, por lo que $y_2 = y_d$. La salida $y_2$ ha alcanzado el valor deseado y es tolerante a errores de modelado en $A$ y $B$ ya que la dinámica de $e_i(t)$ no depende de ellos. No obstante, grandes errores de modelado, por ejemplo para $\tilde A$ y $\tilde B$ podría hacer la matriz $\begin{bmatrix}\tilde A-\tilde BK & -K_I \\ C_2 & 0\end{bmatrix}$ con autovalores con parte real positiva.
+
+¿Podemos encontrar $K = \begin{bmatrix}K & K_I\end{bmatrix}$ tal que $\begin{bmatrix}A-BK & -K_I \\ C_2 & 0\end{bmatrix}$ pueda tener los autovalores donde nosotros queramos? Para ello entonces hay que responder a la siguiente pregunta:
+
+¿Es el par $\left(\begin{bmatrix}A & 0 \\ C_2 & 0\end{bmatrix}, \begin{bmatrix}B \\ 0 \end{bmatrix}\right)$ controlable (o al menos estabilizable)? Si la respuesta es afirmativa, entonces podemos encontrar una matriz $K\in\mathbb{R}^{(n+l)\times(n+l)}$ tal que $u = -K \begin{bmatrix}x \\ e_i \end{bmatrix}$ haga el sistema (\ref{eq: xeta2}) exponencialmente estable.
+
+
+Observa que si $v_i$ es autovector de $A^T$ con autovalor $\lambda_i$, entonces $v_i^T A = v_i^T\lambda_i$, es decir $\begin{bmatrix}v_i^T & 0\end{bmatrix} \begin{bmatrix}A & 0 \\ C_2 & 0\end{bmatrix} = \begin{bmatrix}v_i^TA & 0\end{bmatrix} = \lambda_i\begin{bmatrix}v_i^T & 0\end{bmatrix}$. Es decir, $\begin{bmatrix}v_i^T & 0\end{bmatrix}$ es autovector de $\begin{bmatrix}A & 0 \\ C_2 & 0\end{bmatrix}$. Aplicando el Teorema \ref{thm: atbt} podemos comprobar que el par $\left(\begin{bmatrix}A & 0 \\ C_2 & 0\end{bmatrix}, \begin{bmatrix}B \\ 0 \end{bmatrix}\right)$ sería controlable si
+	\begin{equation}
+		\begin{bmatrix}v_i^T & 0\end{bmatrix} \begin{bmatrix}B \\ 0 \end{bmatrix} = v_i^TB \neq 0,
+	\end{equation} y eso es solo posible si el par $(A,B)$ es controlable. Es decir, el control integral no ha variado las propiedades de controlabilidad del sistema original. Podemos resumir los resultados alcanzados con el siguiente teorema
+\begin{theorem}
+	Considera el sistema lti (\ref{eq: linsys2}) con $C_1 = I$ y $C_2$ con rango máximo. Considera la señal integral $e_i(t)$ en (\ref{eq: ei}) para un valor deseado $y_d\in\mathbb{R}^l$ para $y_2(t)$. Entonces, existe una matrix $K \in\mathbb{R}^{(n+l)\times(n+l)}$ tal que la señal de entrada $u = -K \begin{bmatrix}x \\ e_i\end{bmatrix}$ ocasiona que $y_2(t) \to y_d$ asintóticamente según $t\to\infty$ si y solo si el par $(A,B)$ en (\ref{eq: linsys2}) es controlable (estabilizable).
+\end{theorem}
+\end{comment}
