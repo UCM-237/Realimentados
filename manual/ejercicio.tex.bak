@@ -1,0 +1,41 @@
+\chapter[Ejercicios resumen.]{Ejercicio resumen para aplicar los resultados de los capítulos \ref{lineales} y \ref{crllineales}.}\label{ejercicios}
+
+\begin{figure}[h]
+\centering
+\scalebox{0.65}{
+\begin{tikzpicture}
+    \fill[pattern=north west lines, color=gray] (0,0) rectangle ++(1,3);
+    \fill[pattern=north west lines] (3,0) rectangle ++(1,3);
+    \fill[pattern=north west lines] (6,0) rectangle ++(1,3);
+    \fill[pattern=north west lines, color=gray] (9,0) rectangle ++(1,3);
+    \fill[pattern=north west lines, color=gray] (0,-1) rectangle ++(10,1);
+    \fill[pattern=north west lines, color=gray] (0,3) rectangle ++(10,1);
+
+	\node at (2,1.5) {Hab. $1$};
+	\node at (5,1.5) {Hab. $2$};
+	\node at (8,1.5) {Hab. $3$};
+\end{tikzpicture}
+}
+	\caption{Tres habitaciones separadas por muros conductores y conectadas en serie dentro de un contenedor adiabático.}
+	\label{fig: adiabatico}
+\end{figure}
+
+Tenemos en la figura \ref{fig: adiabatico} un contenedor aislado adiabáticamente con $i=3$ habitaciones conectadas en serie a través de muros conductores. Cada habitación tiene una temperatura inicial $x_i(0)\in\mathbb{R}^+$ en grados Kelvin, y su variación con el tiempo sigue la siguiente ley
+\begin{equation}
+	\dot x_i = \sum_{j\in\mathcal{N}_i}(x_j - x_i), \label{eq: temp}
+\end{equation}
+donde $\mathcal{N}_i$ es el conjunto de habitaciones contiguas a la habitación $i$.
+
+\begin{enumerate}
+	\item Considera $x = \begin{bmatrix}x_1 & x_2 & x_3\end{bmatrix}^T$ y formula un modelo lineal del tipo $\dot x = Ax + Bu$ para predecir el comportamiento en el tiempo de las temperaturas de las tres habitaciones. Para ello encuentra explícitamente la solución \textbf{analítica} para $x(t)$; fíjate en (\ref{eq: solx}) y en (\ref{eq: expAJordan}). La forma de Jordan contiene información sobre los autovalores y autovectores asociados de $A$, esto te ayuda a hacer una predicción a largo plazo de los estados. Verifica el resultado simulando el sistema (\ref{eq: temp}) para una condición inicial arbitraria que cumpla $x_1(0) \neq x_2(0) \neq x_3(0)$. Sobre $B$, ten en cuenta que no hay actuación alguna en ninguno de los estados.
+	\item Verifica que el \emph{principio cero} de la Termodinámica se cumple para las habitaciones cuando $t\to\infty$. Esto es, encuentra la solución analítica para $z(t) = \begin{bmatrix}z_1(t) & z_2(t)\end{bmatrix}^T$, en donde $z_1 = x_1-x_2$ y $z_2 = x_2-x_3$. Te podría ayudar el encontrar y analizar la solución del sistema $\dot z = A_z z + B_z u_z$. ¿Es coherente con el resultado del apartado anterior?
+	\item Asumiendo el modelo (\ref{eq: temp}) ¿En qué habitaciones como mínimo he de medir la temperatura para poder conocer o estimar las temperaturas en todas las habitaciones para cualquier instante de tiempo $t$?
+	\item Diseña un observador, que dado el mínimo número de sensores puedas reconstruir las temperaturas de todas las habitaciones. Verifica el resultado numéricamente con una simulación.
+		\item Cuentas con bombas de calor/frío que se comportan de manera lineal: aumenta/disminuye la temperatura de una habitación a un grado por segundo cuando le comandas unas señal de control igual a $1$ o $-1$ respectivamente. El sistema empieza con unas temperaturas $x(t_0) = x_{t_0} = \begin{bmatrix}a & a & a\end{bmatrix}^T$, con $a \in\mathbb{R}^+$. Quisiéramos alcanzar un vector de temperaturas genérico $x(t_1) = x_{t_1}$ para $t_1 > t_0$. Entonces:
+\begin{enumerate}
+\item Explica cuantas bombas necesitarías como mínimo y en qué habitaciones las colocarías.
+\item Una vez colocadas las bombas, diseña una señal $u(t)$ de mínima energía para llevar las temperaturas desde $x_{t_0}$ a $x_{t_1}$ en un tiempo finito $(t_1-t_0)$.
+\item Diseña un controlador tal que un estado arbitrario $x_c$ sea asintóticamente estable en el sentido de Lyapunov.
+\item Diseña un controlador LQR tal que un estado arbitrario $x_c$ sea asintóticamente estable pero que la energía máxima instantánea de $u$ no supere el valor de $10$.
+\end{enumerate}
+\end{enumerate}

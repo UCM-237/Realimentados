@@ -1,4 +1,4 @@
-\chapter{Modelado de sistemas dinámicos}
+\chapter{Modelado de sistemas dinámicos}\label{modelado}
 
 \section{Sistemas en el espacio de estados}
 Nos vamos a centrar en sistemas que puedan ser descritos por características cuantificables. A estas características las vamos a llamar {\bf variables de estado}, como por ejemplo, una temperatura, una velocidad, o un voltaje. Si estas variables de estado dependen del tiempo, entonces, llamamos {\bf señal} a la sucesión de valores de las variables de estado en el tiempo. Uno podría interaccionar con el sistema a través de una {\bf entrada} cuantificable, y a su vez medir información del sistema a través de una {\bf salida} cuantificable.
@@ -16,7 +16,7 @@ en donde $\dot x := \frac{\mathrm{d}}{\mathrm{dt}}(x(t))$ es la notación para l
 
 Podemos representar el sistema $\Sigma$ como un bloque con puertos de entrada y de salida como se muestra en la figura \ref{fig: sigma}.
 
-\begin{figure}[!h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[auto, node distance=2cm,>=latex']
 	\node [input, name=input] {};
@@ -95,7 +95,7 @@ Vamos a derivar las funciones $f$ y $g$ en (\ref{eq: sigma}) para el sistema del
 
 Primero, vamos a hallar la ecuación diferencial que describe la dinámica de una masa $m\in\mathbb{R}_+$ en el extremo de un péndulo de longitud $l\in\mathbb{R}_+$ tal y como se muestra en la figura \ref{fig: invpen}. Vamos a considerar que podemos interactuar con el sistema por medio de un torque $T\in\mathbb{R}$ en el otro extremo del péndulo, que la masa sufre un rozamiento proporcional $b\in\mathbb{R}_+$ a su celeridad, y que podemos medir el ángulo $\theta\in\mathbb{R}$ que forma el péndulo con la vertical.
 
-\begin{figure}[!h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}
     \coordinate (origo) at (0,0);
@@ -389,7 +389,7 @@ Tienen dos características fundamentales, la primera es que corresponde a soluc
 
 \subsection{Sistemas lti\protect\footnote{Los detalles y demostraciones se incluyen en el capítulo \ref{5:lti}}. }
 
-\begin{figure}[h] 
+\begin{figure}[ht] 
 \subfigure[Nodo estable]{
 \includegraphics[width=0.31\linewidth]{lineal_lr.eps}}
 \subfigure[Foco estable]{
