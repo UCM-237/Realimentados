@@ -12,7 +12,8 @@ En este capítulo nos vamos a centrar en una clase de sistema llamado \emph{sist
 	entonces $H$ es un \emph{mapa lineal}.
 \end{definition}
 
-\subsection{Ejercicio: Comprueba si los siguientes mapas son lineales}
+\subsection*{Ejercicio}
+Comprueba si los siguientes mapas son lineales
 
 \begin{enumerate}
 	\item $H_1(v) := Av, A\in\mathbb{R}^{n\times n}, \quad v\in\mathbb{R}^n$
@@ -34,9 +35,11 @@ El siguiente sistema define un sistema continuo y lineal en el espacio de estado
 	\label{eq: linsys}
 \end{equation}
 
-\subsection{Ejercicio: Escribe un sistema continuo y lineal en el espacio de estados como un diagrama de bloques entrada/salida y comprueba que es un mapa lineal.}
+\subsection*{Ejercicio}
+ Escribe un sistema continuo y lineal en el espacio de estados como un diagrama de bloques entrada/salida y comprueba que es un mapa lineal.
 
-\subsection{Ejercicio: Interconecta sistemas continuos y lineales en el espacio de estados y comprueba que el sistema resultante es otro sistema continuo y lineal en el espacio de estados.}
+\subsection*{Ejercicio}
+Interconecta sistemas continuos y lineales en el espacio de estados y comprueba que el sistema resultante es otro sistema continuo y lineal en el espacio de estados.
 
 Reescribe como un único sistema lineal\footnote{Por abreviar, cuando no exista ambiguedad, llamaremos sistema lineal al sistema continuo y lineal en el espacio de estados} como en (\ref{eq: linsys}):
 
@@ -97,7 +100,7 @@ lo cual prueba la identidad $\dot x = A(t)x(t)$ dado que $x(t) = \Phi(t,t_0)x_0$
 
 La matriz $\Phi(t,t_0)$ es llamada \textbf{\emph{matriz de transición de estados}}. Dada una condición inicial $x_0$, podemos predecir $x(t)$ en (\ref{eq: xdyn}) iterando $\Phi(t,t_0)$ en el caso de que no existiera ninguna interacción con el sistema, i.e., $u(t) = 0, t\geq t_0$.
 
-\subsection{Ejercicio}
+\subsection*{Ejercicio}
 Comprobar que
 \begin{align}
 	x(t) &= \Phi(t,t_0)x_0 + \int_{t_0}^t \Phi(t,\tau)B(\tau)u(\tau)d\tau  \label{eq: solx} \\
@@ -241,7 +244,7 @@ donde
 \end{align}
 Informalmente, estamos calculando la sensibilidad (hasta primer orden) de $f$ y $g$ cuando hacemos una variación pequeña de $x$ y $u$ alrededor de $(x^*,u^*)$. Como de pequeña ha de ser esa variación depende del sistema $\Sigma$. En particular, cuando diseñemos controladores basados en linearizar alrededor de un punto, daremos cotas para $\delta x$ y $\delta u$ de tal manera que el controlador pueda garantizar estabilidad.
 
-\subsection{Ejercicio. Linearización del péndulo invertido}
+\begin{example}[Linearización del péndulo invertido]
 Más adelante, veremos que podemos diseñar una entrada de control $u(t)$, i.e., una señal que ha de seguir el torque $T$ en (\ref{eq: f}) de tal manera que $\theta$ y $\dot\theta$ converjan a unos valores constantes o trayectorias deseadas.
 
 Por ejemplo, vamos a fijar un punto constante de interés $x^* = \begin{bmatrix}\theta^* \\ 0\end{bmatrix}$, por lo que la velocidad angular se marca a cero. Esta situación corresponde a una situación de equilibrio para el ángulo $\theta$. Para hallar el $u^*(t)$ en (\ref{eq: f}) necesario para tal equilibrio necesitamos que $\frac{\mathrm{d}}{\mathrm{dt}}\left(\begin{bmatrix}\theta \\ \dot\theta \end{bmatrix}\right) = \begin{bmatrix}0 \\ 0 \end{bmatrix}$. Una inspección a la dinámica (\ref{eq: dyn}) nos responde que
@@ -270,6 +273,8 @@ por lo que podemos llegar a
 \end{align}
 para modelar una aproximación a la dinámica de $x(t)$ y la salida $y(t)$ alrededor de los puntos $x^*$ y $u^*$.
 
+\qed
+\end{example}
 \begin{comment}
 \section{(Internal or Lyapunov) Stability}
 \label{sec: sta}
