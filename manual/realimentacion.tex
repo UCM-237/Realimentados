@@ -1,6 +1,6 @@
 \chapter{Realimentación para el control de sistemas lineales}\label{crllineales}
 
-\section{(Internal or Lyapunov) Stability}
+\section{Estabilidad interna o de Lyapunov}
 \label{sec: sta}
 
 Decimos que el sistema lineal (\ref{eq: linsys}) \emph{en el sentido de Lyapunov}
@@ -544,6 +544,8 @@ La \emph{regla de Bryson} nos orienta para unos valores razonables de $\bar Q$ y
 	\bar R_{jj} &= \frac{1}{\text{valor máximo aceptable de}\, u_j^2}. \nonumber
 \end{align}
 
+En el capitulo siguiente (opcional) se desarrollan más los conceptos de control óptimo introducidos aquí.
+
 
 \section{Resumen para la estabilización de un punto en un sistema no lineal}
 Dado el siguiente sistema no lineal
@@ -658,13 +660,88 @@ Si los autovalores de la matriz $\begin{bmatrix}A-BK & -BK_I \\ C_2 & 0\end{bmat
 
 ¿Es el par $\left(\begin{bmatrix}A & 0 \\ C_2 & 0\end{bmatrix}, \begin{bmatrix}B \\ 0 \end{bmatrix}\right)$ controlable (o al menos estabilizable)? Si la respuesta es afirmativa, entonces podemos encontrar una matriz $K\in\mathbb{R}^{(n+l)\times(n+l)}$ tal que $u = -K \begin{bmatrix}x \\ e_i \end{bmatrix}$ haga el sistema (\ref{eq: xeta2}) exponencialmente estable.
 
+\begin{example}[Sistema mecánico elemental amortiguado] Consideremos el sistema dinámico,
+\begin{equation*}
+\begin{bmatrix}
+\dot x_1 \\
+\dot x_2
+\end{bmatrix} =
+\begin{bmatrix}
+0 & 1\\
+0 & -\mu
+\end{bmatrix} 
+\begin{bmatrix}
+x_1 \\
+x_2
+\end{bmatrix}+ 
+\begin{bmatrix}
+0 \\ 1
+\end{bmatrix}u
+\end{equation*}
+Podemos pensar en $x_1$ como la posición de un móvil que se mueve sobre una línea recta y en $x_2$ como su velocidad. Supongamos que intentamos hacerle alcanzar una posición final $x_{1d}$ y una velocidad final $x_{2d} \neq 0$. Es evidente que los dos objetivos son imposibles de conseguir simultáneamente. Supongamos que lo intentamos. Para ello ampliamos nuestro sistema de modo que que contenga la señal de error, empleando la ecuación (\ref{eq: xei})  con $C_2 = I ;\,  e_i = x_i-x_{id}$ obtenemos,
 
-Observa que si $v_i$ es autovector de $A^T$ con autovalor $\lambda_i$, entonces $v_i^T A = v_i^T\lambda_i$, es decir $\begin{bmatrix}v_i^T & 0\end{bmatrix} \begin{bmatrix}A & 0 \\ C_2 & 0\end{bmatrix} = \begin{bmatrix}v_i^TA & 0\end{bmatrix} = \lambda_i\begin{bmatrix}v_i^T & 0\end{bmatrix}$. Es decir, $\begin{bmatrix}v_i^T & 0\end{bmatrix}$ es autovector de $\begin{bmatrix}A & 0 \\ C_2 & 0\end{bmatrix}$. Aplicando el Teorema \ref{thm: atbt} podemos comprobar que el par $\left(\begin{bmatrix}A & 0 \\ C_2 & 0\end{bmatrix}, \begin{bmatrix}B \\ 0 \end{bmatrix}\right)$ sería controlable si
-	\begin{equation}
-		\begin{bmatrix}v_i^T & 0\end{bmatrix} \begin{bmatrix}B \\ 0 \end{bmatrix} = v_i^TB \neq 0,
-	\end{equation} y eso es solo posible si el par $(A,B)$ es controlable. Es decir, el control integral no ha variado las propiedades de controlabilidad del sistema original. Podemos resumir los resultados alcanzados con el siguiente teorema
-\begin{theorem}
-	Considera el sistema lti (\ref{eq: linsys2}) con $C_1 = I$ y $C_2$ con rango máximo. Considera la señal integral $e_i(t)$ en (\ref{eq: ei}) para un valor deseado $y_d\in\mathbb{R}^l$ para $y_2(t)$. Entonces, existe una matrix $K \in\mathbb{R}^{(n+l)\times(n+l)}$ tal que la señal de entrada $u = -K \begin{bmatrix}x \\ e_i\end{bmatrix}$ ocasiona que $y_2(t) \to y_d$ asintóticamente según $t\to\infty$ si y solo si el par $(A,B)$ en (\ref{eq: linsys2}) es controlable (estabilizable).
-\end{theorem}
+\begin{equation*}
+\begin{bmatrix}
+\dot x_1 \\
+\dot x_2\\
+\dot e_1\\
+\dot e_2
+\end{bmatrix} =
+\underbrace{
+\begin{bmatrix}
+0 & 1 &0 & 0\\
+0 & -\mu & 0 & 0\\
+1 & 0 &0 &0\\
+0 &1 &0 & 0
+\end{bmatrix}}_{\bar{A}=\begin{bmatrix}
+A & 0\\
+C_2 & 0
+\end{bmatrix}}
+\begin{bmatrix}
+x_1 \\
+x_2\\
+e_1\\
+e_2
+\end{bmatrix} + 
+\underbrace{\begin{bmatrix}
+0 \\
+1\\
+0\\
+0
+\end{bmatrix}}_{\bar{B}=\begin{bmatrix}B\\ 0
+\end{bmatrix}}u+
+\begin{bmatrix}
+0 &0 \\
+0 & 0\\
+-1 & 0\\
+0 &-1
+\end{bmatrix}
+\begin{bmatrix}
+x_{1d}\\x_{2d}
+\end{bmatrix}
+\end{equation*}
+
+Podemos ahora comprobar si el sistema ampliado es controlable,
+\begin{equation*}
+\mathcal{C} = [\bar{B},\ \bar{A} \bar{B},\ \bar{A}^2\bar{B},\ \bar{A}^3\bar{B}]  = 
+\begin{bmatrix}
+0 & 1 & -\mu & \mu^2\\
+1& -\mu & \mu^2 & -\mu^3\\
+0 & 0 & 1 & -\mu\\
+0 & 1 & -\mu & \mu^2
+\end{bmatrix}.
+\end{equation*}
+Es suficiente comparar la fila primera y la última para comprobar que la matriz de controlabilidad tiene rango menor que cuatro, con lo que el sistema no es controlable.
+
+Se deja como ejercicio comprobar que si tratamos de controlar solo la posición final del móvil, el sistema ampliado sí es controlable; el móvil alcanza la posición deseada y se para.
+
+\qed
+\end{example}
+
+
+
+
+
+ 
 
 

@@ -11,39 +11,57 @@ Dado un sistema LTI
 
 Encontrar la señal de control $u(t)$ que hace mínimo el siguiente criterio,
 \begin{equation}\label{eq:lqr}
-J_{LQR} = \int_0^{\infty}y(t)^TQy(t)+u(t)^TRu(t)\ dt,
+J_{LQR} := \int_0^{\infty}x(t)^TQx(t)+u(t)^TRu(t)+x(t)^TNu(t)\  dt,
 \end{equation}
 donde $Q$ y $R$ son matrices definidas positivas, que actúan como pesos.
 
-Si analizamos la ecuación \ref{eq:lqr}, es fácil ver que se trata de un funcional, que mapea soluciones de nuestro sistema $y(t)$ y sus correspondientes señales de control, en números reales. Además, podemos relacionar el término,
+Si analizamos la ecuación \ref{eq:lqr}, es fácil ver que se trata de un funcional, que mapea los estados de nuestro sistema $x(t)$ y sus correspondientes señales de control, en números reales. Además, podemos relacionar el término,
 \begin{equation*}
-\int_0^{\infty}y(t)^TQy(t)\ dt,
+\int_0^{\infty}x(t)^TQx(t)\ dt,
 \end{equation*}
 con lo que le ha \emph{costado} al sistema llegar al equilibrio y al término,
 \begin{equation*}
 \int_0^{\infty}u(t)^TRu(t)\ dt,
 \end{equation*} 
-con el esfuerzo de control. El objetivo de criterio empleado en LQR es tratar de minimizar ambos términos, pero como se trata de objetivos contrapuestos, la solución deberá llevarnos a una solución de equilibrio. Las matrices $Q$ y $R$ permiten equalizar dicho equilibrio: SI  $R$ es mucho más grade que $Q$, la manera más efectiva de hacer $J_{LQR}$ pequeño, es emplear una señal de control pequeña a cambio de obtener una salida larga. Sin, por el contrario hacemos $Q$ mucho mayor que $R$, acortaremos la salida a cambio de hacer más grande la señal de control.
+con el esfuerzo de control. El objetivo de criterio empleado en LQR es tratar de minimizar ambos términos, pero como se trata de objetivos contrapuestos, la solución deberá llevarnos a una solución de equilibrio. Las matrices $Q$ y $R$ permiten equalizar dicho equilibrio: Si  $R$ es mucho más grade que $Q$, la manera más efectiva de hacer $J_{LQR}$ pequeño, es emplear una señal de control pequeña a cambio de obtener una salida larga. Sin, por el contrario hacemos $Q$ mucho mayor que $R$, acortaremos la salida a cambio de hacer más grande la señal de control. Por último el término cruzado, $x(t)^TNu(t)$ permite generalizar la forma cuadrática del criterio de optimización, no es infrecuente que se tome $N=0$. 
+
+Una forma alternativa de describir el problema LQR es añadir una salida extra $z(t)$ al sistema, que nos permita diseñar los parámetros que queremos optimizar,
+\begin{align*} 
+\dot{x} &= Ax+Bu,\ x \in \mathbb{R}^n, \ u\in \mathbb{R}^k\\
+y&=Cx,\ y \in \mathbb{R}^m\\
+z &= Gx+Hu,\ z \in \mathbb{R}^l\\
+\end{align*}
+
+Podemos entonces redefinir $J_{LQR} $ como,
+\begin{equation}\label{eq:lqr2}
+J_{LQR} := \int_0^{\infty}z(t)^T \bar{Q}z(t)+\rho u(t)^T \bar{R}u(t)\  dt,
+\end{equation}
+
+ donde $\bar{Q}  \in \mathbb{R}^{l\times l}$,  $\bar{R} \in \mathbb{R}^{m\times m}$, $\bar{Q}\succ 0 $, $\bar{H}\succ 0 $ y $\rho \in \mathbb{R}_+$. Es fácil comprobar que \ref{eq:lqr2} y \ref{eq:lqr} representan el mismo criterio con:
+
+ \begin{equation*}
+ Q = G^T\bar{Q}G,\ R = H^T\bar{Q}H + \rho\bar{R}, \ N = G^T\bar{Q}H 
+\end{equation*}   
 
 \section{Invariantes de Realimentación (Feedback Invariants)}
 \begin{definition}[Invariante de realimentación]
 Dado un sistema LTI,
 \begin{equation*}
-\dot{x} =Ax+Bu,\ x \in \mathbb{R}^n,\ u \in \mathbb{R}^k,\ y \in \mathbb{R}^m,
+\dot{x} =Ax+Bu,\ x \in \mathbb{R}^n,\ u \in \mathbb{R}^k,
 \end{equation*}
 decimos que el funcional,
 \begin{equation*}
 H\left(x(\cdot),u(\cdot)\right),
 \end{equation*}
-que depende de la entrada y el estado, es un invariante de realimentación para el sistema si su valor depende solo de la condición inicial del sistema $x(0)$ y no de la señal de entrada específica $u(\cdot)$.
+que depende de la entrada y el estado, es un invariante de realimentación para el sistema si su valor, calculado a lo largo de una solución del sistema, depende solo de la condición inicial del sistema $x(0)$ y no de la señal de entrada específica $u(\cdot)$.
 \qed
 \end{definition}
 
 \begin{lemma}[Invariante de realimentación]
 Para toda matriz P, simetrica, el funcional
-\begin{equation*}
+\begin{equation}\label{eq.fin}
 H\left(x(\cdot),u(\cdot)\right):=-\int_0^{\infty}\left(Ax(t)+Bu(t)\right)^TPx(t)+x(t)P\left(Ax(t)+Bu(t)\right)dt
-\end{equation*}
+\end{equation}
 es un invariante para el sistema $\dot{x} = Ax+Bu$ siempre que $\lim_{t\rightarrow \infty} x(t)= 0$
 \qed
 \end{lemma}
@@ -59,7 +77,7 @@ H\left(x(\cdot),u(\cdot)\right) &= -\int_0^{\infty}\dot{x}(t)^TPx(t)+x(t)^TP\dot
 \end{proof}
 
 Supongamos que podemos escribir un criterio $J$ que deseamos minimizar, mediante una elección adecuada de la señal del control $u(\cdot)$, de la siguiente manera:
-\begin{equation}
+\begin{equation}\label{eq:jmin}
 J = H\left(x(\cdot),u(\cdot)\right) + \int_0^{\infty} \Lambda \left(x(t),u(t)\right)dt,
 \end{equation}
 
@@ -77,4 +95,67 @@ minimiza el criterio $J$, y el valor óptimo de $J$ es igual al invariante de re
 \begin{equation*}
 J = H\left(x(\cdot),u(\cdot)\right)
 \end{equation*}
+
+\section{Realimentación óptima}
+
+Es posible expresar el criterio representado en la ecuación (\ref{eq:lqr}) en la forma (\ref{eq:jmin}), mediante el invariante de realimentación de la ecuación (\ref{eq.fin}), siempre que elijamos la matriz $P$ adecuada. Para comprobarlo, sumamos y restamos el invariante al criterio LQR,
+ \begin{equation*}
+ \begin{split}
+J_{LQR} :=& \int_0^{\infty}x^TQx+u^TRu+x^TNu\  dt =\\
+=& H\left(x(\cdot),u(\cdot)\right) + \int_0^{\infty}x^TQx+u^TRu+x^TNu+\left(Ax+Bu\right)^TPx+xP\left(Ax+Bu\right) \  dt=\\ 
+=& H\left(x(\cdot),u(\cdot)\right) + \int_0^{\infty}x^T(A^TP+PA+Q)x+u^TRu+2u^T(B^TP+N^T)x\ dt.
+\end{split}
+\end{equation*}
+
+Podemos eliminar el producto cruzado entre $x$ y $u$, obteniendo una forma cuadrática completa. Para ello sumamos  y restamos: $x^T(PB+N)R^{-1}(B^TP+N^T)x$ (recuerda que $P$ debe ser simétrica),
+\begin{equation*}
+\begin{split}
+J_{LQR} =&H\left(x(\cdot),u(\cdot)\right) + \int_0^{\infty}x^T(A^TP+PA+Q)x+u^TRu+2u^T(B^TP+N^T)x\\
+&+ x^T(PB+N)R^{-1}(B^TP+N^T)x-x^T(PB+N)R^{-1}(B^TP+N^T)x \ dt =\\
+=&H\left(x(\cdot),u(\cdot)\right) + \int_0^{\infty}x^T\left[A^TP+PA+Q-(PB+N)R^{-1}(B^TP+N^T)\right]x\\
+&+\left[u^T+x^T\left(R^{-1}(B^TP+N^T)\right)^T\right]R\left[u+R^{-1}(B^TP+N^T)x)\right]\ dt
+\end{split}
+\end{equation*}
+
+Que podemos expresar como,
+\begin{equation}
+\begin{split}
+J_{LQR}=&H\left(x(\cdot),u(\cdot)\right) + \int_0^{\infty}x^T(A^TP+PA+Q)-(PB+N)R^{-1}(B^TP+N^T)x\\
+&+(u^T+x^TK^T)R(u+Kx)\ dt\\
+\ \\
+K =& R^{-1}(B^TP+N^T)
+\end{split}
+\end{equation}
+
+Bastaría encontrar una matriz $P$ que cumpliera,
+\begin{equation}\label{eq:ricatti}
+A^TP+PA+Q)-(PB+N)R^{-1}(B^TP+N^T) = 0
+\end{equation}
+
+Para que $J_{LQR}$ tomara la forma de la ecuación (\ref{eq:jmin}) con,
+\begin{equation*}
+\Lambda(x,u) = (u^T+x^TK^T)R(u+Kx),
+\end{equation*} 
+
+Que alcanza un mínimo igual a cero para $u(t) = -Kx$.  Pero esto es equivalente a construir un sistema de control por realimentación de estados con ganancia $K = R^{-1}(B^TP+N^T$,
+\begin{equation}
+\dot x = \left((A-R^{-1}(B^TP+N^T)\right)x
+\end{equation}
+
+La ecuación (\ref{eq:ricatti}), recibe el nombre de ecuación de algebraica de Ricatti (ARE). Podemos resumir lo que hemos visto a lo largo de este capitulo en el siguiente 
+
+\begin{theorem}
+Supongamos que existe una solución $P$ a la ecuación algebraica de Ricatti (\ref{eq:ricatti}) para la cual se cumple que $A-R^{-1}(B^TP+N^T$ es una matriz Hurwitz. Entonces la ley de control,
+\begin{equation*}
+u(t) = -Kx(t),\; \forall t \geq 0,; K:=R^{-1}(B^TP+NT)
+\end{equation*}
+Minimiza el criterio LQR expresado en la ecuación (\ref{eq:lqr})
+\qed
+\end{theorem}
+
+Añadiremos, sin demostración que la ecuación de Ricatti tenga una solución adecuada, es preciso que el par $(A,B)$ sea estabilizable y que el par $(A-BR^{-1}N^T,Q-NR^{-1}N^T)$ sea detectable. La primera condición es razonable, solo si el sistema es estabilizable se puede conseguir que $\lim_{t\rightarrow \infty} x(t)= 0$, condición necesaria para que exista el invariante de realimentación $H(x(\cdot),u(\cdot))$.  La segunda condición se ve más clara si consideramos la forma particular de $J_{LQR}$ definida en la ecuación \ref{eq:lqr2}. Recordad que en este caso,
+\begin{equation*}
+ Q = G^T\bar{Q}G,\ R = H^T\bar{Q}H + \rho\bar{R}, \ N = G^T\bar{Q}H 
+\end{equation*}   
+Supongamos el caso en que  $N = 0$, el par detectable debe ser entonces $(A,Q) = (A,G^T\bar{Q}G)$. Como $\bar{Q} \succ 0$, este criterio es equivalente a que el par $(A,G)$ sea detectable. Pero este criterio resulta también bastante razonable, ya que estamos tratando de optimizar la salida $z$ del sistema. 
 
