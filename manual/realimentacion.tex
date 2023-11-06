@@ -6,9 +6,9 @@
 Decimos que el sistema lineal (\ref{eq: linsys}) \emph{en el sentido de Lyapunov}
 \begin{enumerate}
 	\item es \emph{(marginalmente) estable} si para cada condición inicial $x_0$, entonces $x(t) = \Phi(t,t_0) x_0$ está acotada uniformamente para todo $t>t_0$.
-	\item es \emph{asintóticamente estable} si admeás $x(t) \to 0$ según $t\to\infty$.
+	\item es \emph{asintóticamente estable} si además $x(t) \to 0$ según $t\to\infty$.
 	\item es \emph{exponencialmente estable} si además $||x(t)|| \leq c e^{\lambda(t-t_0)}||x(t_0)||$ para algunas constantes $c,\lambda > 0$.
-	\item is \emph{inestable} si no es marginalmente estable.
+	\item es \emph{inestable} si no es marginalmente estable.
 \end{enumerate}
 
 %In control, it is very common to focus on \emph{error signals}, e.g., $e(t) := x(t) - x^*(t)$, where $x^*(t)$ is a trajectory goal. Note that if $x^*$ is constant, then $\dot e(t) = \dot x(t)$, and this is why we focus on having $x(t) \to 0$ as $t\to\infty$ in the above definitions for (\ref{eq: sigmalin}).
@@ -45,7 +45,7 @@ Ahora vamos a considerar un sistema continuo, autónomo y no lineal en general
 \end{equation}
 con un punto de equilibrio $x^*\in\mathbb{R}^n$, i.e, $f(x^*) = 0$. La dinámica de $x(t)$ puede ser aproximada considerando $x(t) = x^* + \delta x(t)$ donde 
 \begin{equation}
-	\dot{\delta x(t)} = A\,\delta x(t), \quad A:=\frac{\partial f(x)}{\partial x}.
+	\dot{\delta} x(t) = A\,\delta x(t), \quad A:=\frac{\partial f(x)}{\partial x}.
 	\label{eq: delta}
 \end{equation}
 
@@ -107,7 +107,7 @@ Podemos concluir que una estimación de $\mathcal B$ es
 
 \section{Controlabilidad}
 \subsection{Subespacios alcanzables y controlables}
-Recordemos que cueando aplicamos una entrada genérica $u(\cdot)$ a (\ref{eq: linsys}), transferimos el sistema de un estado $x(t_0):=x_0$ a un estado $x(t_1):=x_1$, que además podemos calcular con la expresión
+Recordemos que cuando aplicamos una entrada genérica $u(\cdot)$ a (\ref{eq: linsys}), transferimos el sistema de un estado $x(t_0):=x_0$ a un estado $x(t_1):=x_1$, que además podemos calcular con la expresión
 \begin{equation}
 	x_1 = \Phi(t_1,t_0)x_0 + \int_{t_0}^{t_1} \Phi(t_1,\tau)B(\tau)u(\tau)d\tau,
 \end{equation}
@@ -122,7 +122,7 @@ Preguntas:
 Estas dos preguntas llevan a acuñar las definiciones de (sub)espacios alcanzables y controlables.
 
 \begin{definition}[Subespacio alcanzable]
-	Dados dos instantes de tiempo $t_1>t_0\geq 0$, el subespacio alcanzable (o controlable desde el origen) $\mathcal{R}[t_0,t_1]$ consiste en todos los estados $x_1$ por los que existe una entrada $u:[t_0,t_1]\to \mathbb{R}^k$ que transfiere el estado $x_0 = 0$ a  $x_1 \in\mathbb{R}^n$; i.e.,
+	Dados dos instantes de tiempo $t_1>t_0\geq 0$, el subespacio alcanzable (o controlable desde el origen) $\mathcal{R}[t_0,t_1]$ consiste en todos los estados $x_1$ para los que existe una entrada $u:[t_0,t_1]\to \mathbb{R}^k$ que transfiere el estado $x_0 = 0$ a  $x_1 \in\mathbb{R}^n$; i.e.,
 	\begin{equation}
 		\mathcal{R}[t_0,t_1] := \Big\{x_1\in\mathbb{R}^n : \exists u(\cdot),\, x_1 = \int_{t_0}^{t_1} \Phi(t_1,\tau)B(\tau)u(\tau)d\tau \Big\}. \label{eq: rs}
 	\end{equation}
@@ -261,7 +261,7 @@ El siguiente teorema se puede comprobar numéricamente a partir de los siguiente
 \end{theorem}
 El siguiente teorema es una reescritura del anterior.
 \begin{theorem}
-El par (constante) $(A,B)$ es controlable si y solo si el dango de $\begin{bmatrix}A-\lambda I & B\end{bmatrix}$ es $n$.
+El par (constante) $(A,B)$ es controlable si y solo si el rango de $\begin{bmatrix}A-\lambda I & B\end{bmatrix}$ es $n$.
 \end{theorem}
 
 \begin{remark}

@@ -185,16 +185,21 @@ Se dice a menudo que $P_a$ aniquila a $A$
 Gracias a este teorema podemos definir otras dos propiedades más,
 
 \begin{enumerate}
-\setcounter{enumi}{5}
+\setcounter{enumi}{4}
 \item Para toda matriz $A$  de dimension $n\times n$, existen n funciones escalares, $\beta_1(t),\beta2(t)\cdots,\beta_n(t)$ tales que,
 \begin{equation}\label{eq:p6}
 e^{At} = \sum_{i=0}^{n-1} \beta_i(t)A^i,\; \forall t\in \mathbb{R}
+\end{equation}
+\item  Para toda matriz $A$ de dimensión $n\times n$ se cumple que,
+
+\begin{equation}
+Ae^{At}=e^{At}A,\; \forall t \in \mathbb{R}
 \end{equation}
 \end{enumerate}
 Estas dos propiedades se puede deducir del teorema de Cayle-Hamilton. Despejando en (\ref{eq:ch}) $A^n$ en función de todos los demás términos,
 $A^n = - a_1A^{n-1}-a_2A^{n-2}- \cdots - a_{n-1}A - a_0$. Si ahora multiplicamos a ambos lados por $A$ obtenemos $A^{n+1} = - a_1A^{n}-a_2A^{n-1}- \cdots - a_{n-1}A^2 - a_0A$, podríamos a continuación volver a sustituir $A^n$ en el primer término de este último polinomio por el valor obtenido a partir del teorema de Cayley-Hamilton, con lo que obtendríamos una expresión polinómica para $A^{n+1}$, en función de $A^{n-1},A^{n-2},\cdot I$. Es fácil ver, que repitiendo el mismo procedimiento, podemos expresar cualquier potencia de $A$ en función de sus primeras $n-1$ potencias,
 \begin{equation}
-A^k  = \alpha_1(k)A^{n-1}+\alpha_2(k)A^{n-2}+ \cdots + \alpha_{n-1}(k)A + a_0I 
+A^k  = \alpha_{n-1}1(k)A^{n-1}+\alpha_{n-2}(k)A^{n-2}+ \cdots + \alpha_{1}(k)A + \alpha_0I 
 \end{equation}
 
 Si sustituimos en la definición de la exponencial de una matriz,
@@ -232,6 +237,7 @@ donde $J_i$ es el bloque de Jordan con forma
 	\end{bmatrix}_{n_i\times n_i},
 	\end{equation}
 	en donde cada $\lambda_i$ es un autovalor de $A$, y el número $l$ de bloques de Jordan es igual al número total de autovectores independientes de $A$. La matrix $J$ es única (descontando reordenación de filas/columnas) y es llamada la \textbf{forma normal de Jordan} de $A$. Nota: el bloque de Jordan más pequeño posible es el de imensión $1\times 1$, que contiene exclusivamente el autovalor: $J_s = \lambda_s$
+	\qed
 \end{theorem}
 
 Partiendo de la observación que $A = PJP^{-1}$ también, entonces es fácil probar que 
@@ -240,12 +246,12 @@ Partiendo de la observación que $A = PJP^{-1}$ también, entonces es fácil pro
 \end{equation}
 de tal manera que podamos calcular que
 \begin{align}
-	exp(At) &= P\left(\sum_{k=1}^\infty \frac{t^k}{k!} \begin{bmatrix}J_1^k & 0 & \cdots & 0 \\ 0 & J_2^k & \cdots & 0 \\ \vdots & \vdots & \cdots & \vdots \\ 0 & 0 & \cdots & J_l^k \end{bmatrix} \right) P^{-1} \nonumber \\
+	exp(At) &= P\left(\sum_{k=0}^\infty \frac{t^k}{k!} \begin{bmatrix}J_1^k & 0 & \cdots & 0 \\ 0 & J_2^k & \cdots & 0 \\ \vdots & \vdots & \cdots & \vdots \\ 0 & 0 & \cdots & J_l^k \end{bmatrix} \right) P^{-1} \nonumber \\
 		&= P \begin{bmatrix}exp(J_1t) & 0 & \cdots & 0 \\ 0 & exp(J_2t) & \cdots & 0 \\ \vdots & \vdots & \cdots & \vdots \\ 0 & 0 & \cdots & exp(J_lt) \end{bmatrix} P^{-1}
 \label{eq: expAJordan}
 \end{align}
 
-Observa que si $J$ es simplemente una matriz diagonal con los autovalores de $A$, i.e., $J_l = \lambda_l \in \mathbb{C}$, entonces $exp(J_lt) = e^{\lambda_lt} \in\mathbb{C}$ es un cálculo trivial. Es más, si $J$ es diagonal, entonces la solución (\ref{eq: xexp}) puede escribirse como
+Observa que si $J$ es simplemente una matriz diagonal con los autovalores de $A$, i.e., $J_i = \lambda_i \in \mathbb{C}$, entonces $exp(J_it) = e^{\lambda_it} \in\mathbb{C}$ es un cálculo trivial. Es más, si $J$ es diagonal, entonces la solución (\ref{eq: xexp}) puede escribirse como
 \begin{equation}
 	x(t) = \sum_{i=1}^nc_i e^{\lambda_i t}p_i,
 	\label{eq: xtdiag}
@@ -258,14 +264,14 @@ Ahora, veamos las consecuencias de las siguientes dos suposiciones
 	\item Todos los autovalores de $A$ tienen parte real negativa.
 \end{enumerate}
 
-Sabiendo que $\lim_{t\to\infty} e^{\lambda t} \to 0$ si $\lambda \in \mathbb{R}_{<0}$, entonces tenemos que $exp(At) \to 0$ según $t\to\infty$ si las dos previas suposiciones se dan. Si echamos un vistazo a (\ref{eq: xexp}) o (\ref{eq: xtdiag}, podemos concluir que 
+Sabiendo que $\lim_{t\to\infty} e^{\lambda t} \to 0$ si $\lambda \in \mathbb{R}_{<0}$, entonces tenemos que $exp(At) \to 0$ según $t\to\infty$ si las dos previas suposiciones se dan. Si echamos un vistazo a (\ref{eq: xexp}) o (\ref{eq: xtdiag}), podemos concluir que 
 \begin{equation}
 	\lim_{t\to\infty} x(t) \to 0,
 	\label{eq: xlim}
 \end{equation}
 por tanto, podemos predecir la evolución de $x(t)$ con sólamente mirar los autovalores de $A$. Si $J$ no es diagonal, podremos concluir más resultados. Pero primero, es bueno definir algunos conceptos básicos,
 
-\begin{definition}[Multiplicidad aritmética de un autovalor]
+\begin{definition}[Multiplicidad algebráica de un autovalor]
 Dado una matriz $A$ de dimensión $n\times n$, se define como multiplicidad aritmética de un autovalor $\lambda$ de la matriz $A$ al número de veces que dicho autovalor aparace como raíz del polinomio, $P_A(s)$, característico de $A$. 
 \qed
 \end{definition}
@@ -278,12 +284,12 @@ Dado una matriz $A$ de dimensión $n\times n$, se define como multiplicidad geom
 Podemos ahora determinar los bloques de Jordan que tendrá la forma normal de Jordan de una matriz,
 \begin{itemize}
 \item El numero de bloques de Jordan asociados con un autovalor $\lambda$ debe ser igual a la multiplicidad geométrica de $\lambda$
-\item Autovalores con multiplicidad geométrica 1 dan lugar a siempre a bloques de Jordan de tamaño $1\times 1$.
-\item Autovalores con multiplicidad dos dan lugar a un bloque $2\times 2$ si su multiplicidad geométrica es 1, o a dos bloques $1\times 1$ si su multiplicidad geométrica es 2
-\item Autovalores con multiplicidad aritmética tres pueden dar lugar a 1 bloque $3\times 3$ si su muultiplicidad geométrica es 1, o un bloque $2\times 2$ y otro bloque $1\times 1$ si su multiplicidad geométrica es 2, o a un tres bloques $1\times 1$ si su multiplicidad geométrica 3, etc, etc....
+\item Autovalores con multiplicidad algebráica 1 dan lugar a siempre a bloques de Jordan de tamaño $1\times 1$.
+\item Autovalores con multiplicidad algebráica dos dan lugar a un bloque $2\times 2$ si su multiplicidad geométrica es 1, o a dos bloques $1\times 1$ si su multiplicidad geométrica es 2
+\item Autovalores con multiplicidad algebráica tres pueden dar lugar a 1 bloque $3\times 3$ si su multiplicidad geométrica es 1, o un bloque $2\times 2$ y otro bloque $1\times 1$ si su multiplicidad geométrica es 2, o a un tres bloques $1\times 1$ si su multiplicidad geométrica 3, etc, etc....
 \end{itemize}
 
-Podemos volver ahora al cálculo de $exp(At)$ para el caso en que su forma de Jordan no es una matriz diagonal. De acuerdo con la ecuación (\ref{eq: expAJordan},  deberíamos calcular la exponencial de cada unos de su bloques $exp(J_i)$. El cálculo es tedioso; implica obtener una expresión para las potencias $J^k$ de los bloques de Jordan, sustituir los valores en la serie de Taylor de  $exp(J_i)$ y simplificar el resultado. A continuación tenéis el resultado (sin demostración) de la expresión de $exp(J_it$ para un bloque de Jordan genérico $J_i$,
+Podemos volver ahora al cálculo de $exp(At)$ para el caso en que su forma de Jordan no es una matriz diagonal. De acuerdo con la ecuación (\ref{eq: expAJordan}),  deberíamos calcular la exponencial de cada unos de su bloques $exp(J_it)$. El cálculo es tedioso; implica obtener una expresión para las potencias $J^k$ de los bloques de Jordan, sustituir los valores en la serie de Taylor de  $exp(J_i)t$ y simplificar el resultado. A continuación tenéis el resultado de la expresión de $exp(J_it)$ para un bloque de Jordan genérico $J_i$,
 
 \begin{equation}
 	J_i = \begin{bmatrix}
@@ -305,16 +311,16 @@ Podemos volver ahora al cálculo de $exp(At)$ para el caso en que su forma de Jo
 So observamos los elementos de $e^{J_it}$, es fácil sacar conclusiones sobre la estabilidad del sistema $\dot x = Ax$. 
 \begin{enumerate}
 \item Cuando todos los autovalores de $A$ tienen parte real estrictamente negativa, todos los $e^{J_it} \rightarrow 0$ cuando $t \rightarrow \infty$. Por tanto, el sistema es estable
-\item Cuando todos los autovalores de $A$ tiene parte real negativa o cero y todos los bloque de Jordan correspondientes a autovalores con parte real cero tienen tamaño $\times 1$, $e^{J_it}$ permanece acotado cuando $t \rightarrow \infty$. Se dice entonces que el sistema es marginalmente estable
+\item Cuando todos los autovalores de $A$ tiene parte real negativa o cero y todos los bloque de Jordan correspondientes a autovalores con parte real cero tienen tamaño $1\times 1$, $e^{J_it}$ permanece acotado cuando $t \rightarrow \infty$. Se dice entonces que el sistema es marginalmente estable
 \item Cuando al menos un autovalor de $A$ tiene parte real positiva, o parte real cero con un bloque de Jordan y tamaño mayor que $1\times 1$ entonces $e^{J_it} \rightarrow \infty$ cuando $t \rightarrow \infty$. Por tanto, el sistema es inestable.
 \end{enumerate}
 
 \section{Linearización de sistemas en el espacio de estados}\label{sec: linear}
-Desafortunadamente, es realmente dificil (cuando no imposible) calcular una solución analítica para $x(t)$ e $y(t)$ para un sistema arbitrario $\Sigma$ como en (\ref{eq: sigma}). No obstante, hemos visto que sí se puede calcular una solución analítica para $x(t)$ e $y(t)$ cuando $\Sigma$ es un sistema invariante en el tiempo, continuo y lineal en el espacio de estados.
+Desafortunadamente, es realmente difícil (cuando no imposible) calcular una solución analítica para $x(t)$ e $y(t)$ para un sistema arbitrario $\Sigma$ como en (\ref{eq: sigma}). No obstante, hemos visto que sí se puede calcular una solución analítica para $x(t)$ e $y(t)$ cuando $\Sigma$ es un sistema invariante en el tiempo, continuo y lineal en el espacio de estados.
 
 Será de gran utilidad encontrar una relación entre ambos sistemas.
 
-Si $f(x,t)$ y $g(x,t)$ son reales analíticas en un entorno a un punto específico $(x^*,u^*)$, entonces podemos trabajar con aproximaciones de Taylor de $f(x,t)$ y $g(x,t)$ en ese mismo entorno. Cuando nos quedamos en orden uno en la aproximación es lo que se conoce como \emph{linearización}.
+Si $f(x,u)$ y $g(x,u)$ son reales analíticas en un entorno a un punto específico $(x^*,u^*)$, entonces podemos trabajar con aproximaciones de Taylor de $f(x,u)$ y $g(x,u)$ en ese mismo entorno. Cuando nos quedamos en orden uno en la aproximación es lo que se conoce como \emph{linearización}.
 \begin{equation}
 	\Sigma := \left.\begin{cases}
 	\dot x(t) =& f(x(t),u(t)) \\ y(t) =& g(x(t),u(t))
@@ -322,28 +328,28 @@ Si $f(x,t)$ y $g(x,t)$ son reales analíticas en un entorno a un punto específi
 	\begin{cases}
 		x(t) &= x^* + \delta x(t) \\
 		u(t) &= u^* + \delta u(t) \\
-	\delta \dot x(t) &= A(t)\delta x(t) + B(t)\delta u(t) \\
-	\delta y(t) &= C(t)\delta x(t) + D(t)\delta u(t)
+	\delta \dot x(t) &= A\delta x(t) + B\delta u(t) \\
+	\delta y(t) &= C\delta x(t) + D\delta u(t)
 	\end{cases}, \nonumber
 \end{equation}
 donde
 \begin{align}
-	A(t) &= \begin{bmatrix}
+	A &= \begin{bmatrix}
 		\frac{\partial f_1}{\partial x_1} & \dots & \frac{\partial f_1}{\partial x_n} \\
 		\vdots & \vdots & \vdots \\
 		\frac{\partial f_n}{\partial x_1} & \dots & \frac{\partial f_n}{\partial x_n}
 	\end{bmatrix}_{|_{x=x^*, u=u^*}} \quad
-	&B(t) = \begin{bmatrix}
+	&B = \begin{bmatrix}
 		\frac{\partial f_1}{\partial u_1} & \dots & \frac{\partial f_1}{\partial u_k} \\
 		\vdots & \vdots & \vdots \\
-		\frac{\partial f_k}{\partial u_1} & \dots & \frac{\partial f_k}{\partial u_k}
+		\frac{\partial f_n}{\partial u_1} & \dots & \frac{\partial f_n}{\partial u_k}
 	\end{bmatrix}_{|_{x=x^*, u=u^*}} \nonumber \\
-	C(t) &= \begin{bmatrix}
+	C &= \begin{bmatrix}
 		\frac{\partial g_1}{\partial x_1} & \dots & \frac{\partial g_1}{\partial x_n} \\
 		\vdots & \vdots & \vdots \\
 		\frac{\partial g_m}{\partial x_1} & \dots & \frac{\partial g_m}{\partial x_n}
 	\end{bmatrix}_{|_{x=x^*, u=u^*}} \quad
-	&D(t) = \begin{bmatrix}
+	&D = \begin{bmatrix}
 		\frac{\partial g_1}{\partial u_1} & \dots & \frac{\partial g_1}{\partial u_k} \\
 		\vdots & \vdots & \vdots \\
 		\frac{\partial g_m}{\partial u_1} & \dots & \frac{\partial g_m}{\partial u_k}
@@ -360,7 +366,7 @@ Por ejemplo, vamos a fijar un punto constante de interés $x^* = \begin{bmatrix}
 \end{equation}
 por ejemplo, para una posición totalmente vertical correspondiente a $\theta^* = 0$ tenemos que $T^*=0$, i.e., $x^* = \begin{bmatrix}0\\0\end{bmatrix}$ y $u^* = 0$.
 
-El cáclulo de las matrices $A,B,C,$ y $D$ son los Jacobianos de $(\ref{eq: f})$ y $(\ref{eq: g})$, i.e.,
+El cálculo de las matrices $A,B,C,$ y $D$ son los Jacobianos de $(\ref{eq: f})$ y $(\ref{eq: g})$, i.e.,
 
 \begin{align}
 \frac{\partial f_1}{\partial x_1} &= 0 \nonumber \\
