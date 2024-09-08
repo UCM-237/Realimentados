@@ -57,7 +57,7 @@ Un caso particular de sistema dinámicos los constituyen los sistemas lineales. 
 \label{eq: sigmaL}
 \end{equation}
 
-En el capítulo 5 se estudiarán en detalle los sistemas lineales, cuyas propiedades permiten emplear herramientas de análisis precisas y potentes para su estudio y caracterización. En el caso del resto de los sistemas, es decir todos aquellos que son no-lineales, el análisis resulta más complejo.
+En el capítulo 3 se estudiarán en detalle los sistemas lineales, cuyas propiedades permiten emplear herramientas de análisis precisas y potentes para su estudio y caracterización. En el caso del resto de los sistemas, es decir todos aquellos que son no-lineales, el análisis resulta más complejo.
 
 Una primera aproximación al estudio de los sistemas no-lineales es linealizarlos en torno a un punto de trabajo y estudiar el sistema lineal resultante. Esta aproximación es muy valiosa, como  veremos en la sección (\ref{sec: linear}), sin embargo, solo es válida en las proximidades del punto de trabajo. Por tanto no es posible predecir a partir de ella el comportamiento del sistema cuando nos alejamos de dicho punto. Por otro lado, los sistemas no-lineales presentan una dinámica mucho mas rica, con fenómenos que no se dan en los sistemas lineales y que no pueden describirse con un modelo linealizado del sistema no-lineal. Algunos de éstos fenómenos son:
 
@@ -138,7 +138,7 @@ Ahora estamos listos para construir las funciones $f$ and $g$ en (\ref{eq: sigma
 \begin{equation}
 	\frac{\mathrm{d}}{\mathrm{dt}}\left(\begin{bmatrix}\theta \\ \dot\theta \end{bmatrix}\right) = f(x(t), u(t)) = \begin{bmatrix}f_1(x(t), u(t)) \\ f_2(x(t), u(t))\end{bmatrix}, \label{eq: fn}
 \end{equation}
-donde automáticamente obtenemos que $f_1 = \dot\theta$. Fijarse que la primera fila de $f$ en (\ref{eq: fn}), a la izquierda tenemos que $\frac{\mathrm{d}}{\mathrm{dt}}\theta$, y a la derecha tenemos que $f_1 = \dot\theta$ porque $\dot\theta$ es un estado o elemento de $x$. Desafortunadamente, no podemos decir que $f_2 = \ddot\theta(t)$ porque $ \ddot\theta$ no es un estado o elemento de $x$. No obstante, tenemos que la segunda fila $f_2$ viene dada por la ecuación (\ref{eq: dyn}). Por lo que podemos escribir $f$ como
+donde automáticamente obtenemos que $f_1 = \dot\theta$. En la primera fila de $f$ en (\ref{eq: fn}), a la izquierda tenemos que $\frac{\mathrm{d}}{\mathrm{dt}}\theta$, y a la derecha tenemos que $f_1 = \dot\theta$ porque $\dot\theta$ es un estado o elemento de $x$. Desafortunadamente, no podemos decir que $f_2 = \ddot\theta(t)$ porque $ \ddot\theta$ no es un estado o elemento de $x$. No obstante, tenemos que la segunda fila $f_2$ viene dada por la ecuación (\ref{eq: dyn}). Por lo que podemos escribir $f$ como
 \begin{equation}
 	\frac{\mathrm{d}}{\mathrm{dt}}\left(\begin{bmatrix}\theta \\ \dot\theta \end{bmatrix}\right) =  f(x(t), u(t)) = \begin{bmatrix} \dot\theta \\ \frac{1}{ml^2}\left(mgl\sin{\theta}-bl\dot\theta + T\right) \end{bmatrix}. \label{eq: f}
 \end{equation}
@@ -180,7 +180,7 @@ v = L \frac{di_L}{dt}\\
 i_C = C\frac{dv}{dt}\\
 i_N = h(v)
 \end{align}
-Si aplicamos la primera ley de Kirchohff al nodo superior del circuito,
+Si aplicamos la primera ley de Kirchoff al nodo superior del circuito,
 \begin{align}
 i_C+i_L+i_N = 0\\
 C\frac{dv}{dt}+\frac{1}{L}\int_{-\infty}^{t}v(s)ds +h(v)=0\label{eq:vdp}
@@ -313,9 +313,9 @@ En general, podemos definir un sistema autónomo de segundo orden a partir de do
 \dot x_2 &= f_2(x_1,x_2) \label{eq: sysa2}
 \end{align}
 
-Supongamos que conocemos una solución al sistema $x(t) = [x_1(t),x_2(t)]^T$, que pasa por el punto $x(0) = x_0$. La solución describe una curva sobre el plano $x_1-x_2$ que pasa por el punto $x_0$. Esta curva recibe el nombre de trayectoria u órbita, desde $x_0$, del sistema. El plano $x_1-x_2$ recibe el nombre de plano de fases. La ecuaciones (\ref{eq: sysa1}) - (\ref{eq: sysa2}) representan un vector tangente $\dot x(t) = [\dot x_1(t),\dot x_2(t)]$ a la trayectoria en el punto $x(t)$.
+Supongamos que conocemos una solución al sistema $x(t) = [x_1(t),x_2(t)]^T$, que pasa por el punto $x(0) = x_0$. La solución describe una curva sobre el plano $x_1:x_2$ que pasa por el punto $x_0$. Esta curva recibe el nombre de trayectoria u órbita, desde $x_0$, del sistema. El plano $x_1:x_2$ recibe el nombre de plano de fases. La ecuaciones (\ref{eq: sysa1}) - (\ref{eq: sysa2}) representan un vector tangente $\dot x(t) = [\dot x_1(t),\dot x_2(t)]$ a la trayectoria en el punto $x(t)$.
 
-Además podemos considerar $f(x)=[f_1(x),f_2(x)]$ como un campo vectorial definido sobre el plano de fases., es decir asignamos a cada punto $x$ en el espacio de fases el vector $f(x)$. Es posible obtener una representación aproximada del campo vectorial asociado a un sistema si definimos una región de interés del plano de fase, por ejemplo, una región que contenga sus puntos de equilibrio. Seleccionamos un conjunto de puntos $x$ en posiciones equiespaciadas dentro de la región de interés, y representamos en cada punto $x$ el campo asociado $f(x)$ mediante una flecha que apunte en la dirección de $f(x)$ y cuya longitud sea proporcional al módulo de $f(x)$.
+Además podemos considerar $f(x)=[f_1(x),f_2(x)]$ como un campo vectorial definido sobre el plano de fases. Es decir, asignamos a cada punto $x$ en el espacio de fases el vector $f(x)$. Es posible obtener una representación aproximada del campo vectorial asociado a un sistema si definimos una región de interés del plano de fase, por ejemplo, una región que contenga sus puntos de equilibrio. Seleccionamos un conjunto de puntos $x$ en posiciones equiespaciadas dentro de la región de interés, y representamos en cada punto $x$ el campo asociado $f(x)$ mediante una flecha que apunte en la dirección de $f(x)$ y cuya longitud sea proporcional al módulo de $f(x)$.
 
 El conjunto de todas las trayectorias en el plano de fases de un sistema se denomina su diagrama de fases. de modo análogo al caso de campo vectorial, podemos obtener una representación aproximada del diagrama de fases obteniendo las trayectorias del sistemas para un conjunto suficientemente grande de condiciones iniciales en una región de interés y dibujándolas en el plano de fases.
 
@@ -357,7 +357,7 @@ Por último podemos obtener una información aún más completa si cabe, si repr
 \qed
 \end{example}
 
-\begin{example}[Ciclo límite del oscilador de Van der Pol \ref{AVdP}.] De modo análogo a lo que hemos hecho en el ejemplo anterior, empezamos por determinar los puntos de equilibrio del sistema. Para ello igualamos a cero las ecuaciones del sistema (\ref{eq:vdpst2}, \ref{eq:vdpst2})y resolvemos el sistema resultante,
+\begin{example}[Ciclo límite del oscilador de Van der Pol \ref{AVdP}.] De modo análogo a lo que hemos hecho en el ejemplo anterior, empezamos por determinar los puntos de equilibrio del sistema. Para ello igualamos a cero las ecuaciones del sistema (\ref{eq:vdpst1}, \ref{eq:vdpst2})y resolvemos el sistema resultante,
 \begin{align}
 0 &= x_2\\
 0 &= -\frac{1}{LC}x_1 - m\frac{1}{C}(x_1^2-1)x_2 
