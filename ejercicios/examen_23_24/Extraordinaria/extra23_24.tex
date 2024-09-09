@@ -1,0 +1,103 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{eurosym}
+\usepackage{tikz}
+\usetikzlibrary {arrows.meta}
+%\usepackage[includehead=true,includefoot=true,portrait,top = 1cm]{geometry}
+\usepackage[left=4cm,right=4cm,top=2cm,bottom=5cm]{geometry}
+\graphicspath{{./FIGURAS/}}
+
+%\fancyhf{}
+\headsep = 2cm
+\lhead{Nombre:}
+%\lhead{{\huge\textbf{B}} Nombre:}
+\chead{}
+\rhead{\includegraphics[scale=0.05]{gallinita.pdf}}
+\lfoot{}
+\cfoot{}
+\rfoot{\today}
+\newcommand{\valve}[3]{%
+    \draw (#1,#2-.5) -- (#1,#2+.5) -- (#1+2,#2-.5) -- (#1+2,#2+0.5) -- cycle;
+    \draw (#1+1,#2) -- (#1+1,#2+0.5);
+    \draw (#1+0.75,#2+0.5) rectangle (#1+1.25,#2+0.7);
+    \node at (#1+1,#2-1) {\bf #3};
+}
+
+\newcommand{\process}[3]{%
+    \draw [rounded corners=2.5mm,fill=white, draw = black] (#1-1,#2-0.5) rectangle (#1+1,#2+2);
+    \node at (#1,#2) {\bf #3};
+}
+
+\newcommand{\pump}[5]{%
+        \filldraw [color=white,draw=black](#1,#2) circle (0.6);
+        \draw[arrows = {-Latex[width'=5pt .5, length=10pt]}](#1,#2)--(#1+0.6,#2);
+        \node at (#1+#3,#2+#4) {\bf #5};
+}
+
+\def\labelitemi{$\square$}
+\begin{document}
+\thispagestyle{fancy}
+
+\section*{Exámen de Sistemas Dinámicos y Realimentación\footnote{Las respuestas pueden subirse al Campus Virtual en un \emph{live script}, pdf o similar, incluyendo los códigos utilizados. Si alguien prefiere entregar las explicaciones y deducciones en papel, también puede hacerlo.}.}
+
+\begin{enumerate}
+\item Dado el sistema lineal
+\begin{align*}
+\dot{x} &= Ax+Bu, \\
+y &= Cx, \\
+x \in \mathbb{R}^3; y,u \in \mathbb{R}\\
+\text{con,}\\
+A &=\begin{bmatrix}
+-2& 1& 0& 1\\
+ 1& -3 &1 &1\\
+ 0& 1 &-1 &0\\
+ 0& 1 &1 &-2
+\end{bmatrix}, B=\begin{bmatrix}
+1\\
+0\\
+0\\
+1
+\end{bmatrix},
+C = \begin{bmatrix}
+ 1&1&0&0
+\end{bmatrix}
+\end{align*}
+\begin{enumerate}
+\item (1 punto) Dicutir analíticamente la estabilidad del sistema
+
+\item \label{b} (1 punto) Comprueba que el sistema es controlable y diseña un sistema de estabilización por realimentación de estados de modo que los autovalores estén situados en $[-1, -1, -1, -1]$. Compara gráficamente la respuesta del sistema en lazo abierto con la del sistema realimentado, suponiendo una entrada nula y condiciones iniciales $x_1=-1$, $x_2=-2$, $x_3=2$, $x_4=1$. 
+
+\item \label{c} (1.5 puntos) Comprueba que no es posible emplear control integral para situar a la vez las variables $x_1$ y $x_4$ en posiciones arbitrarias. Demuestra que sí es posible situar arbitrariamente la variable $x_3$. Añade al sistema de control diseñado en el apartado (\ref{b}) control integral, coloca el autovalor de la acción integral en $-1$ y emplealo para desplazar la variable $x_3$ una distancia $x_3 = -4$ de su posición de equilibrio. Muestra gráficamente los resultados
+
+
+\item (1.5 puntos) Diseña un estimador de modo que sus autovalores estén desplazados cuatro unidades hacia a la izquierda respecto a los polos del sistema controlado diseñado en el apartado (\ref{b}). Emplea el estimador para realimentar y controlar el sistema. Repite el calculo realizado en el apartado (\ref{c}) pero llevando ahora $x_3=4$. Considera nulas las condiciones iniciales del estimador $\hat{x}_i=0$.
+
+\end{enumerate}
+
+
+\item Dado el sistema,
+\begin{equation}\label{eq1}
+\begin{split}
+\dot x_1 &= x_2\\
+ \dot x_2 &= -\sin(x_1) - 2x_2
+\end{split}
+\end{equation}
+$x_1,x_2 \in \mathbb{R}$˘
+\begin{enumerate}
+\item (1 punto) Obtener los puntos de equilibrio del sistema. Linealizar en torno a ellos y discutir su estabilidad.
+\item \label{apb} (2 puntos)  Emplea el criterio de estabilidad de Lyapunov para  estudiar la estabilidad del sistema no lineal. Puedes usar para ello la siguiente función candidata:
+\begin{equation*}
+V = 1-\cos(x_1)+ \frac{x_2^2}{2}
+\end{equation*}
+
+\item (2 puntos) Resuelve numéricamente la ecuación (\ref{eq1}), Para distintos valores de las condiciones iniciales, y obtén un diagrama de fases del sistema. Comprueba que los resultados son coherentes con el análisis realizado en los apartados anteriores.
+\end{enumerate}
+\end{enumerate}
+\end{document}
