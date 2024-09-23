@@ -60,7 +60,7 @@ El contenido de estos apuntes est\'a bajo licencia Creative Commons Atribution-S
 
 El motor empleado  trabaja con un voltaje nominal de 12V. El motor lleva acoplado un encoder en cuadratura, que permite conocer la posición angular relativa de su eje. Además del encoder, el eje del motor lleva también acoplada una reductora que disminuye el número de revoluciones del eje del motor.
 
-La alimentación del motor se regula mediante el uso de transistores de potencia que configuran un puente en H. La tensión de suministrada por los transistores se controla mediante una señal de PWM. 
+La alimentación del motor se regula mediante el uso de transistores de potencia que configuran un puente en H. La tensión suministrada por los transistores se controla mediante una señal de PWM. 
 
 Para controlar el motor se emplea una placa de desarrollo directamente programable desde Simulink\textsuperscript{\copyright}
 
@@ -115,14 +115,14 @@ El eje exterior del motor no coincide con el eje de su rotor. Ambos están conec
 \paragraph{Encoder}
 Este elemento, situado en la culata del motor, nos permite conocer el ángulo recorrido por el eje del motor. Se trata de un encoder en cuadratura de efecto Hall.
 En general, un encoder es un dispositivo que permite conocer la posición de un mecanismo, mediante la lectura de pulsos. En nuestro caso, los pulsos los produce un juego de imanes permanentes, situados en el eje del motor, al excitar un par de sensores de efecto Hall.
-La figura \ref{f4} Muestra una vista del  encoder situado en la culata del EMG30. El disco central unido al eje contiene los encoders y, por traterse de un encoder en cuadratura, tiene dos sensores de efecto Hall situados a $90^o$ el uno del otro.
+La figura \ref{f4} Muestra una vista del  encoder situado en la culata del EMG30. El disco central unido al eje contiene los imanes y, por traterse de un encoder en cuadratura, tiene dos sensores de efecto Hall situados a $90^o$ el uno del otro.
 \begin{figure}
 \centering
 \includegraphics[width= 0.7\textwidth]{encoder1.jpg}
 \caption{Vista del encoder situado en la culata del motor EMG30}\label{f4}
 \end{figure} 
 
-Si nos fijamos en el funcionamiento de uno de los sensores de efecto Hall, cada vez que uno de los imanes del disco del eje, pasa por delante del sensor, este se excita produciendo un nivel de tensión alto, cuando el imán deja de excitar al sensor, éste dará un valor de tensión bajo (equivalente a cero). Si el motor esta girando, la señal emitida por el sensor será una onda cuadrada, correspondiente a los niveles altos y bajos de voltaje descritos. La figura \ref{f5} muestra un ejemplo de la onda generada. Como los imanes fijos están distribuidos uniformemente entorno al eje del motor, es suficiente con conocer su número para conocer cuánto ha girado el motor. Así, por ejemplo si tenemos tres imanes cada uno cubrirá un rango de $120^o$ por tanto si contamos los flancos de subida de la señal producida y multiplicamos por $120^o$, podemos calcular las vueltas que ha dado el motor. Podemos refinar nuestras medidas un poco  más si contamos tantos los flancos de subida como los de bajada. En el ejemplo anterior de los tres imanes, la distancia entre dos flancos consecutivos (subida-bajada), (bajada-subida) será de $60^o$, con lo que si contamos todos los flancos duplicamos la sensibilidad de nuestro encoder.
+Si nos fijamos en el funcionamiento de uno de los sensores de efecto Hall, cada vez que uno de los imanes del disco del eje, pasa por delante del sensor, este se excita produciendo un nivel de tensión alto, cuando el imán deja de excitar al sensor, éste dará un valor de tensión bajo (equivalente a cero). Si el motor esta girando, la señal emitida por el sensor será una onda cuadrada, correspondiente a los niveles altos y bajos de voltaje descritos. La figura \ref{f5} muestra un ejemplo de la onda generada. Como los imanes permanentes están distribuidos uniformemente entorno al eje del motor, es suficiente con conocer su número para conocer cuánto ha girado el motor. Así, por ejemplo si tenemos tres imanes cada uno cubrirá un rango de $120^o$ por tanto si contamos los flancos de subida de la señal producida y multiplicamos por $120^o$, podemos calcular los grados que ha avanzado el motor y si dividimos entre tres, podemos calcular el número de vueltas que ha dado. Podemos refinar nuestras medidas un poco  más si contamos tantos los flancos de subida como los de bajada. En el ejemplo anterior de los tres imanes, la distancia entre dos flancos consecutivos (subida-bajada), (bajada-subida) será de $60^o$, con lo que si contamos todos los flancos duplicamos la sensibilidad de nuestro encoder.
 
 Si usamos un solo sensor, como hemos descrito hasta ahora, nos encontramos con el problema de que no sabemos el sentido de giro del motor, ni podemos tampoco detectar los cambios de sentido de giro.
 La solución a este problema se consigue con el segundo sensor de efecto Hall, que está situado de modo que sus flancos caen justo a mitad de los pulsos del primer encoder. El resultado de las señales de  ambos sensores  se muestra superpuesto en la figura \ref{f6}. 
@@ -139,7 +139,7 @@ Si tomamos como referencia el sensor marcado como encoder A (rojo en la figura),
 \caption{Señales producidas por un encoder en cuadratura al girar el motor }\label{f6}
 \end{figure} 
 
-Si nos fijamos en las especificaciones de la tabla \ref{t1}, se indica que el encoder cuenta 360 pulsos por revolución del eje exterior del motor, cada pulso representa un cambio, es decir un flanco de subida o bajada en la señal. La distancia entre dos pulsos sería por tanto de un grado. Esa es la máxima resolución que permite el encoder. Podemos intentar a partir de este dato, deducir la configuración del encoder. Sabemos que la relación de la reductora es 30:1, por tanto el eje del motor da 30 vueltas por cada una de las del eje exterior. Si dividimos el número de pulsos entre el de vueltas del eje principal obtenemos $360/30 = 12$ Es decir el encoder cuenta 12 pulsos por cada vuelta del eje del motor. Como tenemos dos sensores, cada uno de ellos deberá contar seis pulsos,  Tres de ellos corresponderán a flancos de subida (s) y tres a flancos de bajada (b) s-b-s-b-s-b. Por tanto podemos deducir que, por cada vuelta del eje, cada sensor se ha excitado tres veces, lo que corresponde a tres imanes equiespaciados en el disco giratorio situado en torno al eje. Cada imán excita al sensor cubriendo un ángulo de $60^o$, entre los imanes hay una zona \emph{muerta} que cubre también un ángulo de $60^o$. La disposición de los sensores, situados a $90^o$, Explica su funcionamiento en cuadratura: Cuando un imán está centrado en un sensor, el siguiente imán esta empezando a excitar al siguiente sensor, o acaba de excitar al anterior, dependiendo del sentido de giro. La figura \ref{f7} muestra esquemáticamente este resultado.
+Si nos fijamos en las especificaciones de la tabla \ref{t1}, se indica que el encoder cuenta 360 pulsos por revolución del eje exterior del motor, cada pulso representa un cambio, es decir un flanco de subida o bajada en la señal. La distancia entre dos pulsos sería por tanto de un grado. Esa es la máxima resolución que permite el encoder. Podemos intentar a partir de este dato, deducir la configuración del encoder. Sabemos que la relación de la reductora es 30:1, por tanto el eje del motor da 30 vueltas por cada una de las del eje exterior. Si dividimos el número de pulsos entre el de vueltas del eje principal obtenemos $360/30 = 12$ Es decir el encoder cuenta 12 pulsos por cada vuelta del eje del motor. Como tenemos dos sensores, cada uno de ellos deberá contar seis pulsos,  Tres de ellos corresponderán a flancos de subida (s) y tres a flancos de bajada (b) s-b-s-b-s-b. Por tanto podemos deducir que, por cada vuelta del eje, cada sensor se ha excitado tres veces, lo que corresponde a tres imanes equiespaciados en el disco giratorio situado en torno al eje. Cada imán excita al sensor cubriendo un ángulo de $60^o$, entre los imanes hay una zona \emph{muerta} que cubre también un ángulo de $60^o$. La disposición de los sensores, situados a $90^o$, explica su funcionamiento en cuadratura: Cuando un imán está centrado en un sensor, el siguiente imán esta empezando a excitar al siguiente sensor, o acaba de excitar al anterior, dependiendo del sentido de giro. La figura \ref{f7} muestra esquemáticamente este resultado.
 
 \begin{figure}
 \centering
@@ -186,7 +186,7 @@ Como se ha indicado antes, la velocidad a la que gira un motor de continua varí
 
 Un método frecuente de hacerlo es emplear una señal de PWM. Las siglas PWM provienen del Inglés \emph{Pulse Width Modulation} (Modulación por Ancho de Pulso). La figura \ref{f9} Muestra un ejemplo de una señal PWM.
 La señal tiene tres parámetros característicos importantes. 
-El valor máximo de la señal en el ejemplo de la figura sería $V_{max}=10V$. El periodo $T$  define el tiempo transcurrido entre dos flancos de subida. Habitualmente, el periodo suele definirse en función del tiempo de respuesta del sistema y se procura que sea significativamente bajo respecto a éste. En el caso del ejemplo mostrado en la figura \ref{f9} $T=1 ms$. El Ciclo activo \emph{Duty Cicle} $\Delta T$ corresponde al periodo durante el cual la señal de PWM, está activa y alcanza su valor máximo. En el ejemplo de la figura \ref{f9} $\Delta T\approx 0.2 ms$.
+El valor máximo de la señal; en el ejemplo de la figura sería $V_{max}=10V$. El periodo $T$, que  define el tiempo transcurrido entre dos flancos de subida. Habitualmente, el periodo suele definirse en función del tiempo de respuesta del sistema y se procura que sea significativamente bajo respecto a éste. En el caso del ejemplo mostrado en la figura \ref{f9} $T=1 ms$. Por último, el Ciclo activo \emph{Duty Cicle} $\Delta T$, que corresponde al periodo durante el cual la señal de PWM está activa y alcanza su valor máximo. En el ejemplo de la figura \ref{f9} $\Delta T\approx 0.2 ms$.
 
 \begin{figure}
 \centering
@@ -196,17 +196,17 @@ El valor máximo de la señal en el ejemplo de la figura sería $V_{max}=10V$. E
 
 Supongamos que hacemos llegar una señal de PWM a las Puertas G1 y G4 del puente en H de la figura \ref{f6}. Los transistores abrirán el puente durante el \emph{duty cicle} de modo que el motor recibirá corriente solo durante dichos periodos de tiempo. Sin embargo el tiempo de respuesta de un motor es, por lo general superior al periodo $T$ de la señal, por lo que no podrá arrancar y parar al ritmo de ésta. El resultado es que es motor \emph{filtrará la señal} quedándose con su valor medio. Si lo calculamos para un ciclo,
 \begin{equation}
-\frac{1}{T}\int^T_0 V_{PWM}dt = \frac{1}{T}\left(\int^{\Delta T}_0 V_{max}dt 
-+ \int^{T}_{\Delta T} 0 dt\right)) = \frac{\Delta T}{T}V_{max}
+\frac{1}{T}\int^T_0 V_{PWM}dt = \frac{1}{T}\left(\int^{\Delta T}_0 V_{+}dt 
++ \int^{T}_{\Delta T} 0 dt\right)) = \frac{\Delta T}{T}V_{+}
 \end{equation}
 
-El motor estaría  \emph{viendo} una tensión que equivaldrá al valor la tensión de la fuente $V+$ multiplicada por la relación entre el \emph{duty cicle} y el periodo de la señal de PWM. Si modificamos el el \emph{duty cicle} entre $0$ y $T$, El voltaje variará entre $0$ y $V+$.
+El motor estaría  \emph{viendo} una tensión que equivaldrá al valor la tensión de la fuente $V+$ multiplicada por la relación entre el \emph{duty cicle} y el periodo de la señal de PWM. Si modificamos el \emph{duty cicle} entre $0$ y $T$, El voltaje variará entre $0$ y $V+$.
 
 \paragraph{El controlador X\_NUCLEO\_IHM15A1} Para controlar el motor emplearemos una placa con un microcontrolador junto con  la placa de expansión X\_NUCLEO\_IHM15A1 fabricada por la compañía ST \cite{IHM15}. Dicha placa emplea el circuito integrado  STSPIN840  \cite{STSPIN840} que contiene dos puentes en H y todos los dispositivos necesarios para la manipulación y protección de los mismos. A su vez, la placa viene preparada para su conexión directa con las Placas STM32 Nucleo que, como se verá más adelante emplearemos tanto para generar las señales de PWM como para registrar las lecturas de los encoders y controlar el comportamiento del motor. La figura \ref{f10}, muestra una imagen de la placa. 
 
 Entre las característica principales de la placa, resalta que admite voltajes de entrada entre $7V$ y $45V$, para corrientes de hasta $1.5 A$ por fase. Como se ha indicado anteriormente, el circuito contiene dos puentes en H, marcados como puente A y puente B.  En principio en la placa se puede configura  cada puente por separado, o los dos puentes juntos. De este modo, se podría suministra corriente a dos motores, con posibilidad de invertir su sentido de giro, o a un solo motor también con la posibilidad de invertir su sentido de giro. En nuestro caso, emplearemos  una configuración en la que alimentaremos un solo motor empleando los dos puentes a la vez, de este modo podemos suministrar una corriente al motor de hasta $3 A$.  
 
-Pero antes de seguir adelante, examinemos la figura \ref{f8}. En la parte superior de la imagen ---tal como se ha representado-- encontramos una foto de la placa con un conector verde con seis tomas. De abajo arriba, la primera es una entrada, marcada como $GND$ que debe conectarse al terminal negativo de la fuente. Corresponde a la \emph{tierra} o referencia de voltaje $0$. La segunda toma $V_{s}$ es la entrada de voltaje, debe conectarse al terminal positivo de la fuente que se empleará para alimentar el motor. Para el caso de nuestro motor debería conectarse al terminal positivo de una fuente de $12V$ como máximo, puesto que ésta es la tensión nominal del motor (ver sección \ref{s111}). Representaría la entrada correspondiente al voltaje $V+$ del puente en H (fig.\ref{f8}).  Las tomas tercera y cuarta son salidas que suministran voltaje a través de uno de los puentes en H que contiene la placa. En concreto, se trata del puente A. Están marcadas con los símbolos $A1$ y $A2$. Por último las tomas quinta y sexta son las salidas de voltaje correspondiente al segundo puente de la placa --el puente B-- están Marcadas $B2$, $B1$.
+Pero antes de seguir adelante, examinemos la figura \ref{f10}. En la parte superior de la imagen ---tal como se ha representado-- encontramos una foto de la placa con un conector verde con seis tomas. De abajo arriba, la primera es una entrada, marcada como $GND$ que debe conectarse al terminal negativo de la fuente. Corresponde a la \emph{tierra} o referencia de voltaje $0$. La segunda toma $V_{s}$ es la entrada de voltaje, debe conectarse al terminal positivo de la fuente que se empleará para alimentar el motor. Para el caso de nuestro motor debería conectarse al terminal positivo de una fuente de $12V$ como máximo, puesto que ésta es la tensión nominal del motor (ver sección \ref{s111}). Representaría la entrada correspondiente al voltaje $V+$ del puente en H (fig.\ref{f8}).  Las tomas tercera y cuarta son salidas que suministran voltaje a través de uno de los puentes en H que contiene la placa. En concreto, se trata del puente A. Están marcadas con los símbolos $A1$ y $A2$. Por último las tomas quinta y sexta son las salidas de voltaje correspondiente al segundo puente de la placa --el puente B-- están Marcadas $B2$, $B1$.
 
 Como se ha indicado anteriormente, en nuestro caso, vamos a usar ambos puentes a la vez para alimentar al mismo motor. Para ello,  (figura \ref{f10}) es preciso colocar el \emph{jumper} de modo paralelo \emph{Parallel mode jumper} en la posición PAR .Esto permite controlar a la vez los dos puentes con una sola señal para el sentido de giro y una sola señal de PWM.
 
@@ -221,8 +221,6 @@ Por último debemos hablar de los pines de la placa desde los que controlaremos 
 \caption{Placa de expansión, X-NUCLEO-IHM04A1}\label{f10}
 \end{figure}
 Por último, la entrada marcada en verde como PHA, permite cambiar el par de puertas G1-G4 ó G2-G3 por las que se introduce la señal de PWM, cambiando de este modo el sentido de giro del motor. Para hacerlo girar en un sentido, debemos enviar desde la salida correspondiente de la placa del microcontrolador un $0$ lógico, para invertir el sentido de giro, deberemos enviar un $1$.
-
-Los pines marcados en azul, EN-A y EN-B activan cada uno de los dos puentes, para ello, es preciso alimentarlos con un $1$ lógico. 
 
 La placa de expansión presenta más opciones de configuración que no emplearemos en estas prácticas. Los interesados en saber más, pueden recurrir a las hojas de características incluidas en la bibliográfia
 
@@ -302,7 +300,7 @@ La figura \ref{f14} muestra una imagen del montaje completo incluyendo el motor,
 \chapter{Descripción del \emph{software} del sistema \protect \footnote{La descripción de software corresponde a la versión de Matlab R2021b.}}
 \section{Uso de Matlab/Simulink para la generación de Código}
 En esta sección describiremos el software que vamos a emplear para el desarrollo de  las prácticas. El procesador empleado por la placa de desarrollo es un ARM. El fabricante suministra diversos entornos de desarrollo y \emph{tool-chains} para elaborar programas en lenguaje C/C++, compilarlos y descargar el ejecutable obtenido en la placa mediante el programador. También es posible programar y compilar a través de EMBED, un entorno de desarrollo disponible a través de la red. Una introducción a las distintas posibilidades de programación se puede encontrar en \cite{STNUCLEOSF}.
-Sin embargo, en las presentes prácticas, no programaremos directamente las placas de desarrollo; dejaremos que Matlab/Simulink lo haga por nosotros. En concreto, Simulink ofrece soporte para la programación de placas de la familia NUCLEO.  Dicho soporte ofrece la posibilidad de emplear bloques de Simulink para leer y escribir en los pines de la placa y ejecutar en la misma modelos desarrollados con bloques de Simulink. Además, permite mantener una conexión a través de un puerto serie entre la placa y Simulink, de modo que es posible leer, representar gráficamente variables generadas en la placa, empleando las herramientas estándar de Simulink.
+Sin embargo, en las presentes prácticas, no programaremos directamente las placas de desarrollo; dejaremos que Matlab/Simulink lo haga por nosotros. En concreto, Simulink ofrece soporte para la programación de placas de la familia NUCLEO.  Dicho soporte ofrece la posibilidad de emplear bloques de Simulink para leer y escribir en los pines de la placa y ejecutar en la misma modelos desarrollados con bloques de Simulink. Además, permite mantener una conexión a través de un puerto serie entre la placa y Simulink, de modo que es posible leer y representar gráficamente variables generadas en la placa, empleando las herramientas estándar de Simulink.
 
 Veamos en primer lugar cómo preparar Simulink para trabajar con una placa NUCLEO.
 \subsection{Configuración de Matlab/Simulink}
@@ -333,7 +331,7 @@ Se pueden construir modelos en Simulink, combinando los bloques de la librería 
 Como se ha indicado antes, para intercambiar datos entre Simulink  y la placa de desarrollo se emplea la conexión USB, sobre la que se emula un puerto serie. Para que funcione correctamente es preciso instalar un \emph{driver} específico suministrado por STMicroelectronics. El \emph{driver} puede descargarse de la página web: \url{https://www.st.com/en/development-tools/stsw-link009.html}.
 \paragraph{Ejemplo de configuración}
 Una vez que todo está instalado correctamente, vamos a ver mediante un ejemplo sencillo como crear y configurar un modelo de Simulink. 
-Una primera cuestion \emph{MUY IMPORTANTE}: la programación de la placa de control emplea un fichero MAKEFILE para compilar-enlazar-descargar el software. Dicho fichero da problemas si la ruta del archivo de simulink de nuestro modelo tiene nombres con caracteres especiales o con espacio. Para asegurar que el proceso de compilación funcione correctamente lo mejoe es crearse un fichero de trabajo directamente en C:/ y darle un nonbre sencillo: C:/practica. (no acentos, no espacios \sout{C:/Mis prácticas})
+Una primera cuestion \emph{MUY IMPORTANTE}: la programación de la placa de control emplea un fichero MAKEFILE para compilar-enlazar-descargar el software. Dicho fichero da problemas si la ruta del archivo de simulink de nuestro modelo tiene nombres con caracteres especiales o con espacio. Para asegurar que el proceso de compilación funcione correctamente lo mejor es crearse un fichero de trabajo directamente en C:/ y darle un nonbre sencillo: C:/practica. (no acentos, no espacios \sout{C:/Mis prácticas})
 La figura \ref{f17} muestra los pasos a seguir. En nuestro caso, vamos a crear un modelo que permite mediante un botón deslizable encender y apagar un led de la placa. Para ello hemos seleccionado y conectado los siguientes bloques; (ver figura \ref{f17a}):
 \begin{itemize}
 \item Simulink/Sources: Un bloque con una entrada constante.
@@ -426,14 +424,14 @@ si hacemos doble \emph{click} sobre el bloque Motor del modelo, accederemos a la
 \end{figure}
 Está compuesto por los siguientes bloques de Simulink:
 \begin{itemize}
-\item bloque PHA. Se trata de un bloque Digital Write de la librería Simulink Code support Package for STMicroelectronic Nucleo Boards. Recibe directamente el valor del bloque constante del modelo descrito anteriormente. Dicho valor se envía directamente al pin D3, dicho pin corresponde a la entrada de PHA del la placa de expansión que controla el motor y que se encarga de cambiar el sentido de giro del motor (ver tabla \ref{t2} y figura \ref{f10}). Nos permite por tanto controlar manualmente el sentido de giro del motor.
+\item bloque PHA. Se trata de un bloque Digital Write de la librería Simulink Code support Package for STMicroelectronic Nucleo Boards. Recibe directamente el valor del bloque constante del modelo descrito anteriormente. Dicho valor se envía directamente al pin D3, dicho pin corresponde a la entrada PHA del la placa de expansión que controla el motor y que se encarga de cambiar el sentido de giro del motor (ver tabla \ref{t2} y figura \ref{f10}). Nos permite por tanto controlar manualmente el sentido de giro del motor.
 \item Bloque ENA. Idéntico al anterior. Se ha puesto a un valor fijo 1 y se ha configurado como pin D3. Se encarga de habilitar el puente en H A de la placa de expansión.
 \item Bloque ENB. De nuevo se trata de un bloque de escritura digital en este caso se ha configurado como pin D11, por lo que habilita el puente en H B de la placa de expansión.
 \item Bloque PWDA. Este bloque, pertenece también a la librería Simulink Code support Package for STMicroelectronic Nucleo Boards. Se trata de un bloque que genera una señal de PWM y la envía a un pin de la placa. Tiene dos parámetros de configuración: El pin al que se envía la señal, en nuestro caso se ha configurado como pin D5, por lo que enviará la señal de PWM a la entrada PWDA de la placa de expansión, suministrando por tanto el voltaje de entrada al motor. El segundo parámetro es la frecuencia de la señal. Un valor de prueba adecuado para nuestro sistema sería 5000 Hz. La entrada del bloque permite controlar o modificar el \emph{Duty cicle} de la señal de PWM. El valor se da como un porcentaje del periodo de la señal, es decir, debe tomar un valor entre 0 y 100. La señal enviada a la placa de expansión a través del pin D5 es una señal lógica cuya amplitud vale 0 ó 1. Para el valor 0 no se suministrará tensión al motor, para el valor 1 suministrará el valor de tensión de la fuente de alimentación, en nuestro caso 12 V. Así un \emph{Duty Cicle} de 100, supone alimentar el motor a un voltaje constante de 12 V, mientras que un \emph{Duty Cicle} de 50 supone alimentarlo a una tensión de 6V (ver seccion \ref{sh}). Hay un tercer parámetro de configuración que establece el valor del \emph{Duty Cycle inicial} en nuestro caso puede dejarse a 0.
 
 \item Bloque Encoder A. Se trata de un bloque Digital Read perteneciente a la misma librería que los anteriores. Esta vez, el bloque permite leer un valor digital en el pin para el que está configurado. En nuestro caso se trata del pin A1, por lo que obtendremos el valor lógico (1 ó 0) de la tensión en dicho pin. En nuestro caso, se trata del Encoder A  del motor. El bloque necesita que se le fije como parámetro el periodo de muestreo, es decir, cada cuanto tiempo se realiza una nueva medida del valor del pin.  En nuestro caso lo podemos fijar en 0.1 ms.
 
-\item Bloque Encoder B. Análogo al anterior, con la salvedad de de utilizar el pin A0, pero en este caso nos va a permitir la lectura del Encoder B.
+\item Bloque Encoder B. Análogo al anterior, con la salvedad de de utilizar el pin A0; en este caso nos va a permitir la lectura del Encoder B.
 
 \item Bloque Lector Encoder. Se trata de un bloque construido para leer la posición y la velocidad del motor a partir de los valores obtenidos de los encoders. Describiremos su contenido en el siguiente párrafo.
 \end{itemize}
@@ -506,9 +504,9 @@ La salida del sumador alimenta un bloque \emph{Direc look-at table} de la librer
 \begin{verbatim}
 [0,-1,1,0,1,0,0,-1,-1,0,0,1,0,1,-1,0]
 \end{verbatim}
-Donde hemos sustituido por 0 los valores NA. El bloque espera  en su entrada un número de índice para el array, contrariamente a lo que es habitual en Matlab, los índices empiezan en 0 y  no en 1. La tabla devuelve a la salida el valor del array correspondiente al valor de la entrada. Así, para una entrada 0 devolvería un 0 para una entrada 1 devolveria un -1, etc.
+Donde hemos sustituido por 0 los valores NA. El bloque espera  en su entrada un número de índice para el array, contrariamente a lo que es habitual en Matlab, los índices empiezan en 0 y  no en 1. La tabla devuelve a la salida el valor del array correspondiente al valor de la entrada. Así, para una entrada 0 devolvería un 0 para una entrada 1 devolvería un -1, etc.
 
-Como la entrada a este bloque debe ser un índice, es preciso fijar el tipo de variable para la salida del bloque anterior (sumador). Para ello, basta hacer doble 'click' en el bloque sumador, seleccionar la pestaña \emph{signal attributes} y en menu desplagable \emph{output data type} seleccionar la opción 'double'. 
+Como la entrada a este bloque debe ser un índice, es preciso fijar el tipo de variable para la salida del bloque anterior (sumador). Para ello, basta hacer doble 'click' en el bloque sumador, seleccionar la pestaña \emph{signal attributes} y en el menú desplegable \emph{output data type} seleccionar la opción 'double'. 
 
 La salida de la tabla está conectada a un bloque \emph{Unit delay} Realimentado, Cada vez que se obtiene un nuevo valor en la tabla, se suma a los valores anteriores, de modo que el lazo actúa como un acumulador de pulsos, la salida será directamente la posición en grados del eje de la reductora del motor.
 
@@ -543,7 +541,8 @@ Por último, la salida del bloque \emph{Unit delay} está también conectada a u
 
 \paragraph{Modelo del motor} El circuito de la figura \ref{f21} representa un motor de corriente continua y su sistema de alimentación. Podemos considerar el sistema compuesto de dos partes:
 
-Una parte eléctrica formada por un variador (Puente en H más señal de PWM)  que recibe un voltaje de entrada $e(t)$ y devuelve un voltaje amplificado $K_Ae(t)$. Además el amplificador tiene una resistencia interna $R_0$.
+\begin{itemize}
+	\item Una parte eléctrica formada por un variador (Puente en H más señal de PWM)  que recibe un voltaje de entrada $e(t)$ y devuelve un voltaje amplificado $K_Ae(t)$. Además el amplificador tiene una resistencia interna $R_0$.
 
  La parte eléctrica del motor (bobinado) viene representada por una autoinductancia $L$ y una resistencia $R$. Por último, podemos considerar que la caída de tensión (fuerza contra electromotriz) debida al giro del motor es proporcional a la velocidad angular $\dot{\theta}$ con la que gira el rotor.  La constante de proporcionalidad $a$ depende de las características del motor. Si sumamos todas las caídas de tensión en el circuito:
 
@@ -552,14 +551,14 @@ Una parte eléctrica formada por un variador (Puente en H más señal de PWM)  q
 L\frac{di(t)}{dt}+(R+R_0)i(t)+a\frac{d\theta(t)}{dt} = K_Ae(t)
 \end{equation}
 
-Una parte mecánica que podemos asociar al momento de inercia $J$ del rotor y  a la resistencia al giro ofrecida por el rozamiento --que consideraremos proporcional a la velocidad angular a través de un coeficiente de rozamiento viscoso $\mu$. 
+\item Una parte mecánica que podemos asociar al momento de inercia $J$ del rotor y  a la resistencia al giro ofrecida por el rozamiento --que consideraremos proporcional a la velocidad angular a través de un coeficiente de rozamiento viscoso $\mu$. 
 
 El par ejercido por el motor, es proporcional a la intensidad que circula por el bobinado. La constante de proporcionalidad vuelve a ser la constante del motor $a$. Por último, podemos suponer que la carga que mueve el motor ejerce un par $T_L$:
 
 \begin{equation}\label{mec}
 J\frac{d^2\theta(t)}{dt^2}+\mu\frac{d\theta(t)}{dt} = ai(t)-T_L(t)
 \end{equation}
-
+\end{itemize}
 Sin embargo, la dinámica debida a la autoinducción $L$ es mucho más rápida que la dinámica propia de la mecánica del motor.  Esto nos permite simplificar el modelo eliminando la variación de la intensidad --es tán rápida que el resto del sistema siempre la \emph{ve} en su estado estacionario--.
 
  \begin{equation}\label{sim}
@@ -620,16 +619,18 @@ y &= \begin{bmatrix}
 \theta(s) = \frac{k_e}{s(s+p)}e(s)
 \end{equation}
 
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{resq.eps}
+	\caption{Respuesta de un motor de cc a un voltaje de entrada escalón}\label{f22}
+\end{figure}
+
 \paragraph{Identificación del motor} Si calculamos la respuesta de nuestro sistema a una entrada escalón de valor $e(t) = V$,
 \begin{equation}\label{eq314}
 \theta(t) = V\frac{k_e}{p^2}e^{-pt}+V\frac{k_e}{p}t -V\frac{k_e}{p^2} 
 \end{equation}
 
-\begin{figure}
-\centering
-\includegraphics[width=0.8\textwidth]{resq.eps}
-\caption{Respuesta de un motor de cc a un voltaje de entrada escalón}\label{f22}
-\end{figure}
+
 
 La respuesta angular en estado estacionario es una línea recta, que indica que el motor, tras pasar la fase transitoria, gira con velocidad constante. La figura \ref{f22} muestra un ejemplo de la respuesta de un motor como el que estamos modelando. Si obtenemos la pendiente de la recta correspondiente a la solución estacionaria y su corte con el eje $y$, podemos estimar los parámetros $K_e$ y $p$ de nuestro motor. Este proceso puede hacerse a partir de datos experimentales del motor, en cuyo caso recibe el nombre de proceso de identificación del motor.
 
@@ -661,7 +662,7 @@ En esta sección vamos a construir un regulador completo para controlar la posic
 \label{f23}
 \end{figure}
 
-La figura \ref{f23} muestra tres versiones del modelo sencillo descrito en la sección anterior para un motor ideal de corriente continua. Las dos primeras son  versiones en variables de estados y la tercera una versión empleando la función de trasferencia. Los tres modelos son equivalentes y cualquiera de ellos se puede emplear como núcleo de un modelo más realista del motor que estamos empleando. El modelo basado en la función de transferencia emplea en realidad dos en cascada. La razón es tener acceso no solo a la posición --que es la salida del sistema-- sino también a la velocidad que corresponde a la salida de la primera función de transferencia. Para ajustar nuestro modelo al motor real empleado en la práctica, deberemos ajustar los valores de \emph{Ke} y \emph{p} a los valores obtenidos en el proceso de identificación del motor, descrito en el apartado anterior. Se ha añadido una ganancia a la salida del modelo que podría ajustarse para modelar la reductora. Se trata tan solo de una constante y dado que hemos identificado el motor empleando la posición del eje de la reductora, podemos asignarle directamente valor $1$. 
+La figura \ref{f23} muestra tres versiones del modelo sencillo descrito en la sección anterior para un motor ideal de corriente continua. Las dos primeras son  versiones en variables de estados y la tercera una versión empleando la función de trasferencia. Los tres modelos son equivalentes y cualquiera de ellos se puede usar como núcleo de un modelo más realista del motor que estamos empleando. El modelo basado en la función de transferencia emplea en realidad dos en cascada. La razón es tener acceso no solo a la posición --que es la salida del sistema-- sino también a la velocidad que corresponde a la salida de la primera función de transferencia. Para ajustar nuestro modelo al motor real empleado en la práctica, deberemos ajustar los valores de \emph{Ke} y \emph{p} a los valores obtenidos en el proceso de identificación del motor, descrito en el apartado anterior. Se ha añadido una ganancia a la salida del modelo que podría ajustarse para modelar la reductora. Se trata tan solo de una constante y dado que hemos identificado el motor empleando la posición del eje de la reductora, podemos asignarle directamente valor $1$. 
 
 \paragraph{Modelo del sistema de alimentación} Para aproximar nuestro modelo al motor de la práctica, el siguiente paso es construir un modelo de su sistema de alimentación. Sabemos que el motor recibe un nivel de tensión variable mediante el empleo de una señal de PWM. Para emular dicho sistema, creamos un nuevo modelo de Simulink como el que se muestra en la figura \ref{f24}. El modelo se construye a partir de un bloque que reproduce una señal en diente de sierra, construido a partir de un bloque \emph{Repeating Sequence} de la librería Simulink/Sources. Este bloque espera como parámetros un vector de instantes de tiempo (\emph{Time values}) comprendidos entre $0$ y un tiempo final $T$, y un vector de valores de salida (\emph{Output values}) de la misma longitud que el vector de tiempos. El módulo, durante su ejecución, da como salida la secuencia introducida repetida periódicamente cada $T$ segundos. En nuestro caso empleamos los siguientes vectores como parámetros:
 \begin{verbatim}
@@ -796,8 +797,11 @@ La figura \ref{f31b} muestra los resultados de un ejemplo de dicho sistema. Se h
 \caption{Realimentación de estados para el motor ideal}
 \end{figure}
 
-\paragraph{Diseño de un  estimador} Como ya hemos descrito más arriba, de las dos variables de estado que definen nuestro sistema, la velocidad resulta difícil de precisar, sobre todo cuando el motor acelera o frena. Se hace por tanto necesario diseñar un sistema que emplee realimentación de estados estimados. Para diseñarlo, gracias al principio de separación, podemos calcular la ganancia $L$ del estimador, empleando de nuevo  \texttt{acker} o \texttt{place} y conservar las ganancias $K$ obtenidas para la realimentación de estados. Podemos colocar los polos del estimador a la izquierda del polo $p$ del motor, por ejemplo $p_{e1} = 1.2p$ y $p_{e2} = 1.2p $. Podemos ahora repetir la simulación, empleando la realimentación de los estados estimados en lugar de los estados reales. Para ello, añadimos al modelo de Simulink de la figura \ref{f31a} un estimador de estados, empleando de nuevo los datos obtenidos para el motor real en la práctica de identificación. El modelo completo resultante se muestra en la figura \ref{f32a}. La estructura del estimador, corresponde al modelo completo en variables de estado. Las matrices $A$, $B$, $C$ corresponden a las matrices del sistema (motor ideal), $K = [K_1,K_2]$, corresponden al vector de ganancias de la realimentación de estados, obtenidas anteriormente, y $L = [L_1,L_2]^T$ es el vector de ganancias del estimador. Es importante hacer notar que los bloques de ganancias del modelo de Simulink hay que configurarlos para que calculen productos matriciales. El modelo está construido de modo que toma todos los parámetros del sistema del \emph{work space} de Matlab. Al modelo se le ha añadido una ganancia de entrada a la que se ha dado valor $1$. Corresponde al valor de la ganancia $F$ de acción directa. El valor asignado es arbitrario por lo que no cabe esperar que el motor alcance la posición de consigna indicada por la entrada escalón. 
-
+\paragraph{Diseño de un  estimador} Como ya hemos descrito más arriba, de las dos variables de estado que definen nuestro sistema, la velocidad resulta difícil de precisar, sobre todo cuando el motor acelera o frena. Se hace por tanto necesario diseñar un sistema que emplee realimentación de estados estimados. Para diseñarlo, gracias al principio de separación, podemos calcular la ganancia $L$ del estimador, empleando de nuevo  \texttt{acker} o \texttt{place} y conservar las ganancias $K$ obtenidas para la realimentación de estados. Podemos colocar los polos del estimador a la izquierda del polo $p$ del motor, por ejemplo $p_{e1} = 1.2p$ y $p_{e2} = 1.2p $. Podemos ahora repetir la simulación, empleando la realimentación de los estados estimados en lugar de los estados reales. Para ello, añadimos al modelo de Simulink de la figura \ref{f31a} un estimador de estados, empleando de nuevo los datos obtenidos para el motor real en la práctica de identificación. El modelo completo resultante se muestra en la figura \ref{f32a}. La estructura del estimador, corresponde al modelo completo en variables de estado. Las matrices $A$, $B$, $C$ corresponden a las matrices del sistema (motor ideal), $K = [K_1,K_2]$, corresponden al vector de ganancias de la realimentación de estados, obtenidas anteriormente, y $L = [L_1,L_2]^T$ es el vector de ganancias del estimador. Es importante hacer notar que los bloques de ganancias del modelo de Simulink hay que configurarlos para que calculen productos matriciales. El modelo está construido de modo que toma todos los parámetros del sistema del \emph{work space} de Matlab. Al modelo se le ha añadido una ganancia de entrada a la que se ha dado valor $1$. Corresponde al valor de la ganancia $F_c$ de acción directa. El valor asignado es arbitrario por lo que no cabe esperar que el motor alcance la posición de consigna indicada por la entrada escalón\footnote{Para que la acción directa (\emph{{feedforward}}) llevara el motor a la posición indicada por el escalón de entrada, $y = x_r$, Es preciso ajustar el valor de $F_c$,
+\begin{equation}
+	F_c = (C(BK-A)^{-1}B)^{-1}
+\end{equation}  
+}.
 La figura \ref{f32b} muestra la evolución de los estados del sistema así como la de los estados estimados, para una entrada escalón de valor 5. Puede observarse como el motor alcanza una posición final, y como los estados estimados convergen a  los reales antes de alcanzar el estado final. La convergencia es lo suficiente rápida para que el sistema siga una trayectoria muy parecida a la del caso anterior, \ref{f31b} en que se empleaba realimentación de estados reales. Lógicamente, se podría acelerar dicha convergencia, desplazando los polos del estimador más a la izquierda. Se observa también que el sistema no alcanza el valor de la entrada. Esto era de esperar puesto que no hemos ajustado el valor de la ganancia $F$, para que esto ocurra. De hecho, no vamos a calcular dicho ajuste. En su lugar, añadiremos directamente acción integral a nuestro sistema de control.
 
 \paragraph{Acción integral} Si añadimos acción integral al sistema de control, conseguimos que el motor siga a la entrada de referencia. Debemos para ello calcular la ganancia $k_i$ correspondiente a la acción integral. Tenemos dos modos de hacerlo. Podemos colocar de nuevo los tres polos en posiciones pre-establecidas y emplear \texttt{acker} o \texttt{place} para obtener las ganancias $K = [K_1,K_2,K_i]$. Esto nos da la oportunidad de mantener los polos de la realimentación de estados en la misma posición que estaban cuando no se empleaba acción integral. Tenemos también la alternativa de conservar las ganancias calculadas previamente para la realimentación de estados y emplear la técnica del lugar de las raíces para obtener la ganancia $k_i$. Con esto tendríamos nuestro motor ideal controlado en posición. La figura \ref{f33a} muestra el controlador completo. Se ha recuadrado en rojo la parte que corresponde a la acción integral y en azul la parte que corresponde al estimador de estados.
@@ -824,7 +828,7 @@ La figura \ref{f32b} muestra la evolución de los estados del sistema así como 
 
 Para este ejemplo, se ha cambiado la posición de los polos. Así los polos del motor se han situado en $p_1 = -15, p_2 = -15$, el correspondiente al estado de la acción integral en $p_i = -20$ y los polos del observador en $p_{e,1} = -30, p_{e,2} = -30$. El modelo del motor sigue empleando $K_e = 100$ y $p = 50$. La entrada escalón sigue teniendo un valor final 5.
 
-La figura \ref{f33b} muestra, en la gráfica superior, la evolución de los estados del sistema así como la de los estados estimados. Puede observarse como, ahora el motor si consigue alcanzar la posición angular $5$ correspondiente al valor de referencia consignado por la entrada escalón.
+La figura \ref{f33b} muestra, en la gráfica superior, la evolución de los estados del sistema así como la de los estados estimados. Puede observarse como, ahora el motor sí consigue alcanzar la posición angular $5$ correspondiente al valor de referencia consignado por la entrada escalón.
 
 En la gráfica inferior se ha representado el estado de la  acción integral $z$ junto con el valor de la entrada $u$. Es interesante notar, como el estado $z$ alcanza un valor estacionario distinto de cero, cuando el motor ha alcanzado su valor estacionario.
 
@@ -838,7 +842,7 @@ Si el sistema de control demanda valores mayores que $V_{max}$, esto no tiene ef
 \begin{enumerate}
 \item Construir un modelo en Simulink, que incluya el motor ideal y un sistema de control por realimentación de estados estimados y acción integral. 
 \item Comprobar el efecto de la posición de los polos del sistema y el estimador sobre la velocidad de respuesta del sistema y el valor de la señal de control $u$. (incrementarlos o disminuirlos en potencias de 10)
-\item Comprobar el efecto de la ganancia de la alimentación directa $F$.
+\item Comprobar el efecto de la ganancia de la alimentación directa $F_c$.
 \item Observar el efecto del error de posición inicial sobre la señal de entrada $u$. 
 \end{enumerate}
 
@@ -930,11 +934,49 @@ y(n) &= Cx(n) + Du(n) \label{eq411}
 
 Podemos  ahora relacionar los resultados obtenidos con los valores de las matrices $F$, $G$, $C$ y $D$ del sistema en variables de estado discreto (ecuaciones \ref{eq42} y \ref{eq43}), 
 \begin{align}
-F = e^{AT} & \ G = e^{AT}\left[\int_0^Te^{-\tau}d\tau \right]B\\
+F = e^{AT} & \ G = e^{AT}\left[\int_0^Te^{-A\tau}d\tau \right]B\\
 C = C\ \ \  & \ D=D
 \end{align}
 
-Para controlar el motor real empleando realimentación de estados estimados, debemos sustituir el estimador continuo por su versión discreta, calculando los valores de las matrices $F$ y $G$ a partir de los valores de las matrices $A$ y $B$ y del periodo de muestreo $T$. Matlab suministra el comando \texttt{c2d} que obtiene la versión muestreada de un sistema continuo definido en variables de estado mediante el comando \texttt{ss}. Así si el sistema continuo es: \texttt{sys = ss(A,B,C,D)} el discreto correspondiente para un periodo de muestreo T se obtiene como : \texttt{sysd = c2d(sys,T)}. 
+Si la matriz $A$ es invertible, podemos calcular directamente la integral de la expresión para $G$,
+
+\begin{equation*}
+	G = e^{AT}A^{-1}\left[I-e^{-AT}\right]B
+\end{equation*}
+
+En nuestro caso $A$ es una matriz defectiva, pero eso hace fácil el cálculo de su exponencial:
+
+\begin{equation*}
+	e^{-A\tau}=\exp\left(-\begin{bmatrix}
+		0 & 1\\
+		0 &-p
+	\end{bmatrix}\tau\right) = \begin{bmatrix}
+	1 & -(e^{p\tau}-1)/p\\
+	0& e^{p\tau}
+\end{bmatrix}
+\end{equation*}
+Si calculamos la integral entre $0$ y $T$,
+\begin{equation*}
+	\int_0^Te^{-A\tau}d\tau = 
+	\begin{bmatrix}
+		T & Tp-e^{Tp}+1)/p^2\\
+		0 &(e^{Tp}-1)/p
+	\end{bmatrix}
+\end{equation*}
+Obtenemos finalmente,
+
+\begin{equation}
+	G = e^{AT}\begin{bmatrix}
+		T & Tp-e^{Tp}+1)/p^2\\
+		0 &(e^{Tp}-1)/p
+	\end{bmatrix}B
+\end{equation}
+
+
+
+Para controlar el motor real empleando realimentación de estados estimados, debemos sustituir el estimador continuo por su versión discreta, calculando los valores de las matrices $F$ y $G$ a partir de los valores de las matrices $A$ y $B$ y del periodo de muestreo $T$. Matlab suministra el comando \texttt{c2d} que obtiene directamente la versión muestreada de un sistema continuo definido en variables de estado mediante el comando \texttt{ss}. Así si el sistema continuo es: \texttt{sys = ss(A,B,C,D)} el discreto correspondiente para un periodo de muestreo T se obtiene como : \texttt{sysd = c2d(sys,T)}.
+
+ 
 
 \paragraph{Discretización de los polos} Debemos recalcular los valores de las ganancias K y L para emplearlos con el estimador discreto. Para ello, podemos trasladar los polos de continuo a discreto. Supongamos que queremos para el sistema continuo un polo de valor $\lambda_i$. Sabemos que la respuesta asociada a este polo está relacionada con una función exponencial, si muestreamos dicha respuesta:
 \begin{align}
@@ -942,7 +984,7 @@ Para controlar el motor real empleando realimentación de estados estimados, deb
 &\lambda_i \rightarrow  \Lambda_i = e^{\lambda_iT} \label{eq416}
 \end{align}
 
-Por tanto, podemos obtener los polos del sistema discreto (muestreado) $\Lambda_i$ a partir de los polos del sistema continuo $\lambda_i$ y el tiempo de muestreo $T$. Es interesante notar cómo el carácter estable o inestable del sistema no cambia al discretizarlo, si $\lambda_i \le 0$ entonces $\Lambda_i < 1$ que corresponde con la condición de estabilidad de un sistema discreto $\Lambda_i le 1 \Rightarrow  \lim_{n\rightarrow \infty} \Lambda_i^n =0$.
+Por tanto, podemos obtener los polos del sistema discreto (muestreado) $\Lambda_i$ a partir de los polos del sistema continuo $\lambda_i$ y el tiempo de muestreo $T$. Es interesante notar cómo el carácter estable o inestable del sistema no cambia al discretizarlo, si $re\{\lambda_i\} \le 0$ entonces $|\Lambda_i| < 1$ que corresponde con la condición de estabilidad de un sistema discreto $\Lambda_i \le 1 \Rightarrow  \lim_{n\rightarrow \infty} \Lambda_i^n =0$.
 
 Las ganancias $K$ y $L$ para el sistema discreto pueden obtenerse, igual que el caso continuo empleando \texttt{acker} o \texttt{place}: Se diseñan la posición de los polos para la planta $\lambda_{pi}$ y el observador $\lambda_{oi}$, se discretizan empleando la ecuación \ref{eq416} y se introducen en \texttt{acker} junto con las matrices del sistema discretizado:
 \begin{align*}
@@ -980,10 +1022,10 @@ Podemos directamente emplear el sistema ampliado con la acción integral discret
 
 \paragraph{Acción Directa} Una última nota para el cálculo de la acción directa para el sistema muestreado. Hemos omitido su cálculo hasta ahora ya que si empleamos acción integral podemos asignarle un valor arbitrario (aunque razonable). Vamos de todos modos a recordar la expresión de la acción directa para un sistema continuo y como adaptarla para una versión discretizada dicho sistema. Si llamamos $f$ a al valor de la ganancia de la acción directa necesaria para que la planta alcance el estado estacionario tendremos que,
 \begin{align}
-&\mathbf{x_{ssD}} = (F -GK)\mathbf{x_{ss}} + Gfx_r\\
-&\left[I-(F-GK) \right]\mathbf{x_{ss}} =Gfx_r\\
+&\mathbf{x_{ssD}} = (F -GK)\mathbf{x_{ssD}} + Gfx_r\\
+&\left[I-(F-GK) \right]\mathbf{x_{ssD}} =Gfx_r\\
 &\mathbf{x_{ssD}} = \left[I-(F-GK) \right]^{-1}Gfx_r\\
-&y_{ssD} = C\mathbf{x_{ss}} = x_r, (D = 0)\\
+&y_{ssD} = C\mathbf{x_{ssD}} = x_r, (D = 0)\\
 &x_r = C\left[I-(F-GK) \right]^{-1}Gfx_r\\
 &C\left[I-(F-GK) \right]^{-1}Gf = I\\
 &f = \left[C\left[I-(F-GK) \right]^{-1}G\right]^{-1}
@@ -991,12 +1033,12 @@ Podemos directamente emplear el sistema ampliado con la acción integral discret
 
 Es interesante observar que el resultado no coincide con el cálculo de la ganancia $F_c$ para el caso continuo. De hecho, ambos sistemas continuo y discretizado, alcanzarán el mismo valor de consigna pero por caminos distintos. 
 
-Si se emplea acción integral, es posible elegir libremente tanto $F_c$ como f$f$. Se puede entonces ajustar el valor de $f$ para que las trayectorias de ambos sistemas coincidan. Así para valores dados de $F_c$ y $f$, sabemos que,
+Si se emplea acción integral, es posible elegir libremente tanto $F_c$ como $f$. Se puede entonces ajustar el valor de $f$ para que las trayectorias de ambos sistemas coincidan. Así para valores dados de $F_c$ y $f$, sabemos que,
 \begin{align}
 y_{ss}  &= -C\left[A-BK\right]^{-1}BF_cx_r\\
 y_{ssD} &= C\left[I-(F-GK) \right]^{-1}Gfx_r
 \end{align}
-Buscamos asegurar que ambos valores (continuo y dicretizado) en estacionario sean iguales $Y_{ss} = Y_{ssD}$ Si igualamos la expresiones de los estados estacionarios y despejamos $f$
+Buscamos asegurar que ambos valores (continuo y discretizado) en estacionario sean iguales $Y_{ss} = Y_{ssD}$ Si igualamos la expresiones de los estados estacionarios y despejamos $f$
 \begin{align}
 -C\left[A-BK\right]^{-1}BF_cx_r = C\left[I-(F-GK) \right]^{-1}Gfx_r\\
 f = -\left[C\left[I-(F-GK) \right]^{-1}G\right]^{-1}C\left[A-BK\right]^{-1}BF_c  \\\label{eq429}
@@ -1044,7 +1086,7 @@ La figure \ref{f35b} muestra la respuesta del sistema con los siguiente parámet
 \item $P = [-15 -15 -20]$. Polos para realimentación de estados, el ultimo corresponde a la acción integral
 \item $PL = [-30 -30]$.  Polos para la realimentación del error  de la salida para el estimador estimador 
 \end{enumerate}
-\item $F$ calculada para asegurar que el sistema alcanza el valor de referencia.
+\item $F_c$ calculada para asegurar que el sistema alcanza el valor de referencia $F_c = (C(BK-A)^{-1}B)^{-1}$. (aunque no sería necesario). 
 \item Tiempo de muestreo $T=0.0001s$
 \item $x_r = 10^o$
 \item Todos los parámetros correspondientes al sistema discretizado se han obtenido a partir de las ecuaciones descritas en la sección anterior $f$ se ha calculado a partir de $F$ empleando la ecuación \ref{eq429}.
