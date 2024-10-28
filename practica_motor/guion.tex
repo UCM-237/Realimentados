@@ -200,7 +200,7 @@ Supongamos que hacemos llegar una señal de PWM a las Puertas G1 y G4 del puente
 + \int^{T}_{\Delta T} 0 dt\right)) = \frac{\Delta T}{T}V_{+}
 \end{equation}
 
-El motor estaría  \emph{viendo} una tensión que equivaldrá al valor la tensión de la fuente $V+$ multiplicada por la relación entre el \emph{duty cicle} y el periodo de la señal de PWM. Si modificamos el \emph{duty cicle} entre $0$ y $T$, El voltaje variará entre $0$ y $V+$.
+El motor estaría  \emph{viendo} una tensión que equivaldrá al valor de la tensión de la fuente $V+$ multiplicada por la relación entre el \emph{duty cicle} y el periodo de la señal de PWM. Si modificamos el \emph{duty cicle} entre $0$ y $T$, El voltaje variará entre $0$ y $V+$.
 
 \paragraph{El controlador X\_NUCLEO\_IHM15A1} Para controlar el motor emplearemos una placa con un microcontrolador junto con  la placa de expansión X\_NUCLEO\_IHM15A1 fabricada por la compañía ST \cite{IHM15}. Dicha placa emplea el circuito integrado  STSPIN840  \cite{STSPIN840} que contiene dos puentes en H y todos los dispositivos necesarios para la manipulación y protección de los mismos. A su vez, la placa viene preparada para su conexión directa con las Placas STM32 Nucleo que, como se verá más adelante emplearemos tanto para generar las señales de PWM como para registrar las lecturas de los encoders y controlar el comportamiento del motor. La figura \ref{f10}, muestra una imagen de la placa. 
 
