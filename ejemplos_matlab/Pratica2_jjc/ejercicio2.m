@@ -100,7 +100,7 @@ plot(x(:,1),x(:,2),'+')
 figure
 mu = 0.1
 tau = 0.2
-x0=[6;3]
+x0=[6;8]
 [t,x] = ode45(@(t,x)volterra(t,x,mu,tau),[0 1000],x0);
 plot(x0(1),x0(2),'xr')
 hold on

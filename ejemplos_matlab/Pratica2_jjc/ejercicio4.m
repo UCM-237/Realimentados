@@ -38,9 +38,9 @@ vdot = expand(gradient(V)'*f)
 %en este caso sale complicado
 %simulamos y dibujamos el circulo unidad que obtendríamos de la primera
 %función de Lyapunov,
-for i =-4:0.5:4%5
-     for j = -4:0.5:4 %5
-        [t,x] = ode45(@ej5,[0 0.1],[i;j]);
+for i =-1.5:0.2:1.5%5
+     for j = -1.5:0.2:1.5 %5
+        [t,x] = ode45(@ej5,[0 1],[i;j]);
         plot(i,j,'xr')
         hold on
         plot(x(:,1),x(:,2))
@@ -49,6 +49,8 @@ for i =-4:0.5:4%5
 end
 theta =0:pi/100:2*pi
 plot(cos(theta),sin(theta),'b')
+axis([-2,2,-2,2])
+figure()
 % Sacamos el basin por simulación integrando hacia atras en el tiempo
  for i =-4:0.5:4%5
      for j = -4:0.5:4 %5
