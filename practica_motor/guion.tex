@@ -1113,12 +1113,17 @@ Para paliar en parte este efecto, una primera solución es eliminar la acción d
 \paragraph{\emph{Anti wind-up}}
 Una solución más robusta a los problemas de \emph{Wind-up}, consiste en desconectar o atenuar la acción integral mientras el actuador esta saturado, es decir mientras el valor de la entrada demandado por el controlador supera el valor que éste puede dar. La figura \ref{f36a} muestra una posible construcción de dicho mecanismo, remarcado en color rosa. En este caso, no se desconecta la acción integral, sino que se altera la entrada del error de posición al integrador añadiendo un nuevo término proporcional a la diferencia entre la entrada $u$ calculada por el controlador y valor máximo de la salida. El valor de la constante de proporcionalidad ---$kamp$ en la figura--- se ajusta habitualmente en función de las características que se quieran dar a la salida. 
 
+\begin{figure}
+	\centering
+		\includegraphics[width=\textwidth]{ctrlreal.jpg}
+	\caption{Sistema completo para alimentar el motor real, empleando el esquema de Simulink (fig. \ref{f18}) para manejar el motor real. Los bloques añadidos antes del motor permiten pasar de tensión en voltios a señal de PWM}\label{f37}
+\end{figure}
 \paragraph{Práctica6}
 \begin{enumerate}
 \item  Construir los bloques de Simulink del estimador acción directa y  acción integral discreta y añadirlos al modelo de motor completo desarrollado en la práctica 3.
  \item Estudiar la respuesta del sistema para los sistemas de control diseñados en la práctica 5. Comprobar el efecto de eliminar la acción integral $K_iz=0$ o la acción directa $f=0$
  \item Añadir al modelo un bloque anti wind-up, analizar la salida para distintos valores de la constante $kamp$.
-\item Trasladar los bloques del sistema de control desarrollado al esquema de Simulink empleado para manejar el motor real. Comprobar que es capaz de mover el motor desde una posición inicial $theta_0 = 0$ hasta una posición final de referencia $\theta_r$
+\item Trasladar los bloques del sistema de control desarrollado al esquema de Simulink empleado para manejar el motor real (fig \ref{f37}). Comprobar que es capaz de mover el motor desde una posición inicial $\theta_0 = 0$ hasta una posición final de referencia $\theta_r$
 \end{enumerate}
 
 
