@@ -7,7 +7,7 @@ syms s
 f(1,1) = -x1 + x2
 f(2,1) = -x1 + x2^2 
 
-%Calculamos el Jacobiano
+Calculamos el Jacobiano
 J = jacobian(f,[x1 x2])
 %obtenemos los puntos en que se anulan las ecuaciones de estado, ya que
 %dichos puntos son precisamente los puntos deequilibrio
