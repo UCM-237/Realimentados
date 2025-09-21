@@ -5,7 +5,7 @@
 
 Decimos que el sistema lineal (\ref{eq: linsys}) \emph{en el sentido de Lyapunov}
 \begin{enumerate}
-	\item es \emph{(marginalmente) estable} si para cada condición inicial $x_0$, entonces $x(t) = \Phi(t,t_0) x_0$ está acotada uniformamente para todo $t>t_0$.
+	\item es \emph{(marginalmente) estable} si para cada condición inicial $x_0$, entonces $x(t) = \Phi(t,t_0) x_0$ está acotada uniformamente\footnote{Una señal $x:[0,\infty) \to \mathbb{R}^n$ es uniformemente acotada si existe una constante $C>0$ tal que $||x(t)|| \leq c, \forall t \geq 0$.} para todo $t>t_0$.
 	\item es \emph{asintóticamente estable} si además $x(t) \to 0$ según $t\to\infty$.
 	\item es \emph{exponencialmente estable} si además $||x(t)|| \leq c e^{\lambda(t-t_0)}||x(t_0)||$ para algunas constantes $c,\lambda > 0$.
 	\item es \emph{inestable} si no es marginalmente estable.
@@ -53,7 +53,7 @@ con un punto de equilibrio $x^*\in\mathbb{R}^n$, i.e, $f(x^*) = 0$. La dinámica
 
 \begin{theorem}
 	\label{thm: tayl}
-	Asume que $f(x)$ is dos veces diferenciable. Si (\ref{eq: delta}) es exponencialmente estable, entonces, existe un entorno $\mathcal{B}$ alrededor de $x^*$ y constantes $c, \lambda > 0$ tal que para cada solución $x(t)$ del sistema (\ref{eq: non}) que empiece con $x(t_0)\in\mathcal{B}$, tenemos que
+	Asume que $f(x)$ es dos veces diferenciable. Si (\ref{eq: delta}) es exponencialmente estable, entonces, existe un entorno $\mathcal{B}$ alrededor de $x^*$ y constantes $c, \lambda > 0$ tal que para cada solución $x(t)$ del sistema (\ref{eq: non}) que empiece con $x(t_0)\in\mathcal{B}$, tenemos que
 	\begin{equation}
 	||x(t) - x^*|| \leq ce^{\lambda(t-t_0)} ||x(t_0) - x^*||, \quad \forall t\geq t_0.
 	\end{equation}

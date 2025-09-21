@@ -99,6 +99,7 @@ Primero calculamos la siguiente derivada
 lo cual prueba la identidad $\dot x = A(t)x(t)$ dado que $x(t) = \Phi(t,t_0)x_0$. Para terminar la prueba, necesitaríamos probar que la serie (\ref{eq: ser}) converge para todo $t\geq t_0$.
 
 La matriz $\Phi(t,t_0)$ es llamada \textbf{\emph{matriz de transición de estados}}. Dada una condición inicial $x_0$, podemos predecir $x(t)$ en (\ref{eq: xdyn}) iterando $\Phi(t,t_0)$ en el caso de que no existiera ninguna interacción con el sistema, i.e., $u(t) = 0, t\geq t_0$.
+\qed
 
 \subsection*{Ejercicio}
 Comprobar que
@@ -171,11 +172,11 @@ Antes de seguir con las propiedades, necesitamos introducir un teorema important
 Toda matriz $A$ de dimensión $n\times n$, satisface su polinomio característico.
 Es decir, si el polinomio característico de $A$ es,
 \begin{equation*}
-P_A(s) = s^n + a_1s^{n-1}+a_2s^{n-2}+ \cdots + a_{n-1}s + a_0 I
+P_A(s) = s^n + a_1s^{n-1}+a_2s^{n-2}+ \cdots + a_{n-1}s + a_n
 \end{equation*}
 se cumple que,
 \begin{equation}\label{eq:ch}
-P_A(A) = A^n + a_1A^{n-1}+a_2A^{n-2}+ \cdots + a_{n-1}A + a_0I  = 0_{n\times n}
+P_A(A) = A^n + a_1A^{n-1}+a_2A^{n-2}+ \cdots + a_{n-1}A + a_nI  = 0_{n\times n}
 \end{equation}
 Se dice a menudo que $P_a$ aniquila a $A$
 \qed
@@ -195,10 +196,10 @@ e^{At} = \sum_{i=0}^{n-1} \beta_i(t)A^i,\; \forall t\in \mathbb{R}
 Ae^{At}=e^{At}A,\; \forall t \in \mathbb{R}
 \end{equation}
 \end{enumerate}
-Estas dos propiedades se puede deducir del teorema de Cayle-Hamilton. Despejando en (\ref{eq:ch}) $A^n$ en función de todos los demás términos,
-$A^n = - a_1A^{n-1}-a_2A^{n-2}- \cdots - a_{n-1}A - a_0$. Si ahora multiplicamos a ambos lados por $A$ obtenemos $A^{n+1} = - a_1A^{n}-a_2A^{n-1}- \cdots - a_{n-1}A^2 - a_0A$, podríamos a continuación volver a sustituir $A^n$ en el primer término de este último polinomio por el valor obtenido a partir del teorema de Cayley-Hamilton, con lo que obtendríamos una expresión polinómica para $A^{n+1}$, en función de $A^{n-1},A^{n-2},\cdot I$. Es fácil ver, que repitiendo el mismo procedimiento, podemos expresar cualquier potencia de $A$ en función de sus primeras $n-1$ potencias,
+Estas dos propiedades se puede deducir del teorema de Cayley-Hamilton. Despejando en (\ref{eq:ch}) $A^n$ en función de todos los demás términos,
+$A^n = - a_1A^{n-1}-a_2A^{n-2}- \cdots - a_{n-1}A - a_n$. Si ahora multiplicamos a ambos lados por $A$ obtenemos $A^{n+1} = - a_1A^{n}-a_2A^{n-1}- \cdots - a_{n-1}A^2 - a_nA$, podríamos a continuación volver a sustituir $A^n$ en el primer término de este último polinomio por el valor obtenido a partir del teorema de Cayley-Hamilton, con lo que obtendríamos una expresión polinómica para $A^{n+1}$, en función de $A^{n-1},A^{n-2}, \cdots,I$. Es fácil ver, que repitiendo el mismo procedimiento, podemos expresar cualquier potencia de $A$ en función de sus primeras $n-1$ potencias,
 \begin{equation}
-A^k  = \alpha_{n-1}1(k)A^{n-1}+\alpha_{n-2}(k)A^{n-2}+ \cdots + \alpha_{1}(k)A + \alpha_0I 
+A^k  = \alpha_{n-1}(k)A^{n-1}+\alpha_{n-2}(k)A^{n-2}+ \cdots + \alpha_{1}(k)A + \alpha_0(k)I 
 \end{equation}
 
 Si sustituimos en la definición de la exponencial de una matriz,
