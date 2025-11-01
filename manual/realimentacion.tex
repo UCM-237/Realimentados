@@ -273,8 +273,51 @@ El par (constante) $(A,B)$ es controlable si y solo si el rango de $\begin{bmatr
 	El kernel de $B^T$ es generado por $\begin{bmatrix}1 \\ 0\end{bmatrix}$, el cual es proporcional a un autovector de $A = A^T$. Entonces, el sistema no es controlable acorde al teorema \ref{thm: atbt}. Observa, que no tenemos autoridad ninguna sobre $x_1$ a través de $u$. Sin embargo, es asintóticamente estable. Uno puede ver que $x_{\{1,2\}}(t) \to 0$ según $t\to\infty$ cuando $u = 0$. Recuerda que la controlabilidad trata de transferir estados en \textbf{tiempo finito}.
 \end{remark}
 
+El siguiente teorema solo se aplica cuando $A$ es una matriz de estabilidad.
+\begin{theorem}\label{TLY} (Test de Lyapunov para la controlabilidad.) Si $A$ es una matriz de estabilidad, el par (constante) $(A,B)$ es controlable si y solo sí existe una única solución definida positiva $W$ para la siguiente ecuación de Lyapunov:
+	\begin{equation}
+		AW+WA^T = -BB^T
+	\end{equation}  
+\end{theorem}
+
 \section{Estabilización de un sistema lti por realimentación de estados}
 \label{sec: reak}
+
+\section{Estabilización basada en el test de Lyapunov de controlabilidad. Teorema \ref{TLY}}
+
+Si el par $(A,B)$ es controlable, entonces el par $(\mu I-A,B)$ también lo es. Esto puede probarse empleando el test de autovectores, ya que $A^T$ y $-\mu I-A^T$ comparten los mismos autovalores,
+\begin{equation*}
+	A^Tx = \lambda x \iff (-\mu - A^T)x = (-\mu -\lambda )x
+\end{equation*}
+
+Mediante una elección adecuada de $\mu$, siempre podemos hacer que $(-\mu - A^T)$ sea una matriz de estabilidad y, por tanto, que $(-\mu -A)$ también lo sea.
+
+Supongamos que efectivamente elegimos $\mu$ suficientemente grande de modo  que $(-\mu -A)$ es una matriz de estabilidad. Entonces, por el test de Lyapunov sabemos que debe existir una matriz $W$ que satisface la ecuación
+\begin{equation}
+	(-\mu I - A)W + W(-\mu I -A)^T = BB^T \Rightarrow AW + WA^T - BB^T =-2\mu W
+\end{equation}
+
+Si multiplicamos a ambos lados por $P := W^{-1}$.
+
+\begin{equation*}
+	PA +A^TP -PBB^TP = -2\mu P,
+\end{equation*}
+y, definiendo $K =\frac{1}{2}B^TP$, podemos reescribirla como,
+
+\begin{equation}
+	P(A-BK)+(A-BK)^TP = -2\mu P
+\end{equation}
+
+Pero esta ecuación es precisamente la del test de estabilidad de Lyapunov. Que se satisface si $\mu >0$, ya que $p \succ 0$.
+
+Si elegimos una entrada para nuestro sistema de la forma $-Kx$, 
+
+\begin{equation*}
+\dot x = Ax - bKx \rightarrow \dot x = (A - BK)x
+\end{equation*}
+
+Se estabiliza asintóticamente. Se dice que la entrada se \emph{realimenta} de los estados del sistema, y el procedimiento se conoce como estabilización por realimentación de estados. 
+
 \subsection{Test de Lyapunov para la estabilización de un sistema lti}
 \begin{definition}
 	Si el sistema (\ref{eq: linsys}) es lti, entonces es estabilizable si existe una entrada $u(t)$ para cualquier $x(0)$ tal que $x(t)\to 0$ as $t\to\infty$.
