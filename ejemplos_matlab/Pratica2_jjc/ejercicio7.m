@@ -14,10 +14,13 @@ f(2,1) = -sin(x1) - epsilon*x2
 [x10,x20] = solve(f,[x1 x2])
 X0 = [x10,x20]
 %calculamos ahora resultados para todos los puntos de equilibrio
-%encontrados
+%encontrados (solo hay uno así que abrevio)
+Je = subs(J,{x1,x2},X0)
+E = double(eig(Je))
+%estable
 
-
-V = 1-cos(x1)+ x2^2/2
+%funcion de liapunov
+V = 1-co s(x1)+ x2^2/2
 
 dotV = simplify(gradient(V)'*f)
 for i =-4:0.5:4
