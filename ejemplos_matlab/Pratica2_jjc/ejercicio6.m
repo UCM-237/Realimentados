@@ -36,26 +36,27 @@ P = lyap(Je',Q)
 %La funcion de lyapunov es entonces
 V = [x1 x2] * P * [x1;x2]
 %para aplicarla al sistema no lineal
+V = simplify(V)
 grV = gradient(V)
 dotV = simplify(grV'*f)
-xjx = [x1,x2]*(P)*[x1;x2]
-xjxs = expand(xjx)
-%vamos a ver que region nos define...
-xn1 = -1:0.1:1;
-xn2 = xn1
-[xnm1 xnm2] = meshgrid(xn1,xn2);
-for i = 1:length(xn1)
-    for j = 1:length(xn2)
-        h = subs(xjxs,[x1,x2],[xn1(i),xn2(j)]);
-        xjxn(j,i) = double(h); %el meshgrid me obliga a meterlo al reves..
-        %tiene que ver con la colocación de los valores en xnm... las x se
-        %repiten for filas, asi que al calcular en el bucle hay que
-        %guardarlo traspuesto...
-    end
-end
-[c,h] = contour(xnm1,xnm2,xjxn,-0.1:0.005:0.1)
-clabel(c,h)
+% Vamos a dibujar el paraboloide
+x1p = linspace(-0.25,0.25,20);
+x2p = x1p;
+[x1mp,x2mp] = meshgrid(x1p,x2p);
+zm = 3*(x1mp.^2)/2 +x1mp.*x2mp + x2mp.^2;
+surf(x1mp,x2mp,zm)
 hold on
+% y el plano x1+x =1/6
+x = linspace(0,1/6,5)
+y = 1/6-x
+xm = [x;x;x;x;x;x;x;x]
+ym = [y;y;y;y;y;y;y;y]
+z = [-0.1 -0.05 0 0.05 0.1, 0.15 0.2 0.25]
+zm = [z;z;z;z;z]'
+mesh(xm,ym,zm)
+xlabel('x')
+ylabel('y')
+plot3(x,y,5/216*ones(size(x)))
 %tenemos que imponer la condicion de que los puntos de inicio no superen el
 %valor de V correspondiente al punto mas bajo del corte de la funcion de
 %Lyapunov con el plano vertical x2 = 1/6 -x1. Este plano marca el limite a
@@ -64,8 +65,9 @@ hold on
 %a la funcion de liapunov empleada
 %pintamos la curva famosa
  x1cu = linspace(-sqrt(4/216),sqrt(4/216),200);
- x2cu1 = (-x1cu+sqrt(20/216-5*(x1cu).^2))/2 % mitad
- x2cu2 = (-x1cu-sqrt(20/216-5*(x1cu).^2))/2 %otra mitad
- plot(x1cu,x2cu1,'k')
- plot(x1cu,x2cu2,'k')
-
+ x2cu1 = (-x1cu+sqrt(20/216-5*(x1cu).^2))/2; % mitad
+ x2cu2 = (-x1cu-sqrt(20/216-5*(x1cu).^2))/2; %otra mitad
+ hold on
+ plot3(x1cu,x2cu1,5/216*ones(size(x1cu)),'w')
+ plot3(x1cu,x2cu2,5/216*ones(size(x1cu)),'w')
+ 

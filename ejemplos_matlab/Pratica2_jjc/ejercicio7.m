@@ -22,7 +22,7 @@ V = 1-cos(x1)+ x2^2/2
 dotV = simplify(gradient(V)'*f)
 for i =-4:0.5:4
     for j = -4:0.5:4
-        [t,x] = ode45(@(t,x)ej8(t,x,3),[0 50],[i;j]);
+        [t,x] = ode45(@(t,x)ej7(t,x,3),[0 50],[i;j]);
         plot(x(:,1),x(:,2))
         hold on
     end

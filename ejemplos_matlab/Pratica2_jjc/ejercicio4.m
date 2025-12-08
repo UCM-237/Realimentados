@@ -47,9 +47,10 @@ for i =-1.5:0.2:1.5%5
         
      end
 end
-theta =0:pi/100:2*pi
+theta =0:pi/100:2*pi;
 plot(cos(theta),sin(theta),'b')
 axis([-2,2,-2,2])
+grid on
 figure()
 % Sacamos el basin por simulación integrando hacia atras en el tiempo
  for i =-4:0.5:4%5

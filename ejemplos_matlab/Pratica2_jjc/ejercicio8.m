@@ -46,7 +46,7 @@ dotV = simplify(grV'*f)
 
 for i =-1:0.2:1
     for j = -1:0.25:1
-        [t,x] = ode45(@ej9,[0 2],[i;j]);
+        [t,x] = ode45(@ej8,[0 2],[i;j]);
         plot(x(:,1),x(:,2))
         hold on
         plot(i,j,'or')
