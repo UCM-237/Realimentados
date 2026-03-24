@@ -62,3 +62,4 @@ figure()
         
      end
 end
+grid("on")

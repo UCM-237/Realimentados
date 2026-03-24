@@ -1,3 +1,5 @@
+clear('all')
+close('all')
 %creamos unas variables simbolicas
 
 syms x1 x2 real %real no es una variable. Sino que define x1 y x2 como
@@ -45,11 +47,11 @@ V = [x1 x2]*P*[x1;x2]
 %resultado.
 grV = gradient(V)
 dotV = simplify(grV'*f)
-%por supuesto, estudia si la derivada de Lee, cumple las condiciones del
+%por supuesto, estudiar si la derivada de Lee, cumple las condiciones del
 %teorema de Lyapunov o encontrar el dominio de atracción es algo que matlab
 %no puede hacer por nosotros. Hay que usar la cabeza, normal de pensar ;)
 
-%Empleo los métodos ya vistos en otros ejemplos para resolver el sistmea
+%Empleo los métodos ya vistos en otros ejemplos para resolver el sistema
 %numéricamente y representar el diagrama de fases.
 
 %ode45 va a mostrar un warning por pantalla, debido a que hay soluciones

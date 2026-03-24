@@ -19,19 +19,21 @@ end
 %muy lejos
 axis([-1 1 -1 1])
 %pinto la frontera,
-x = -10:0.01:10
-y = 1/6 - x
+x = -10:0.01:10;
+y = 1/6 - x;
 plot(x,y,'k')
 %dibujo el circulo obtenido en ejercicio ejercicio6
-x1 = linspace(-sqrt(2)/12,sqrt(2)/6,200);
+x1 = linspace(-sqrt(2)/12,sqrt(2)/12,200);
 x2p =sqrt(1/72-x1.^2);
 x2m =-sqrt(1/72-x1.^2);
 plot(x1,x2p)
 plot(x1,x2m)
 %y tambien la elipse curva de nivel de la función de lyapunov 
 x1cu = linspace(-sqrt(4/216),sqrt(4/216),200);
- x2cu1 = (-x1cu+sqrt(20/216-5*(x1cu).^2))/2 % mitad
- x2cu2 = (-x1cu-sqrt(20/216-5*(x1cu).^2))/2 %otra mitad
+ x2cu1 = (-x1cu+sqrt(20/216-5*(x1cu).^2))/2; % mitad
+ x2cu2 = (-x1cu-sqrt(20/216-5*(x1cu).^2))/2; %otra mitad
  plot(x1cu,x2cu1,'k')
  plot(x1cu,x2cu2,'k')
 axis('square')
+%pintamos el segundo punto de equilibrio inestable
+plot(1/2,-1/3,'ro',MarkerFaceColor='r')

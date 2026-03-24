@@ -1,3 +1,5 @@
+clear('all')
+close('all')
 %creamos variables simbolicas
 syms x1 x2 gamma real
 %definimos las ecuaciones del sistema

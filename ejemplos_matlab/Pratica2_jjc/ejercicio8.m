@@ -1,3 +1,5 @@
+clear('all')
+close('all')
 %creamos unas variables simbolicas 
 syms x1 x2 real
 syms s

@@ -51,7 +51,7 @@ x = linspace(0,1/6,5)
 y = 1/6-x
 xm = [x;x;x;x;x;x;x;x]
 ym = [y;y;y;y;y;y;y;y]
-z = [-0.1 -0.05 0 0.05 0.1, 0.15 0.2 0.25]
+z = [-0.05 -0.025 0 0.025 0.05 0.075 0.1 0.125]
 zm = [z;z;z;z;z]'
 mesh(xm,ym,zm)
 xlabel('x')
@@ -68,6 +68,14 @@ plot3(x,y,5/216*ones(size(x)))
  x2cu1 = (-x1cu+sqrt(20/216-5*(x1cu).^2))/2; % mitad
  x2cu2 = (-x1cu-sqrt(20/216-5*(x1cu).^2))/2; %otra mitad
  hold on
- plot3(x1cu,x2cu1,5/216*ones(size(x1cu)),'w')
- plot3(x1cu,x2cu2,5/216*ones(size(x1cu)),'w')
+ plot3(x1cu,x2cu1,5/216*ones(size(x1cu)),'w',LineWidth=1)
+ plot3(x1cu,x2cu2,5/216*ones(size(x1cu)),'w',LineWidth=1)
  
+ % y ya puestos el círculo que definiría la condición de Lyapunov a la
+ % misma altura
+ %dibujo el circulo obtenido en ejercicio ejercicio6
+x1 = linspace(-sqrt(2)/12,sqrt(2)/12,200);
+x2p =sqrt(1/72-x1.^2);
+x2m =-sqrt(1/72-x1.^2);
+plot3(x1,x2p,5/216*ones(size(x1)),'r',LineWidth=1)
+plot3(x1,x2m,5/216*ones(size(x1)),'r',LineWidth=1)
