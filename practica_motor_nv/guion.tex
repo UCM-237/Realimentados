@@ -6,6 +6,7 @@
 \usepackage{amssymb}
 \usepackage{steinmetz}
 \usepackage{circuitikz}
+\usepackage{halloweenmath}
 \usepackage[normalem]{ulem}
 %\usepackage{steinmetz}
 %\usepackage[american,siunitx]{circuitikz}
@@ -277,7 +278,7 @@ La placa de desarrollo empleada es bastante potente y versátil, una descripció
 
 \subsection{Conexiones y lectura de las señales de los encoders}
 
-Al programar directamente el microcontrolador STM32 en C (abandonando el entorno compatible con Arduino o Simulink), dejaremos de referirnos a los pines por su nomenclatura genérica (D0-D15, A0-A5) y utilizaremos sus nombres nativos en la arquitectura del chip (Puertos PA, PB, PC, etc.).
+Al programar directamente el microcontrolador STM32 en C dejaremos de referirnos a los pines por su nomenclatura en Arduino (D0-D15, A0-A5) y utilizaremos sus nombres nativos en la arquitectura del chip (Puertos PA, PB, PC, etc.).
 
 El STM32 cuenta con periféricos de hardware dedicados (temporizadores o \textit{Timers}) que pueden encargarse de tareas críticas en tiempo real sin consumir recursos del procesador. Para aprovechar esto, debemos conectar las señales del motor a los pines físicos del microcontrolador que soporten la \textit{Función Alternativa} requerida.
 
@@ -291,9 +292,12 @@ En la Tabla \ref{tab:conexiones_stm32} se detalla el mapa de conexiones propuest
 		\multirow{2}{*}{Encoder} 
 		& Canal A (Fase A) & \textbf{PA0} & \texttt{TIM2\_CH1} (Modo Encoder) \\ \cline{2-4} 
 		& Canal B (Fase B) & \textbf{PA1} & \texttt{TIM2\_CH2} (Modo Encoder) \\ \hline
-		\multirow{2}{*}{Driver Potencia} 
+		\multirow{4}{*}{Driver Potencia} 
 		& PWM (Velocidad) & \textbf{PA6} & \texttt{TIM3\_CH1} (Generación PWM) \\ \cline{2-4} 
-		& DIR (Sentido)   & \textbf{PB3} & \texttt{GPIO\_Output} (Salida Digital) \\ \hline
+		& DIR (Sentido)   & \textbf{PB3} & \texttt{GPIO\_Output} (Salida Digital) \\ \cline{2-4} 
+		&Habilitar p. H ENA & \textbf{PA10} & \texttt{GPIO\_Output} (Salida Digital) \\ \cline{2-4} 
+		&Habilitar p. H ENB & \textbf{PA7} & \texttt{GPIO\_Output} (Salida Digital) \\
+		\hline
 	\end{tabular}
 	\caption{Mapa de conexiones nativas entre el sistema electromecánico y la placa STM32 Nucleo.}
 	\label{tab:conexiones_stm32}
@@ -307,9 +311,12 @@ Como se deduce de la tabla, la interacción con la planta se delega en gran medi
 	
 	\item \textbf{Señal de Dirección (PB3):} A diferencia del PWM, el sentido de giro no requiere una señal de alta frecuencia. Se configura como una salida digital estándar (\texttt{GPIO Output}). Escribir un nivel lógico alto (1) hará girar el motor en un sentido, y un nivel bajo (0) en el sentido opuesto, invirtiendo la polaridad en el puente en H.
 	
-\end{itemize}\chapter{Programación del Microcontrolador en C}
+	\item \textbf{Habilitar ambos puentes en H (PA10, PA7)} Habilitamos los dos puentes en H para alimentar el motor a través de ambos puentes a la vez. 
+\end{itemize}
 
-En esta práctica abandonaremos las herramientas de generación automática de código en favor de una programación directa en lenguaje C. Este enfoque nos otorga un control absoluto sobre los recursos del hardware, los tiempos de ejecución y la gestión de memoria del microcontrolador STM32.
+\chapter{Programación del Microcontrolador en C}
+
+
 
 \section{Configuración de Periféricos (STM32CubeMX)}
 Para interactuar con la planta (el motor de continua), es necesario configurar los periféricos de hardware del microcontrolador. Esta tarea se realiza mediante la herramienta gráfica \textit{STM32CubeMX}, la cual genera el código de inicialización (\textit{drivers} HAL). Los elementos fundamentales a configurar son:
@@ -383,13 +390,54 @@ El flujo de esta función, independientemente del algoritmo de control seleccion
 \end{enumerate}
 
 Esta modularidad nos permitirá, en capítulos posteriores, inyectar el código matemático avanzado sin alterar las rutinas de lectura de hardware ni de seguridad.
-\chapter{Manejo del motor de continua en lazo abierto}
-En esta primera práctica nos vamos a limitar a construir un modelo de Simulink que nos permita suministrar al motor un valor fijo de voltaje, y leer su posición y velocidad a través de los \emph{encoders}.
-\section{Construcción del modelo}
-\paragraph{Vista general del modelo} La figura \ref{f18} muestra una vista general del modelo; para facilitar su análisis se ha construido encapsulando sus bloques en distintos subsistemas.
+\chapter{Motor de continua en lazo abierto. Identificación del motor}
+En esta primera práctica nos vamos a limitar a emplear el el programa de Python \texttt{Motor.py}  Para manejar el motor manualmente suministrandole un valor fijo de voltaje, y leer su posición y velocidad a través de los \emph{encoders}.
+\section{Descripción general de Motor.py}
+Motor.py es un programa que permite realizar varias tareas de monitorización y control del motor, empleando un ordenador personal. Está escrito en Python y define una única clase \texttt{MotorDashboard} en la que está encapsulado todo el código. Podemos ejecutarlo directamente en línea de comandos a través del intérprete de Python:
+\begin{verbatim}
+	$ python Motor.py
+\end{verbatim}
+
+También es posible ejecutarlo empleando Visual Studio Code, o cualquier otro IDE adecuado como Spyder.
+
+Al ejecutar el programa, éste crea una instancia (objeto) de la la clase \texttt{MotorDashboard} llamado \texttt{Dashboard}. Este objeto realiza en su inicialización tres tareas principales:
+
+\paragraph{Comunicación con la placa st a través de un puerto serie} 
+En primer lugar, trata de levantar las comunicaciones con la placa a través de un puerto serie. Este puerto está emulado sobre el puerto USB de la placa. Es preciso, por tanto, tener conectada la placa a un puerto USB del ordenador.
+
+\begin{lstlisting}[language=python, caption=Cabecera y primeras líneas de (\texttt{Motor.h})]
+import serial
+import struct
+import csv
+import sys
+import time
+import collections
+from datetime import datetime
+import pyqtgraph as pg
+from pyqtgraph.Qt import QtCore, QtWidgets
+
+# --- CONFIGURACION ---
+PUERTO = '/dev/ttyACM0' # Recuerda cambiarlo por el tuyo! 
+
+BAUDIOS = 115200
+
+\end{lstlisting}\label{Motor1}
+
+El listado \ref{Motor1}, muestra las primeras líneas de código del programa. En la línea 12, se indica el puerto serie al que se ha conectado la placa. El valor que aparece por defecto \texttt{'/dev/ttyACM0'}, es el estándar para una máquina con sistema operativo linux. Si estamos trabajando bajo Windows, deberemos comprobar a qué puerto \texttt{COM0, COM1, etc} se ha conectado la placa y cambiarlo en la línea 12 el valor que aparece.
+
+En la línea 14 aparece la velocidad de comunicación en baudios. El valor que presenta, 115200 se ha ajustado para que coincida con el valor definido por el software de la placa ST. Ambos valores deben ser iguales.
+
+Es muy importante conectar la placa al puerto USB del ordenador, antes de ejecutar el programa Motor.py, ya que si no encuentra el puerto abierto, el programa termina con un mensaje de error,
+
+\begin{verbatim}
+$ Error al abrir el puerto /dev/ttyACM0: [Errno 2] could not open port
+ /dev/ttyACM0: [Errno 2] No existe el archivo o el directorio: '/dev/ttyACM0'
+\end{verbatim}
+
+La figura \ref{f18} muestra una vista general del modelo; para facilitar su análisis se ha construido encapsulando sus bloques en distintos subsistemas.
 \begin{figure}
-\includegraphics[width=\textwidth]{la1.jpg}
-\caption{Esquema de Simulink para manejo del motor en lazo abierto. Vista general} \label{f18}
+\includegraphics[width=\textwidth]{motorpy.png}
+\caption{\emph{Dashboard} Para el manejo del motor } \label{f18}
 \end{figure}
 
 En la figura se puede observar un bloque de entrada en escalón, que nos permitirá modificar el voltaje suministrado al motor y el instante de tiempo en que se suministra. Un bloque de entrada constante, cuyo valor podemos modificar mediante un botón deslizante (0 ó 1), su valor controlará el sentido de giro del motor.
@@ -398,7 +446,7 @@ El bloque central ---marcado como Motor--- contiene los bloque necesarios para i
 
 Las salidas del bloque Motor están conectadas a \emph{scopes} para poder observar la posición y la velocidad del motor. Es importante observar el símbolo que aparece encima de las líneas que unen el bloque con los \emph{scopes} Dicho símbolo  indica que se ha activado la recogida de los valores que toma dicha señal durante la ejecución del modelo. Ésto permite guardarlos, en archivos de datos, enviarlos al \emph{Workspace} de Matlab y, lo que es quizá más útil de todo, observarlos empleando el \emph{Simulation Data Inspector} (Ver ayuda de Simulink).
  
-\paragraph{El bloque Motor}
+\paragraph{Vista general de \emph{Dashboard}}
 si hacemos doble \emph{click} sobre el bloque Motor del modelo, accederemos a la estructura del subsistema que lo forma. La figura \ref{f19} muestra el contenido del bloque motor.
 \begin{figure}
 \includegraphics[width=\textwidth]{la2.jpg}
