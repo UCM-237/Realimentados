@@ -277,12 +277,46 @@ Si nos fijamos, los pines están agrupados por conectores: CN5 con 10 pines, CN9
 La placa de desarrollo empleada es bastante potente y versátil, una descripción completa de la misma excede el propósito de estas páginas. Los interesados en obtener más imformación pueden consultar el manual de usuario de la placa \cite{STNUCLEO}.
 
 \subsection{Conexiones y lectura de las señales de los encoders}
+Si comparamos las figuras \ref{f10} y \ref{f12} podemos identificar los conectores y los pines empleados por la placa de expansión.
+
+En total, la placa de expansión solo emplea 8 de los 64 pines disponibles. Queda por tanto margen para realizar muchas más lecturas y escrituras de datos desde la placa de desarrollo. La Tabla \ref{tab:conexiones_stm32} detalla los pines utilizados en esta práctica.
+
+Como se recordará de la sección \ref{s111}, el motor EMG30 incorpora un encoder en cuadratura. En primer lugar los encoder deben ser alimentados con un valor de tension continua en el rango de $3.5$ a $20$ V. En nuestro caso emplearemos el pin $+5V$, del conector CN6 para alimentar los encoders. También emplearemos el pin GND, de dicho conector para conectar la tierra de los encoders . 
+
+Podemos emplear cualquiera de los pines de entrada/salida disponibles en la placa para leer el valor de dichos encoders. En las especificaciones del motor \cite{EMG30} se indica que las salidas de los encoders son de \emph{colector abierto} y necesitan para trabajar una resistencia de \emph{pull-up}.  La figura \ref{f13} (izquierda) muestra el esquema de la conexión de una resistencia de \emph{pull-up} para una salida de colector abierto. El transistor en la figura actúa como un simple interruptor pasando de corte a saturación al polarizar la base. Si está en corte, el voltaje observado en la salida O valdrá ($V+$). Si está en saturación se leerá un cero en la salida $0$. Por tanto, es necesario conectar los cables Morado (1) y Azul (2) del motor,  descritos en la tabla \ref{t1}, a una entrada de $+5V$  a través de las correspondientes resistencias de \emph{pull-up}.
+
+Por último necesitamos seleccionar unos pines a los que conectar las salidas de los encoders, para monitorizar su valor.  En nuestro caso se han seleccionado los pines PA0, PA1. (ver tabla \ref{tab:conexiones_stm32}).
+\begin{figure}[h]
+\centering
+\begin{circuitikz}
+\draw(0,0)node[npn](npn1){};
+\draw(npn1.collector)to[generic=$R_{pu}$](0,2.25)to[short,-*](0,2.5)node[anchor=west]{$V+$};
+\draw(npn1.emitter)--(0,-0.8)node[ground]{};
+\draw(npn1.collector)to[short,-*](0.5,0.77)node[anchor=west]{O};
+\draw(2,1.75)node[npn](npn2){};
+\draw(npn2.collector)to[short,-*](2,2.5)node[anchor=west]{$V+$};
+\draw(npn2.emitter)to[short,-*](2.5,0.99)node[anchor=west]{O};
+\draw(npn2.emitter)to[generic=$R_{pd}$](2,-0.75)to(2,-0.8)node[ground]{};
+\end{circuitikz}
+\caption{Esquema de la conexión de una resistencia de \emph{pull-up} (izquierda) y de la de una resistencia de \emph{pull-down} (derecha)}\label{f13}
+\end{figure}
+
+Un último detalle para terminar con la descripción del \emph{Hardware}. La señal de PWM con la que se activan los puentes en H, desde la placa de desarrollo, debe tener un valor de 0 bien definido. De no ser así, podría suceder que, al parar el motor, éste siguiera moviéndose por encontrar un valor de entrada distinto de 0 e interpretarlo como un 1 lógico. Para asentar bien el valor de cero, se conectará el pin PB4 a una resistencia de \emph{pull-down}. El esquema de dicha conexión se ha representado en la figura \ref{f13} (derecha). Su funcionamiento es análogo al descrito antes para la resistencia de \emph{pull-up}. Simplemente que ahora el objetivo es asegurar un valor 0 (tierra) cuando el transistor correspondiente esté en corte.
+
+La figura \ref{f14} muestra una imagen del montaje completo incluyendo el motor, el sistema de control y una placa de inserción. En la imagen puede verse un cable rojo y uno negro que salen de la parte inferior del conector verde de la placa de potencia. Dichos conectores deben conectarse a los terminales + (rojo) y - (negro) de una fuente de alimentación que suministre 12V. 
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.15,angle=90]{montaje2.jpg}
+\caption{vista del montaje completo}\label{f14}
+\end{figure}
+\chapter{Descripción del \emph{software} del sistema \protect \footnote{La descripción de software corresponde a la versión de Matlab R2021b.}}
+
 
 Al programar directamente el microcontrolador STM32 en C dejaremos de referirnos a los pines por su nomenclatura en Arduino (D0-D15, A0-A5) y utilizaremos sus nombres nativos en la arquitectura del chip (Puertos PA, PB, PC, etc.).
 
 El STM32 cuenta con periféricos de hardware dedicados (temporizadores o \textit{Timers}) que pueden encargarse de tareas críticas en tiempo real sin consumir recursos del procesador. Para aprovechar esto, debemos conectar las señales del motor a los pines físicos del microcontrolador que soporten la \textit{Función Alternativa} requerida.
 
-En la Tabla \ref{tab:conexiones_stm32} se detalla el mapa de conexiones propuesto para esta práctica:
 
 \begin{table}[h]
 	\centering
@@ -398,11 +432,11 @@ Motor.py es un programa que permite realizar varias tareas de monitorización y 
 	$ python Motor.py
 \end{verbatim}
 
-También es posible ejecutarlo empleando Visual Studio Code, o cualquier otro IDE adecuado como Spyder.
+También es posible ejecutarlo empleando Visual Studio Code, o cualquier otro IDE adecuado como Spyder.Es importante antes de ejecutarlo asegurarse de que el ordenador tiene instalado python y los módulos de python que importa, (ver listado \ref{Motor1}).
 
 Al ejecutar el programa, éste crea una instancia (objeto) de la la clase \texttt{MotorDashboard} llamado \texttt{Dashboard}. Este objeto realiza en su inicialización tres tareas principales:
 
-\paragraph{Comunicación con la placa st a través de un puerto serie} 
+\paragraph{Comunicación con la placa st a través de un puerto serie.} 
 En primer lugar, trata de levantar las comunicaciones con la placa a través de un puerto serie. Este puerto está emulado sobre el puerto USB de la placa. Es preciso, por tanto, tener conectada la placa a un puerto USB del ordenador.
 
 \begin{lstlisting}[language=python, caption=Cabecera y primeras líneas de (\texttt{Motor.h})]
@@ -423,7 +457,7 @@ BAUDIOS = 115200
 
 \end{lstlisting}\label{Motor1}
 
-El listado \ref{Motor1}, muestra las primeras líneas de código del programa. En la línea 12, se indica el puerto serie al que se ha conectado la placa. El valor que aparece por defecto \texttt{'/dev/ttyACM0'}, es el estándar para una máquina con sistema operativo linux. Si estamos trabajando bajo Windows, deberemos comprobar a qué puerto \texttt{COM0, COM1, etc} se ha conectado la placa y cambiarlo en la línea 12 el valor que aparece.
+El listado \ref{Motor1}, muestra las primeras líneas de código del programa. En la línea 12, se indica el puerto serie al que se ha conectado la placa. El valor que aparece por defecto \texttt{'/dev/ttyACM0'}, es el estándar para una máquina con sistema operativo linux. De todos modos, es buena practica tras conectar la placa comprobar que existe el ficherp texttt{ttyACM0} en el directorio texttt{/dev}. Si estamos trabajando bajo Windows, deberemos comprobar a qué puerto \texttt{COM0, COM1, etc} se ha conectado la placa y cambiarlo en la línea 12 el valor que aparece.
 
 En la línea 14 aparece la velocidad de comunicación en baudios. El valor que presenta, 115200 se ha ajustado para que coincida con el valor definido por el software de la placa ST. Ambos valores deben ser iguales.
 
@@ -434,120 +468,85 @@ $ Error al abrir el puerto /dev/ttyACM0: [Errno 2] could not open port
  /dev/ttyACM0: [Errno 2] No existe el archivo o el directorio: '/dev/ttyACM0'
 \end{verbatim}
 
-La figura \ref{f18} muestra una vista general del modelo; para facilitar su análisis se ha construido encapsulando sus bloques en distintos subsistemas.
+\paragraph{Panel de control}
+Una vez abierto con éxito el puerto serie, El constructor del objeto \texttt{Dashboard} abre en el escritorio una ventana que muestra un panel de control (\emph{dashboard}) en el escritorio del ordenador. La figura \ref{f18} muestra una vista de dicho panel. 
 \begin{figure}
 \includegraphics[width=\textwidth]{motorpy.png}
 \caption{\emph{Dashboard} Para el manejo del motor } \label{f18}
 \end{figure}
 
-En la figura se puede observar un bloque de entrada en escalón, que nos permitirá modificar el voltaje suministrado al motor y el instante de tiempo en que se suministra. Un bloque de entrada constante, cuyo valor podemos modificar mediante un botón deslizante (0 ó 1), su valor controlará el sentido de giro del motor.
+En la figura se pueden observar dos gráficas. La superior representa la posición angular en grados del eje del motor y la inferior la velocidad del eje del motor en vueltas por segundo, en ambos casos frente al tiempo. Se trata del tiempo en segundos medido por el reloj del microprocesador de la placa, desde que se inicia la ejecución del programa.
 
-El bloque central ---marcado como Motor--- contiene los bloque necesarios para interactuar con el motor. Lo veremos en detalle a continuación.
+Inmediatamente debajo de las gráficas, aparecen dos filas de controles. La fila superior está compuesta por los siguiente elementos descritos de izquierda a derecha:
 
-Las salidas del bloque Motor están conectadas a \emph{scopes} para poder observar la posición y la velocidad del motor. Es importante observar el símbolo que aparece encima de las líneas que unen el bloque con los \emph{scopes} Dicho símbolo  indica que se ha activado la recogida de los valores que toma dicha señal durante la ejecución del modelo. Ésto permite guardarlos, en archivos de datos, enviarlos al \emph{Workspace} de Matlab y, lo que es quizá más útil de todo, observarlos empleando el \emph{Simulation Data Inspector} (Ver ayuda de Simulink).
- 
-\paragraph{Vista general de \emph{Dashboard}}
-si hacemos doble \emph{click} sobre el bloque Motor del modelo, accederemos a la estructura del subsistema que lo forma. La figura \ref{f19} muestra el contenido del bloque motor.
-\begin{figure}
-\includegraphics[width=\textwidth]{la2.jpg}
-\caption{Estructura del bloque motor}\label{f19}
-\end{figure}
-Está compuesto por los siguientes bloques de Simulink:
-\begin{itemize}
-\item bloque PHA. Se trata de un bloque Digital Write de la librería Simulink Code support Package for STMicroelectronic Nucleo Boards. Recibe directamente el valor del bloque constante del modelo descrito anteriormente. Dicho valor se envía directamente al pin D3, dicho pin corresponde a la entrada PHA del la placa de expansión que controla el motor y que se encarga de cambiar el sentido de giro del motor (ver tabla \ref{t2} y figura \ref{f10}). Nos permite por tanto controlar manualmente el sentido de giro del motor.
-\item Bloque ENA. Idéntico al anterior. Se ha puesto a un valor fijo 1 y se ha configurado como pin D2. Se encarga de habilitar el puente en H A de la placa de expansión.
-\item Bloque ENB. De nuevo se trata de un bloque de escritura digital en este caso se ha configurado como pin D11, por lo que habilita el puente en H B de la placa de expansión.
-\item Bloque PWDA. Este bloque, pertenece también a la librería Simulink Code support Package for STMicroelectronic Nucleo Boards. Se trata de un bloque que genera una señal de PWM y la envía a un pin de la placa. Tiene dos parámetros de configuración: El pin al que se envía la señal, en nuestro caso se ha configurado como pin D5, por lo que enviará la señal de PWM a la entrada PWDA de la placa de expansión, suministrando por tanto el voltaje de entrada al motor. El segundo parámetro es la frecuencia de la señal. Un valor de prueba adecuado para nuestro sistema sería 5000 Hz. La entrada del bloque permite controlar o modificar el \emph{Duty cicle} de la señal de PWM. El valor se da como un porcentaje del periodo de la señal, es decir, debe tomar un valor entre 0 y 100. La señal enviada a la placa de expansión a través del pin D5 es una señal lógica cuya amplitud vale 0 ó 1. Para el valor 0 no se suministrará tensión al motor, para el valor 1 suministrará el valor de tensión de la fuente de alimentación, en nuestro caso 12 V. Así un \emph{Duty Cicle} de 100, supone alimentar el motor a un voltaje constante de 12 V, mientras que un \emph{Duty Cicle} de 50 supone alimentarlo a una tensión de 6V (ver seccion \ref{sh}). Hay un tercer parámetro de configuración que establece el valor del \emph{Duty Cycle inicial} en nuestro caso puede dejarse a 0.
+\begin{enumerate}
+	\item \emph{spinbox PWM}. Permite introducir o seleccional mediante las flechas arriba/abajo un valor para la señal de PWM que se transferirá a la placa del controlador de los motores. Admite un valor entero comprendido entre 0 y 999, ya que el microcontrolador, admite ese rango para generar señales de PWM. Podemos traducirlo a voltajes, sin más que tener en cuenta que es controlador del motor, trabaja a un voltaje de 12V. por tanto, un valor de PWM de 999 corresponde a 12V, uno de 500 aproximadamente a 6V, etc.
+	\item Botón \emph{Enviar PWM}. Cuando se pulsa, el ordenar envía por el puerto serie a la placa Nucleo el valor de PWM indicado en la ventana del \emph{spinbox PWM}. Ajustando por tanto el valor del voltaje suministrado al motor.
+	\item Botón \emph{sentido}. Cuando se pulsa cambia el sentido de giro del motor. En la figura \ref{f18} El texto que aparece en el botón indica \emph{Sentido Adelante}. Corresponde a hacer girar el eje del motor en el sentido de las agujas del reloj. Si pulsaramos el botón, cambiaría el sentido de giro y en el botón aparcería el texto.  \emph{Sentido Atrás}. el botón es un \emph{toggle}, es decir, alterna entre los dos estados cada vez que se pulsa.
+	\item Botón \emph{grabación de datos} Este botón trabaja como un \emph{toggle}. Si se pulsa en el estado que muestra la figura \ref{f18} Comienza a tomar datos del movimiento del motor. Además, el texto del botón cambia a \emph{detener y guardar}. SI se vuelve a pulsar, los datos grabados se guardan en un fichero estándar csv. Que puede abrirse desde cualquier programa de hojas de cálculo. (Ver más adelante la descripción de los dados gravados)
+	\item Botón \emph{reset position}. Al pulsar el botón, el contador de pasos de encóder de la placa Nucleo se pone a cero, reseteando de este modo la posición del eje del motor.  
+\end{enumerate}
+Para la fila inferior, podemos describir los siguientes seis controles,
 
-\item Bloque Encoder A. Se trata de un bloque Digital Read perteneciente a la misma librería que los anteriores. Esta vez, el bloque permite leer un valor digital en el pin para el que está configurado. En nuestro caso se trata del pin A1, por lo que obtendremos el valor lógico (1 ó 0) de la tensión en dicho pin. En nuestro caso, se trata del Encoder A  del motor. El bloque necesita que se le fije como parámetro el periodo de muestreo, es decir, cada cuanto tiempo se realiza una nueva medida del valor del pin.  En nuestro caso lo podemos fijar en 0.1 ms.
+\begin{enumerate}
+	\item \emph{spinbox Consigna de posición}. Permite introducir mediante el teclado o el uso de las flechas una posición angular el grados deseada a la que queremos que se estabilice la posición del eje del motor. El valor por defecto es $0^o$.
+	\item Botón \emph{Ir a posición PID}. Este botón utiliza control PID para llevar el motor a la posición indicada en el \emph{spinbox} anterior. No emplearemos este tipo de control en esta práctica
+	\item Botón \emph{Ir a posición espacio de estados}. Este botón utiliza control en variables de estados estimados y un estimador de Luemberber para llevar el motor a la posición indicada en el \emph{spinbox} anterior. Este será el tipo de control que emplearemos en la práctica, calculando previamente las ganancias necesarias.
+	\item \emph{spinbox Consigna de velocidad}. Permite seleccionar un valor para la velocidad deseada de giro del motor de modo análogo al de los \emph{spinboxes} anteriormente descritos. La velocidad se define en vueltas por segundo.
+	\item botón \emph{Enviar consigna de velocidad}. Al pulsarlo ajusta la velocidad del motor al valor indicado en el \emph{spinbox} anterior empleando control PID. No lo emplearemos en esta Práctica
+	\item botón \emph{velocidad en espacio de estados} Al pulsarlo ajusta la velocidad del motor al valor indicado en el \emph{spinbox} anterior empleando control en variables de estados y un estimador de Luemberger.
+\end{enumerate}
+\section{Adquisición de datos mediante Motor.py }
 
-\item Bloque Encoder B. Análogo al anterior, con la salvedad de utilizar el pin A0; en este caso nos va a permitir la lectura del Encoder B.
+% \begin{figure}
+% \centering
+% \includegraphics[width= 0.7\textwidth]{encoderab.eps}
+% \caption{Señales producidas por un encoder en cuadratura al girar el motor }\label{f6bis}
+% \end{figure} 
 
-\item Bloque Lector Encoder. Se trata de un bloque construido para leer la posición y la velocidad del motor a partir de los valores obtenidos de los encoders. Describiremos su contenido en el siguiente párrafo.
-\end{itemize}
+Vamos a describir en est a sección un procedimiento estándar para adquirir y guardar datos del movimiento del motor. El procedimiento se va a describir empleando valores fijos de PWM, pero es directameten aplicable a cualquier otro uso del motor.
 
-\paragraph{Lector de las señales de los encoders} El bloque Lector Encoder permite transformar las lecturas de los Encoders en distancias angulares (grados) y en velocidades angulares (grado/s). La figura \ref{f20} muestra los bloques con los que está construido.
-\begin{figure}
-\includegraphics[width=\textwidth]{la3.jpg}
-\caption{Estructura del bloque Lector Encoder}
-\label{f20}
-\end{figure} 
-Para entender mejor su funcionamiento vamos a describir primero el algoritmo empleado. Como se explicó en la sección \ref{s111} al describir el motor, éste emplea un par de encoders en cuadratura, configurados de tal modo que, cada vez que se cruza un flaco de subida o bajada de uno de los encoders, el eje de la reductora ha avanzado un grado.
+En primer lugar, debemos conectar los cables de alimentación de la placa a la fuente de 12V y la salida USB a un puerto USB del ordenador. 
 
-Supongamos que fijamos un tiempo de muestreo y vamos midiendo regularmente los valores de los enconders. Comparando la lectura de los encoders en dos instantes de muestreo consecutivos podemos deducir si el motor a avanzado un pulso de encoder y en qué dirección. Si nos fijamos en la figura \ref{f6bis} en que se  representan de nuevo las señales de los encoders, es fácil entender lo que se quiere decir: cada vez que un encoder cruza un flanco, cambia la lectura del encoder correspondiente, y podemos considerar que el motor a avanzado un grado. Así por ejemplo, en el instante $t=0$ de la figura la lectura de los dos encoders es $encoderA(0) = 0, encoderB(0) = 0$ y seguirá así hasta el instante $t \approx 1.02$ en que la las lecturas cambiarán a $encoderA(1.02) = 1, encoderB(1.02) = 0$. Podemos construir, a partir de las lecturas en dos instantes de muestreo sucesivos, un registro de cuatro dígitos en el que, a medida que vamos obteniendo nuevas lecturas, actualizamos el valor de los registros, de modo que guardamos la última lectura realizada por los encoders y la realizada en el instante de muestreo anterior. 
-\begin{figure}
-\centering
-\includegraphics[width= 0.7\textwidth]{encoderab.eps}
-\caption{Señales producidas por un encoder en cuadratura al girar el motor }\label{f6bis}
-\end{figure} 
-Así en el caso de la figura \ref{f6bis} y suponiendo un periodo de muestreo de los valores de los encoder de 0.01s, obtendríamos una secuencia de valores:
-\begin{align*}
-encoderA(0.00) = 0, encoderA(0.01) = 0,encoderB(0.00) = 0, encoderB(0.01) = 0\\
-encoderA(0.01) = 0,encoderA(0.02) = 0,encoderB(0.01) = 0, encoderB(0.02) = 0\\
-encoderA(0.02) = 0,encoderA(0.03) = 0,encoderB(0.02) = 0, encoderB(0.03) = 0\\
-\cdots \\
-encoderA(1.01) = 0,\mathbf{encoderA(1.02) = 1},encoderB(1.01) = 0, encoderB(1.02) = 0\\
-encoderA(1.02) = 1,encoderA(1.03) = 1,encoderB(1.02) = 0, encoderB(1.03) = 0\\
-\cdots
-\end{align*}
+Ejecutamos el script de python Motor.py. Si la placa ha sido correctamente programada y el puerto serie está funcionado correctamente, veremos en la gráfica de posición y velocidad unas líneas horizontales en cero y como se desplazan los valores de tiempo en el eje x.
 
-Esta información se podría codificar como un registro de 4 bits, correspondientes a los valores 1/0 de la señal de los encoders. Su estructura y los valores posibles se muestran en la tabla \ref{t3}. Los valores positivos corresponden a un avance de un pulso (1 grado) entre los dos últimos instantes de muestreo. Los negativos indican que el motor ha retrocedido un grado, los ceros indican  que el motor no se ha movido. Por último, los valores marcados con 'NA' (No Aplicable) indican situaciones imposibles, nunca se dará dicho cambio en la lecturas de los encoders, siempre y cuando el periodo de muestreo elegido se menor que la mitad del tiempo de paso por dos flancos consecutivos de los encoders.
+Es aconsejable, en primer lugar comprobar que la comunicación entre la placa y el ordenador funciona correctamente. Para ello introducimos un valor en el \emph{spinbox} PWM, por ejemplo 500, que equivaldría a suministrar 6 voltios al motor. Pulsamos el botón enviar PWM y deberíamos ver que el motor se pone en marcha y que en las gráficas del panel de control se ve una recta creciente para la posición y una señal con una fuerte oscilación pero de media constante para la velocidad.
 
-En la última columna de la tabla se ha indicado el valor en decimal que correspondería al registro de cuatro bits que forman los valores de los encoders:
-\begin{equation}\label{eq1}
-Dec = 2^3\cdot EncoderA(i-1)+2^2\cdot EncoderA(i)+2^1\cdot EncoderB(i-1)+2^0\cdot EncoderB(i)
-\end{equation}
+Si todo ha salida según lo previsto, pulsamos el botón \emph{reset posición} y el motor se parará con la posición fija en el valor cero\footnote{En algún caso, debido a la inercia del motor, puede ser necesario pulsar el botón un par de veces.}.
 
-Pasar el número a decimal nos permite codificar los valores en una tabla de modo bastante sencillo en Simulink
-\begin{table}
-\centering
-\begin{tabular}{c c c c c c}
-\multicolumn{2}{c}{\textbf{Encoder A}}&\multicolumn{2}{c}{\textbf{Encoder B}}&Pulso&Dec.\\
-\hline
-$T = i-1$&$T =i$&$T = i-1$&$T =i$& &\\
-0&0&0&0&0&0\\
-0&0&0&1&-1&1\\
-0&0&1&0&+1&2\\
-0&0&1&1&0&3\\
-0&1&0&0&+1&4\\
-0&1&0&1&NA&5\\
-0&1&1&0&NA&6\\
-0&1&1&1&-1&7\\
-1&0&0&0&-1&8\\
-1&0&0&1&NA&9\\
-1&0&1&0&NA&10\\
-1&0&1&1&+1&11\\
-1&1&0&0&0&12\\
-1&1&0&1&+1&13\\
-1&1&1&0&-1&14\\
-1&1&1&1&0&15\\
-\hline
-\end{tabular}
-\caption{Tabla de lectura para los encoders. El signo indica el sentido en que ha girado el motor, Dec es el núnero decimal representado por los 4 bits del registro}\label{t3}
+Pulsamos el botón grabación de datos y a continuación volvemos a pulsar el botón enviar PWM. Esperamos el tiempo que deseemos y pulsamos de nuevo este último botón, en el que ahora figurará el texto detener y guardar.
+
+Inmediatamente se creará un archivo, con los datos recogidos, cuyo nombre contiene la fecha y hora en que se creó: \texttt{registro\_motor\_aaaammdd\_hhmmss.csv}.
+
+La tabla \ref{tab:csv} muestra un ejemplo de la estructura del archivo generado. En concreto el nombre de este archivo es \texttt{registro\_motor\_20260313\_152318.csv}.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{Tiempo (s)} & \textbf{PWM (con signo)} & \textbf{Posición (grados)} & \textbf{Velocidad (grados/s)} \\
+        \hline
+        1588.71 & 250 & 1 & 0.0 \\
+        1588.72 & 250 & 1 & 0.0 \\
+        1588.73 & 250 & 1 & 0.0 \\
+        1588.74 & 250 & 1 & 0.0 \\
+        1588.75 & 250 & 1 & 0.0 \\
+        ... & ... & ... & ... \\
+        \hline
+    \end{tabular}
+    \caption{Estructura del registro de datos del motor (muestra de las primeras filas).}
+    \label{tab:csv}
 \end{table}
 
-Volvamos ahora a la figura \ref{f20} y examinemos los bloque de Simulink empleados.
-
-En primer lugar las entradas 1 y 2 alimentan a un bloque \emph{unit delay} de la librería Simulink/discrete. Este bloque representa un retardo puro, es decir, devuelve el valor del encoder A en el instante de muestreo anterior al actual. Además, las salidas están conectadas a ganancias de valores 8, 4 , 2 y 1, y las salidas de las ganancias están conectadas a un bloque sumador. Es fácil darse cuenta que el resultado de dicha operación arrojará el valor decimal correspondiente al registro de los valores de los encoders, que acabamos de describir (eq \ref{eq1}).
-
-La salida del sumador alimenta un bloque \emph{Direc look-at table} de la librería Simulink/look-at table. Se trata de un bloque muy sencillo. El parámetro de configuración es, en nuestro caso, un simple array con los valores correspondientes a la columna pulso de la tabla \ref{t3}, escritos por orden:
-\begin{verbatim}
-[0,-1,1,0,1,0,0,-1,-1,0,0,1,0,1,-1,0]
-\end{verbatim}
-Donde hemos sustituido por 0 los valores NA. El bloque espera  en su entrada un número de índice para el array, contrariamente a lo que es habitual en Matlab, los índices empiezan en 0 y  no en 1. La tabla devuelve a la salida el valor del array correspondiente al valor de la entrada. Así, para una entrada 0 devolvería un 0 para una entrada 1 devolvería un -1, etc.
-
-Como la entrada a este bloque debe ser un índice, es preciso fijar el tipo de variable para la salida del bloque anterior (sumador). Para ello, basta hacer doble 'click' en el bloque sumador, seleccionar la pestaña \emph{signal attributes} y en el menú desplegable \emph{output data type} seleccionar la opción 'double'. 
-
-La salida de la tabla está conectada a un bloque \emph{Unit delay} Realimentado, Cada vez que se obtiene un nuevo valor en la tabla, se suma a los valores anteriores, de modo que el lazo actúa como un acumulador de pulsos, la salida será directamente la posición en grados del eje de la reductora del motor.
-
-Por último, la salida del bloque \emph{Unit delay} está también conectada a un bloque \emph{Zero-Order Hold} (retenedor de orden 0) de la librería Simulink/discrete. Este bloque lleva su propio periodo de muestreo que, en nuestro caso hemos fijado en 0.01. El bloque toma una lectura de la entrada ---en este caso la posición calculada a partir de los encoders--- y retiene su valor durante el periodo de muestreo. El bloque alimenta a su vez a un bloque \emph{discrete time derivative} de la librería Simulink/discrete que estima la derivada de la posición y por tanto la velocidad. Se trata en realidad de una aproximación un tanto imprecisa que necesitaría de un posterior filtrado. Pero para una primera aproximación nos puede valer.
+Es archivo puede manejarse desde cualquier hola de cálculo o importarlo en python para operar con los datos obtenidos.
 
 \paragraph{Practica 1}
 \begin{enumerate}
 \item Identificar todos los componentes de la planta. Placa de desarrollo, Placa de expansión, Motor, Fuente de alimentación, etc.
 \item Comprobar que todo el \emph{Hardware} está configurado de acuerdo a la descripción de estas notas.
-\item Montar el modelo de Simulink para el manejo del motor en lazo abierto. Configurarlo y comprobar que funciona correctamente, haciendo que el motor se mueva.
-\item Recoger datos de velocidad y posición para diversos valores del voltaje de entrada. Observar también las señales de los encoders y discutir su validez. 
+\item Programar y descargar el software de control de la placa. Comprobar que funciona correctamente y que se comunica con el programa \texttt{Motor.py}.
+\item Probar distintos valores de PWM y comprobar que funciona correctamente. Comprobar que se puede cambiar el sentido de giro sobre la marcha. Determinar la zona muerta del motor (voltaje mínimo por debajo del cual no arranca).
+\item Recoger datos para distintos valore del voltaje de entrada (tomar por ejemplo 10 valores equiespaciados desde el final de la zona muerta hasta los 12V) es suficiente con tomar datos durante 3 ó 4 segundos. Guardad los archivos obtenidos que serán utilizados en prácticas posteriores.   
 \end{enumerate}
 
 
@@ -667,15 +666,14 @@ La respuesta angular en estado estacionario es una línea recta, que indica que 
 
 \paragraph{Práctica 2}
 \begin{enumerate}
-\item Obtener a partir de cálculo simbólico la expresión correspondiente a la posición angular de un motor de continua (ecuación \ref{eq314}). Obtenerla a partir del modelo en variables de estado y a partir de la función de transferencia. Calcular también la expresión correspondiente a la velocidad angular.
-\item Construir un modelo del motor de cc en Simulink. Se puede hacer a partir de las ecuaciones de estado o de funciones de transferencia, pero de modo que se pueda obtener tanto la posición como la velocidad angular. El modelo deberá obtener los parámetros $k_e$ y $p$ del \emph{workspace} de Matlab.
-Emplear el modelo de Simulink para el control del motor, construido en la práctica anterior, en lazo abierto para identificar el motor real. Es decir para obtener sus parámetros $k_e$ y $p$. Para ello:
+\item Obtener a partir de cálculo simbólico la expresión correspondiente a la posición angular de un motor de continua (ecuación \ref{eq314}). Obtenerla a partir del modelo en variables de estado. Calcular también la expresión correspondiente a la velocidad angular.
+\item \label{ap21} Construir un modelo del motor de cc en Python o Matlab. Se puede hacer a partir de las ecuaciones de estado, pero de modo que se pueda obtener tanto la posición como la velocidad angular. El modelo deberá tomasr como variables los parámetros $k_e$ y $p$.
+Emplear los datos obtenidos en la  práctica anterior, en lazo abierto para identificar el motor real. Es decir para obtener sus parámetros $k_e$ y $p$. Para ello:
 \begin{itemize}
-\item Obtener la respuesta del motor para distintos voltajes (por ejemplo incrementando el valor de la entrada de dos voltios en dos voltios desde 0 a 12V) y un tiempo de simulación en todos los casos de 3s.
-\item Calcular por regresión lineal la pendiente y el término independiente de la respuesta en estado estacionario.
-\item Estimar los valores de Ke y p para cada valor del voltaje de entrada ¿Qué se puede concluir?
+\item Calcular, a partir de los datos de posición y tiempo, por regresión lineal la pendiente y el término independiente de la respuesta en estado estacionario. Es necesario considerar los intervalos de tiempo transcurridos desde que arrancó el motor. Es decir tomar como instante cero, el correspondiente al primer valor de la señal de PWM distinto de cero.
+\item Estimar los valores de Ke y p para cada valor del voltaje de entrada. Representar  Ke frente al voltaje y p frente al voltaje ¿Qué se puede concluir?
 \end{itemize} 
-\item Introducir los valores obtenidos de Ke y p en el modelo de motor desarrollado en Simulink (obtener unos valores promedio razonables) Comparar los resultados del modelo con el sistema real.
+\item Introducir los valores obtenidos de Ke y p en el modelo del motor elaborado en apartado \ref{ap21} (obtener unos valores promedio razonables) Comparar los resultados del modelo con el sistema real.
 \end{enumerate}
 
 \chapter{Control del motor por realimentación de estados estimados}
