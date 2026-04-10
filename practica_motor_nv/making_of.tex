@@ -44,7 +44,7 @@
 \usepackage{multirow}
 \usepackage[hyperindex=true,breaklinks=true,colorlinks=true,linkcolor=blue]{hyperref}
 \usepackage{multimedia}
-\usepackage{subcaption}
+\usepackage{subfig}
 \addto\captionsspanish{
 \renewcommand{\tablename}{Tabla}
 \renewcommand{\listtablename}{\'Indice de Tablas}
@@ -87,21 +87,72 @@ El contenido de estos apuntes est\'a bajo licencia Creative Commons Atribution-S
 \listoftables
 \abstract{Estas notas son complementarias al guión de la práctica y explican todo el proceso de construcción del software empleado el la práctica. Dan información de los IDEs empleados para el desarrollo del software, de su instalación, de la configuración de la placa de control empleada y de la estructura de los programas desarrollados}
 \chapter{Primeros pasos}
-\section{sofware necesario}
-En primer lugar, como se ha explicado ya en el guión de la práctica, vamos a emplear la placa STM32F411E, de la compañia ST, para controlar el motor. En la jerga de los programadores de microcontroladores, esta placa es conocida como la \emph{Black Pill}. Una de sus ventajas, es que tiene un excelente soporte de sofware y herramientas de desarrollo.
+\section{Sofware necesario}
+En primer lugar, como se ha explicado ya en el guión de la práctica, vamos a emplear la placa STM32F411E, de la compañía ST, para controlar el motor. En la jerga de los programadores de microcontroladores, esta placa es conocida como la \emph{Black Pill}. Una de sus ventajas, es que tiene un excelente soporte de sofware y herramientas de desarrollo.
+
+En esta sección vamos a describir como a asumir que estamos trabajando con un ordenador personal con sistema operativo Linux, en concreto vamos a emplear Ubuntu 24.04.4 LTS.
+	\begin{verbatim}
+	https://ubuntu.com/download/desktop
+	\end{verbatim}
 
 
 Algunas herramientas básicas necesarias son:
 \begin{enumerate}
-	\item Visualstudio Code (VSC). Será el entorno de desarrollo que emplearemos para escribir, compilar y descargar el código que utilizará la placa ST. También servirá para desarrollar el codigo en Python que nos permitirar comunicarnos y controlar la placa desde el ordenador.
+	\item Visual studio Code (VSC).	
+Será el entorno de desarrollo que emplearemos para escribir, compilar y descargar el código que utilizará la placa ST. También servirá para desarrollar el código en Python que nos permitirá comunicarnos y controlar la placa desde el ordenador. Para instalarlo en Ubuntu, lo ideal es descargar directamente el paquete .dev, de la página web de VSC,
+\begin{verbatim}
+	https://code.visualstudio.com/thank-you?dv=linux64_deb
+\end{verbatim}
+para instalarlo ir a la línea de comandos:
+\begin{verbatim}
+sudo apt install ./Descargas/code_*.deb	
+\end{verbatim}
 
-Ver descripción detallada en capítulo \ref{capvs}
+Ver descripción detallada en el capítulo \ref{capvs}
 	
-	\item STM32CubeMX: Es la herramienta gráfica oficial de ST. Sirve para configurar los pines, el reloj (clock) y generar el código base en C.
-	\item ARM GNU Tool Chain: El compilador que traduce tu código C a lenguaje máquina para ARM.
-	\item Cmake y Ninja: fundamentales para gestionar la construcción del proyecto: Librerias, dependencias, etc.
-	\item ST-Link Drivers: permite la comunicación entre el ordenador y la placa de desarrollo a través de un puertos USB.
-	\item STM32CubeProgrammer: Permite flashear directamente la placa con el programa compilado.
+	\item STM32CubeMX: Es la herramienta gráfica oficial de ST. Sirve para 	configurar los pines, el reloj (clock) y generar el código base en C.
+	\begin{verbatim}
+	https://www.st.com/en/development-tools/stm32cubemx.html
+	\end{verbatim}
+
+	\item STM32CubeCLT:
+	Tiene todas las herramientas de ST, necesarias para compilar, enlazar etc.
+	Para instalarlo
+	Descargar de la página web de ST,
+	\begin{verbatim}
+	https://www.st.com/en/development-tools/stm32cubeclt.html
+	\end{verbatim}
+	el que pone Debian Linux installer.
+	Descomprimir,
+	\begin{verbatim}
+		unzip st-stm32cubeclt_1.21.0_27995_20260219_1804_amd64.deb_bundle.sh.zip
+	\end{verbatim}
+	Dar Permisos
+	\begin{verbatim}
+		chmod +x st-stm32cubeclt_1.21.0_27995_20260219_1804_amd64.deb_bundle.sh
+	\end{verbatim}
+Lanzar el instalador
+\begin{verbatim}
+sudo ./st-stm32cubeclt_1.21.0_27995_20260219_1804_amd64.deb_bundle.sh	
+\end{verbatim}
+Presentará en el terminal la licencia de uso, ir hasta el final y aceptarla.
+Debería instalarlo en:
+\begin{verbatim}
+	/opt/st/stm32cubeclt_1.21.0/
+\end{verbatim}
+Es toolset STM32CubeCLT incluye:
+
+\begin{itemize}
+	\item GNU C/C++ for Arm® toolchain tales como arm-none-abi-gcc(compilador), arm-none-abi-nm (symbol viewer) y otros.
+	\item GDB debugger cliente y servidor (Depurador). Depurar el programa ejecutándolo en la propia placa
+	\item STM32CubeProgrammer (STM32CubeProg) utility (Programador) Descargar el ejecutable desde el ordenador a la placa.
+	\item System view descriptor files (.SVD) for the entire STM32 MCU portfolio.
+    \item Map file associating STM32 MCUs and MCU development boards to the appropriate SVD 
+\end{itemize}
+
+	\item Cmake y Ninja: fundamentales para gestionar la construcción del proyecto: Librerías, dependencias, etc.
+	
+	\item ST-Link Drivers: permite la comunicación entre el ordenador y la placa de desarrollo a través de un puertos USB. Estas dos últimas herramientas se instalan directamente desde VSC. (Ver capitulo \ref{capvs})
 	\item Python y los modulos de Python: serial, struct, csv, sys, time, collections, datetime, pyqtgraph.
 	\item (Opcional) Si se va a hacer el análisis de los datos y los modelos del motor en python, entonces es comveniente instalar también los módulos: pandas, numpy, matplotlib.pyplot y control
 	
@@ -128,8 +179,6 @@ Varios de los módulos de Python necesarios vienen instalados por defecto con An
 \chapter{El entorno de desarrollo de Visual Studio Code (VSC)}\label{capvs}
 Entre las diferentes opciones existentes de IDEs (Integrated development Environments), se ha optado por emplear el programa Visual Studio Codepara el desarollo de este proyecto.
 
-La instalación se puede llevar a cabo tanto en Windows como en Linux. Para ello, es suficiente ir la página web del programa (https://code.visualstudio.com/) descargar el instalador y seguir las instrucciones.
-
 \begin{figure}
 	\includegraphics[width=\textwidth]{vsscreen.png}
 	\caption{Ventana de Visual Studio Code} \label{fig:vscr}
@@ -138,16 +187,14 @@ La instalación se puede llevar a cabo tanto en Windows como en Linux. Para ello
 Si abrimos el programa, una vez instalado, accedemos a una ventana como la se muestra en la figura \ref{fig:vscr}. Vamos a describir brevemente los elementos más importantes.
 
 \begin{itemize}
-	\item Barra de actividad: Es la barra vertical localizada a la izquierda del todo de la ventana. Esta barra permite cambiar la vista del panel situado inmediatamente a su derecha. Las distinta opciones hacen referencias a tareas distintas realizables desde VSC. Así el icono superior (Explorer nos permite navegar por los directorios que tenemos abierto, seleccionar archivos para abrirlos en el editor etc. Debajo tenemos una opción de búqueda (Search). Un control de cambios basado en git (Source control). Un botón para ejecución y depuración de código (RUN and debug), Un botón muy útil que nos permite explorar las extensiones (Extensions) disponibles, es decir configuraciones específicas para manejar distintos tipos de lenguajes de programación, etc.
+	\item Barra de actividad: Es la barra vertical localizada a la izquierda del todo de la ventana. Esta barra permite cambiar la vista del panel situado inmediatamente a su derecha. Las distinta opciones hacen referencias a tareas distintas realizables desde VSC. Así el icono superior (Explorer nos permite navegar por los directorios que tenemos abierto, seleccionar archivos para abrirlos en el editor etc. Debajo tenemos una opción de búsqueda (Search). Un control de cambios basado en git (Source control). Un botón para ejecución y depuración de código (RUN and debug), Un botón muy útil que nos permite explorar las extensiones (Extensions) disponibles, es decir configuraciones específicas para manejar distintos tipos de lenguajes de programación, etc.
 	\item Barra Lateral, inmediatamente a la derecha de la anterior, ofrece distintas vistas y paneles, dependiendo de la actividad seleccionada en la barra de actividad. En la figura \ref{fig:vscr}, se ve el panel correspondiente a las extensiones, porque la actividad seleccionada, ha sido precisamente el botón extensions. Se pueden recorrer las extensiones disponibles, comprobar si están o no instaladas, y seleccionarla para su instalación/desinstalación, configuración, etc.
 	\item El editor. Ocupa el area central. Su objetivo es escribir y editar código. Es posible abrir varios editores uno al lado del otro y de este modo trabajar en varios archivos simultáneamente. En la figura \ref{fig:vscr}, se muestra un fichero de texto que contiene la fuente el \LaTeX con la que se han elaborado estas notas. A su derecha, se ve el texto resultante en un archivo pdf.
 	\item Barra de estado (Status Bar) Situada en la parte inferior de la ventana, ofrece información contextual relacionada con el estado actual de VSC y la actividad que se está llevando a cabo.
 	\item Paleta de Comandos (Command Palette) Se accede pulsando los comandos Ctrl + Shift + P, es muy útil porque permite el acceso rápido a muchos comandos y características de VSC, sin tener que navegar por menús de opciones.
+	\item Paneles. Estań localizados debajo del editor. Muestran distintas herramienta muy útiles. Terminales del sistema, Salidas para los distintos compiladores, Consolas de depuración, panel de problemas etc.
+	\item Tabs. Situados en la parte superior del editor, permiten intercambiar la vista entre los archivos abiertos.  
 \end{itemize}
-
-Panels: Panels are located at the bottom of the editor area and can display various tools like the Terminal, Output, Debug Console, and Problems panel.
-
-Tabs: Tabs at the top of the editor allow you to switch between open files quickly. You can also drag and drop tabs to reorder them or open them in new editor groups.
 
 Una vez instalado VSC debemos seleccionar las extensiones adecuadas para poder compilar codigo C, para la placa, descargarlo y, en su caso, poder depurarlo.
 
@@ -155,5 +202,125 @@ Además, podemos también instalar las extensiones para escribir y ejecutar cód
 
 \section{Instalación de las extensiones STM32Cube}
 Tanto para el desarrollo de código C para la placa STM32F411E como para compilar dicho código y descargarlo en la placa, necesitamos instalar las extensiones necesarias de STM32Cube.
+
+Para hacerlo, pulsamos en la barra de actividades, el botón de las extensiones que tiene un icono con cuatro cuadros. Automaticamente aparecerá en la barra lateral las extensiones disponibles. Lo más sencillo es escribir en la barra de búsqueda la extensión que deseamos instalar: \texttt{STM32CubeIDE for Visual Studio Code}. Las extensiones de ST, empelan como símbolo una mariposa sobre un círculo azul, seleccionamos la que hemos buscado, pulsamos en el botón 'install'. Dejamos que complete la instalación. Estamos ya en condiciones de escribir, compilar y descargar código para nuestra placa ST.
+
+\section{Instalación de las extensiones para Python}
+VSC, puede emplear directamente la instalación de Python existente en nuestro ordenador. Sin embargo, como ya hemos indicado, es particularmnente cómodo manejarlo desde la distribución de anaconda.
+
+Para poder manejar python desde VSC podemos emplear la extensión 'Pylance' El procedimiento de instalación es idéntico al que hemos visto para Las extensiones de ST. Buscamos Pylance en el buscador de las extensiónes y pulsamos el botón 'Install'.
+
+Una vez instalado, VSC reconocerá cualquier archivo con extensión .py como propio de Python y nos mostrará a, la altura de los tabs, un triángulo verde. Si lo pulsamos ejecutará, en el terminal, disponible en los paneles, el código de archivo .py abierto en el editor activo.
+
+Es posible que en la primera ejecución nos pregunte que interprete de python queremos emplear, seleccionar el señalado como 'conda', asociado a la distribución de Anaconda.
+
+\chapter{Configuración de la placa con STM32CubeMX}
+STM32CubeMx, es una herramienta extremadamente útil para configurar el Hardware de nuestra placa. Conocer a fondo todas sus posibilidades está fuera de los objetivos de estas notas. Aquí nos vamos a centrar en configurar la placa para que pueda controlar nuestro motor. Lo vamos ha hacer paso a paso.
+
+Al ejecutara STMCube32MX, se abre una primera ventana e la que se nos permite abrir proyectos ya existentes o crear proyectos nuevos figura (\ref{fig:stmx}). Entre las opciones para crear proyectos nuevos, podemos emplear tanto el botón \texttt{ACCESS TO MCU SELECTOR} como el botón \texttt{ACCESS TO BOARD SELECTOR}. La diferencia es que en el primer caso nos selecciona el microcontrolador, y no nos configura nada por defecto. Si seleccionamos la placa el programa sabe qué pines están conectados al led y al botón azul de usuario y además configura la emulación del puerto serie, a través del puerto USB de la placa, para comunicar la placa con el ordenador. Si empleamos la primera opción, tendremos que configurar nosotros a mano estas opciones, caso de que queramos usarlas.
+
+Vamos a seleccionar directamente la placa núcleo que la que vamos a trabajar. Para ello pulsamos el botón \texttt{ACCESS TO BOARD SELECTOR}. Se abrirá una nueva ventana, figura (\ref{fig:cdiagram}). Seleccionamos en la entrada \texttt{comercial part number}, arriba a la izquierda, nuestra placa: NUCLEO F411RE. Esperamos a que la seleccione y nos abrirá una pequeña ventana de diálogo en la que nos sugiere inicializar todos los periféricos con las opciones por defecto.Seleccionamos \texttt{no}. Se cierra la ventana de selección y en la ventana principal de STM32CubeMX aparecen varias pestañas y se nos muestra el pinout de la placa con los pines que ya están configurados por defecto, el color y 'fijados' con una chincheta figura (\ref{fig:layoutp}).
+
+
+\section{Placa en modo debug y reseteo del pin PB3}
+Lo primero que vamos ha hacer, es poner la placa en modo debug. Hacemos esto para que nos deje programar la placa siempre que queramos sin necesidad de emplear el botón de reset. Para ello, desplegamos el menú \texttt{System Core}, seleccionamos la opcion \texttt{SYS} y se nos abrirá un panel de configuración, figura (\ref{fig:PB3}). En la entrada que pode \texttt{Debug}, seleccionamos \texttt{Serial Wire}. A continuación vamos a liberar el pin \texttt{B3}. Por defecto este pin está configurado precisamente para emplear el método de depuración \texttt{Serial Wire} y aparece marcado con las letras \texttt{SWO} (Serial Wire Output). Pero nosotros no necesitamos emplear ese modo de depuración y lo que vamos ha hacer es resetearlo para poder emplearlo como pin de control del movimiento del motor (ver tabla \ref{tab:pines}) más alante. Para resetearlo lo seleccionamos con el ratón el esquema mostrado en el panel \emph{pinout view} y en el menú desplegable que aparece seleccionamos \texttt{Reset\_State} El pin se pondrá de color gris.
+
+\begin{figure}
+
+\centering
+\subfloat[Ventana inicial de STMCube32MX]{\label{fig:stmx}
+\centering
+\includegraphics[width=0.45\linewidth]{MXstartup.png}
+}
+%no space
+\hfill
+\subfloat[Selección de la placa]{\label{fig:cdiagram}
+\centering
+
+\includegraphics[width=0.45\linewidth]{Seleccionplaca.jpg}
+}
+\hfill
+
+\subfloat[Layout de la placa NUCLEO F411RE]{\label{fig:layoutp}
+\centering
+
+\includegraphics[width=0.45\linewidth]{layout_placa.png}
+}
+\hfill
+\subfloat[Debug a Serial wire y Reseteo del pin PB3]{\label{fig:PB3}
+\centering
+
+\includegraphics[width=0.45\linewidth]{pb3.png}
+}
+\hfill
+\caption{Ventanas de inicio y selección de placa}
+\label{fig:csetup}
+\end{figure}
+
+Vamos a establecer nuestras necesidades, de acuerdo con las posibilidades de la placa.
+\section{configuración del Reloj.}
+Una de las características interesantes de la \emph{Black Pill} es su velocidad. Vamos a configurar el reloj de la placa para que trabajea 10MHz, que es la máxima velocidad disponible.
+
+Para ello, volvemos a la categoría \texttt{System Core} y seleccionamos la entrada \texttt{RCC} (Reset and Clock Control). Buscamos la opción High Speed Clock (\textttt{HSE}). Cambiamos  "Disable" por \texttt{BYPASS Clock Source}. Hacemos esta elección porque en la placa, la señal de reloj la toma el microcontrolador directamente del programador (ST-Link). Los pines PH0 y PH1 aparecen ahora de color verde.
+
+\paragraph{Configurar la frecuencia en el \emph{clock Tree}}
+
+
+\section{Objetivos Básicos}.
+Reproducimos a continuación la tabla del capítulo 2 del guión de la práctica, en que se describen los pines que se emplearán para suministrar potencia al motor y leer las señales de los encoders.
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|l|l|c|p{7.5cm}|}
+		\hline
+		\textbf{Componente} & \textbf{Señal Motor/Driver} & \textbf{Pin STM32} & \textbf{Función del Periférico (STM32CubeMX)} \\ \hline
+		\multirow{2}{*}{Encoder} 
+		& Canal A (Fase A) & \textbf{PA0} & \texttt{TIM2\_CH1} (Modo Encoder) \\ \cline{2-4} 
+		& Canal B (Fase B) & \textbf{PA1} & \texttt{TIM2\_CH2} (Modo Encoder) \\ \hline
+		\multirow{4}{*}{Driver Potencia} 
+		& PWM (Velocidad) & \textbf{PA6} & \texttt{TIM3\_CH1} (Generación PWM) \\ \cline{2-4} 
+		& DIR (Sentido)   & \textbf{PB3} & \texttt{GPIO\_Output} (Salida Digital) \\ \cline{2-4} 
+		&Habilitar p. H ENA & \textbf{PA10} & \texttt{GPIO\_Output} (Salida Digital) \\ \cline{2-4} 
+		&Habilitar p. H ENB & \textbf{PA7} & \texttt{GPIO\_Output} (Salida Digital) \\
+		\hline
+	\end{tabular}
+	\caption{Mapa de conexiones nativas entre el sistema electromecánico y la placa STM32 Nucleo.}
+	\label{tab:pines}
+\end{table}
+
+Como se deduce de la tabla, la interacción con la planta se delega en gran medida al hardware:
+\begin{itemize}
+	\item \textbf{Lectura del Encoder (PA0 y PA1):} A diferencia de sistemas más simples donde se programan interrupciones por software para contar los pulsos, aquí conectamos las señales en cuadratura a los canales 1 y 2 del \texttt{Timer 2}. Al configurarlo en \textit{Encoder Mode}, el hardware del STM32 detecta automáticamente el sentido de giro y actualiza el registro del contador (\texttt{CNT}). Nuestro software simplemente leerá este registro cuando lo necesite.
+	
+	\item \textbf{Generación de PWM (PA6):} Se conecta al canal 1 del \texttt{Timer 3}. El microcontrolador generará la señal de control de potencia (\textit{Duty Cycle}) en este pin basándose en el valor que calculemos en nuestro bucle de control y escribamos en su registro de comparación (\texttt{CCR1}).
+	
+	\item \textbf{Señal de Dirección (PB3):} A diferencia del PWM, el sentido de giro no requiere una señal de alta frecuencia. Se configura como una salida digital estándar (\texttt{GPIO Output}). Escribir un nivel lógico alto (1) hará girar el motor en un sentido, y un nivel bajo (0) en el sentido opuesto, invirtiendo la polaridad en el puente en H.
+	
+	\item \textbf{Habilitar ambos puentes en H (PA10, PA7)} Habilitamos los dos puentes en H para alimentar el motor a través de ambos puentes a la vez. 
+\end{itemize}
+
+\chapter{Programación del Microcontrolador en C}
+
+
+
+\section{Configuración de Periféricos (STM32CubeMX)}
+Para interactuar con la planta (el motor de continua), es necesario configurar los periféricos de hardware del microcontrolador. Esta tarea se realiza mediante la herramienta gráfica \textit{STM32CubeMX}, la cual genera el código de inicialización (\textit{drivers} HAL). Los elementos fundamentales a configurar son:
+
+\begin{itemize}
+	\item \textbf{Lectura del Encoder (TIM2):} Se configura un temporizador en modo \textit{Encoder Mode}. El hardware del STM32 se encargará automáticamente de decodificar las señales en cuadratura (Canal A y Canal B) y actualizar un registro contador (\texttt{CNT}), liberando a la CPU de esta tarea.
+	\item \textbf{Generación de PWM (TIM3):} Se configura un temporizador para generar una señal PWM (Modulación por Ancho de Pulso) a una frecuencia superior a 10 kHz para evitar ruido audible y asegurar una dinámica fluida en el puente en H.
+	\item \textbf{Bucle de Control (TIM4):} Un temporizador configurado para generar una interrupción periódica exacta cada 10\,ms ($T_s = 0.01\,$s). Esta interrupción garantiza que nuestro bucle de control se ejecute de forma determinista.
+	\item \textbf{Comunicaciones (USART2):} Se habilita el puerto serie asíncrono configurado a 115200 baudios y con interrupciones de recepción (\texttt{RX}) habilitadas, para recibir los comandos desde nuestro \textit{Dashboard} en Python.
+\end{itemize}
+
+% NOTA PARA TI: Aquí puedes insertar una captura de pantalla tuya del CubeMX
+% \begin{figure}[h!]
+	%     \centering
+	%     \includegraphics[width=0.8\textwidth]{cubemx_timers.png}
+	%     \caption{Configuración de los temporizadores en STM32CubeMX.}
+	%     \label{fig:cubemx}
+	% \end{figure}
+
+
 
 \end{document}

@@ -1,0 +1,123 @@
+\documentclass[10pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{steinmetz}
+\usepackage{circuitikz}
+\usepackage{halloweenmath}
+\usepackage[normalem]{ulem}
+%\usepackage{steinmetz}
+%\usepackage[american,siunitx]{circuitikz}
+\usetikzlibrary{arrows,shapes,calc,positioning}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+\lstset{style=mystyle}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage[hyperindex=true,breaklinks=true,colorlinks=true,linkcolor=blue]{hyperref}
+\usepackage{multimedia}
+\usepackage{subcaption}
+\addto\captionsspanish{
+\renewcommand{\tablename}{Tabla}
+\renewcommand{\listtablename}{\'Indice de Tablas}
+}
+
+\usepackage{makeidx}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\begin{document}
+\section{sofware necesario}
+
+\begin{enumerate}
+	\item La versión de Ubuntu que tenemos es la Ubuntu 24.04.4 LTS
+	\begin{verbatim}
+	https://ubuntu.com/download/desktop
+	\end{verbatim}
+	Es la última LTS, así que creo que el la que debemos instalar
+	\item Visualstudio Code.
+	\begin{verbatim}
+	https://code.visualstudio.com/thank-you?dv=linux64_deb
+	\end{verbatim}
+Es un paquete deb, para instalarlo ir a la línea de comandos:
+\begin{verbatim}
+sudo apt install ./Descargas/code_*.deb	
+\end{verbatim}
+
+	
+	\item STM32CubeCLT.
+	
+	https://www.st.com/en/development-tools/stm32cubeclt.html
+
+	Tiene todas las herramientas de ST, necesarias para compilar, enlazar etc.
+	Descargar el que pone Debian Linux installer
+	Descomprimir
+	\begin{verbatim}
+		unzip st-stm32cubeclt_1.21.0_27995_20260219_1804_amd64.deb_bundle.sh.zip
+	\end{verbatim}
+	Dar Permisos
+	\begin{verbatim}
+		chmod +x st-stm32cubeclt_1.21.0_27995_20260219_1804_amd64.deb_bundle.sh
+	\end{verbatim}
+Lanzar el instalador
+\begin{verbatim}
+sudo ./st-stm32cubeclt_1.21.0_27995_20260219_1804_amd64.deb_bundle.sh	
+\end{verbatim}
+Ten sacará en el terminal la licencia de uso, ir hasta el final y aceptarla.
+Debería instalarlo en:
+\begin{verbatim}
+	/opt/st/stm32cubeclt_1.21.0/
+\end{verbatim}
+
+\item stm32cubemx. Realmente no lo tendrían que usar, es una herramienta para configurar la placa pero en algún momento puede ser de gran ayuda.
+\begin{verbatim}
+https://www.st.com/en/development-tools/stm32cubemx.html
+\end{verbatim}
+
+El resto de las herramientas, se pueden instalar directamente a través de Visualstudio Code Mediante las extensiones para SMT32,(barra lateral izquierda, icono de los cuadrados). Para ello hay que abrir VSCode y buscar las extensiones de STM32CUBE. El símbolo es una mariposa. Es importante emplear las oficiales. 
+
+\item Python y los módulos de Python: serial, struct, csv, sys, time, collections, datetime, pyqtgraph.
+\item (Opcional) Si se va a hacer el análisis de los datos y los modelos del motor en python, entonces es conveniente instalar también los módulos: pandas, numpy, matplotlib.pyplot y control
+
+Nota: creo que lo mas fácil es instalar anaconda.
+\begin{verbatim}
+https://www.anaconda.com/download
+\end{verbatim}
+
+Varios de los módulos de Python necesarios vienen instalados por defecto con Anaconda y el resto son fácilmente instalables empleando \texttt{conda}.
+
+\item Descargar el proyecto de github
+\begin{verbatim}
+git clone https://github.com/juanjimenez/st_projects.git
+\end{verbatim}
+La carpeta que hay que abrir en VS Code es la carpeta motor. 
+De momento, probamos a ver como va,y luego ya la podaremos para dejar a los alumnos solo lo que de verdad necesitan.
+\end{enumerate}
+
+\end{document}
