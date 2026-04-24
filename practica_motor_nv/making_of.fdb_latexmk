@@ -1,13 +1,13 @@
 # Fdb version 4
-["makeindex making_of.idx"] 1775814986.86105 "making_of.idx" "making_of.ind" "making_of" 1775816159.26013 0
-  "making_of.idx" 1775816156.74737 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+["makeindex making_of.idx"] 1777034676.32437 "making_of.idx" "making_of.ind" "making_of" 1777038613.81699 0
+  "making_of.idx" 1777038611.5617 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
   (generated)
   "making_of.ilg"
   "making_of.ind"
   (rewritten before read)
-["pdflatex"] 1775816154.60728 "/home/juan/Realimentados/practica_motor_nv/making_of.tex" "making_of.pdf" "making_of" 1775816159.26061 2
+["pdflatex"] 1777038609.73707 "/home/juan/Realimentados/practica_motor_nv/making_of.tex" "making_of.pdf" "making_of" 1777038613.81732 0
   "/etc/texmf/web2c/texmf.cnf" 1733232211.05178 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/juan/Realimentados/practica_motor_nv/making_of.tex" 1775816142.97224 21633 34273e8cd459877ed62ce1faefa72cf6 ""
+  "/home/juan/Realimentados/practica_motor_nv/making_of.tex" 1777038608.72466 26198 737354576c7d0c665d276796162db50c ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1136768653 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
@@ -233,17 +233,18 @@
   "FIGURAS/MXstartup.png" 1775747999.75344 151911 f6aceb0208466559e280f92c1d066d56 ""
   "FIGURAS/Seleccionplaca.jpg" 1775811202.736 210532 accf8af73e40eb7a54c70e96debf757e ""
   "FIGURAS/by-sa.eps" 1774435683.37311 65771 c6e8b379a5861e1b6de383bfd5bbe7af ""
+  "FIGURAS/clock.png" 1776258345.12971 154339 44c4f50b92acc2a4fc201fbb85bcdb62 ""
   "FIGURAS/layout_placa.png" 1775812305.41607 149241 deb7a40b44c1a239108351b3c31d6d94 ""
   "FIGURAS/pb3.png" 1775813161.57262 170081 c67da785f7abcefd40d4cf080d362409 ""
   "FIGURAS/ucm2.eps" 1774435683.89412 3730077 89f01522bde270197f9f9ba6485c8734 ""
   "FIGURAS/vsscreen.png" 1775741807.80556 830092 4dc8a684f8273a0b85e64ad2c4f6fdbf ""
-  "making_of.aux" 1775816158.83039 4426 2520737379219d5410597c894b958e31 "pdflatex"
-  "making_of.ind" 0 -1 0 "makeindex making_of.idx"
-  "making_of.lof" 1775816158.83739 792 5b1ff0535999a9a650a7e3e278a4cf64 "pdflatex"
-  "making_of.lot" 1775816158.83739 273 8d00ed3e51a419d947595b2d76b217a1 "pdflatex"
-  "making_of.out" 1775816158.83539 2554 28f0cb44397a223e52f44d3e914e49e7 "pdflatex"
-  "making_of.tex" 1775816142.97224 21633 34273e8cd459877ed62ce1faefa72cf6 ""
-  "making_of.toc" 1775816158.83639 1143 d3a65f4f88442180d03a97d3d7aa166d "pdflatex"
+  "making_of.aux" 1777038613.51973 4986 4040a25594032595bb2e141cddd0d4d3 "pdflatex"
+  "making_of.ind" 1777034676.58441 0 d41d8cd98f00b204e9800998ecf8427e "makeindex making_of.idx"
+  "making_of.lof" 1777038613.52473 956 205a51ed55153c691941d7b4d3ae5aad "pdflatex"
+  "making_of.lot" 1777038613.52473 273 3656e94487187d7a1125d6d69bd81374 "pdflatex"
+  "making_of.out" 1777038613.52373 3274 30133f5f2bccd7f8401e44d330cbfc81 "pdflatex"
+  "making_of.tex" 1777038608.72466 26198 737354576c7d0c665d276796162db50c ""
+  "making_of.toc" 1777038613.52473 1325 c268819a4e8c5d4a60c051733e960e30 "pdflatex"
   (generated)
   "making_of.aux"
   "making_of.idx"

@@ -258,15 +258,46 @@ Lo primero que vamos ha hacer, es poner la placa en modo debug. Hacemos esto par
 \end{figure}
 
 Vamos a establecer nuestras necesidades, de acuerdo con las posibilidades de la placa.
-\section{configuración del Reloj.}
-Una de las características interesantes de la \emph{Black Pill} es su velocidad. Vamos a configurar el reloj de la placa para que trabajea 10MHz, que es la máxima velocidad disponible.
+\section{Configuración del Reloj.}
+Una de las características interesantes de la \emph{Black Pill} es su velocidad. Vamos a configurar el reloj de la placa para que trabaje a 10MHz, que es la máxima velocidad disponible.
 
-Para ello, volvemos a la categoría \texttt{System Core} y seleccionamos la entrada \texttt{RCC} (Reset and Clock Control). Buscamos la opción High Speed Clock (\textttt{HSE}). Cambiamos  "Disable" por \texttt{BYPASS Clock Source}. Hacemos esta elección porque en la placa, la señal de reloj la toma el microcontrolador directamente del programador (ST-Link). Los pines PH0 y PH1 aparecen ahora de color verde.
+Por defecto, la placa activa un reloj interno. Sin embargo, es mejor emplear el oscilador externo para general la señal de reloj, ya que nos da más precisión y nos va a permitir manejar con más velocidad y precisión las comunicaciones a través del puerto serie.
+
+Para ello, volvemos a la categoría \texttt{System Core} y seleccionamos la entrada \texttt{RCC} (Reset and Clock Control). Buscamos la opción High Speed Clock (\texttt{HSE}). Cambiamos  "Disable" por \texttt{BYPASS Clock Source}. 
+Hacemos esta elección porque en la placa, la señal de reloj la toma el microcontrolador directamente del programador (ST-Link). Los pines PH0 y PH1 aparecen ahora de color verde.
 
 \paragraph{Configurar la frecuencia en el \emph{clock Tree}}
+Buscamos ahora, en las pestañas de la parte superior, la que aparece marcada como \emph{Clock Configuration}. Se nos muestra un esquemático del árbol de configuración del reloj del microprocesador.
+\begin{itemize}
+\item  Nos aseguramos de que la casilla \texttt{Input Frequency} aparece el número 8 (8MHz, corresponde a la frecuencia de la señal de reloj envía al microcontrolador desde fuera).
+\item En el multiplexor \texttt{PLL Source Mux}, marcamos la opción \texttt{HSE}.
+\item En la casilla \texttt{HCLK (MHz)}, escribimos 100 (que es la velocidad máxima de la F411).
+\item Pulsamos \texttt{Enter} y dejamos que CubeMX ajuste los divisores M,N,P,Q.
+\end{itemize}
+
+La figura \ref{reloj} muestra una imagen de la pestaña \emph{Clock Configuration}. Con el reloj ajustado a 100mHz.
 
 
-\section{Objetivos Básicos}.
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{clock.png}
+	\caption{Vista de la pestaña de configuración del reloj, con el reloj configurado a 100MHz.}
+\label{reloj}
+\end{figure}
+\section{Configuración de un puerto serie (UART), a través del puerto USB de la placa.}
+Para poder interactuar con el motor desde un ordenador, la que vamos a hacer es comunicarnos con la placa a través de un puerto serie.
+
+El conector USB de la placa Núcleo F411RE que usaremos para programarla y darle energía ya tiene un conversor de puerto serie integrado (a través del chip ST-LINK que está en la parte superior de la placa). Físicamente, este chip está conectado a los pines PA2 (Transmisor - TX) y PA3 (Receptor - RX) de tu procesador, que corresponden al periférico USART2.
+
+Para configurarlo, en la ventana del STM32CubeMX, volvemos a seleccionar la pestaña de la izquierda \emph{Pinout\&Cofiguration}. En el menú de la izquierda, desplegamos la categoría \emph{Connectivity} y hacemos clic en USART2.
+
+En la ventana central (Mode), cambiamos \emph{Disable} por \emph{Asynchronous}. Los pines PA2 y PA3 cambian ahora a verde
+
+Abajo, en la pestaña \emph{Parameter Settings}, la velocidad (Baud Rate) por defecto es 115200 Bits/s. Lo dejamos así, es la velocidad estándar. Simplemente habrá que tener en cuenta ese dato en la aplicación en Python que emplearemos en el ordenador para comunicarnos con la placa.
+
+
+
+\section{Configuración del resto de pines para el control del motor}
 Reproducimos a continuación la tabla del capítulo 2 del guión de la práctica, en que se describen los pines que se emplearán para suministrar potencia al motor y leer las señales de los encoders.
 
 \begin{table}[h]
@@ -278,7 +309,7 @@ Reproducimos a continuación la tabla del capítulo 2 del guión de la práctica
 		& Canal A (Fase A) & \textbf{PA0} & \texttt{TIM2\_CH1} (Modo Encoder) \\ \cline{2-4} 
 		& Canal B (Fase B) & \textbf{PA1} & \texttt{TIM2\_CH2} (Modo Encoder) \\ \hline
 		\multirow{4}{*}{Driver Potencia} 
-		& PWM (Velocidad) & \textbf{PA6} & \texttt{TIM3\_CH1} (Generación PWM) \\ \cline{2-4} 
+		& PWM (Voltaje) & \textbf{PB4} & \texttt{TIM3\_CH1} (Generación PWM) \\ \cline{2-4} 
 		& DIR (Sentido)   & \textbf{PB3} & \texttt{GPIO\_Output} (Salida Digital) \\ \cline{2-4} 
 		&Habilitar p. H ENA & \textbf{PA10} & \texttt{GPIO\_Output} (Salida Digital) \\ \cline{2-4} 
 		&Habilitar p. H ENB & \textbf{PA7} & \texttt{GPIO\_Output} (Salida Digital) \\
@@ -290,14 +321,46 @@ Reproducimos a continuación la tabla del capítulo 2 del guión de la práctica
 
 Como se deduce de la tabla, la interacción con la planta se delega en gran medida al hardware:
 \begin{itemize}
-	\item \textbf{Lectura del Encoder (PA0 y PA1):} A diferencia de sistemas más simples donde se programan interrupciones por software para contar los pulsos, aquí conectamos las señales en cuadratura a los canales 1 y 2 del \texttt{Timer 2}. Al configurarlo en \textit{Encoder Mode}, el hardware del STM32 detecta automáticamente el sentido de giro y actualiza el registro del contador (\texttt{CNT}). Nuestro software simplemente leerá este registro cuando lo necesite.
+	\item \textbf{Lectura del Encoder (PA0 y PA1):}
+A diferencia de sistemas más simples donde se programan interrupciones por software para contar los pulsos, aquí conectamos las señales en cuadratura a los canales 1 y 2 del \texttt{Timer 2}. Al configurarlo en \textit{Encoder Mode}, el hardware del STM32 detecta automáticamente el sentido de giro y actualiza el registro del contador (\texttt{CNT}). Nuestro software simplemente leerá este registro cuando lo necesite.
+
+Para configurarlo adecuadamente, en el panel lateral izquierdo \texttt{Categories} de la pestaña \texttt{pinout \& configuration}, Seleccionamos la entrada \texttt{timers}. Elegimos el timer \texttt{TIM2}. Se abrirá un nuevo panel para configurarlo. En dicho panel buscamos la opción \texttt{Conbined Channels}, despleagamos el menú y seleccionamos \texttt{Encoder Mode} Automáticamente nos pondrá loas pines \texttt{PA0} y \texttt{PA1} en color verde y les asignará, respectivamente los canales \texttt{CH1} y \texttt{CH2} del timer 2.
+
 	
-	\item \textbf{Generación de PWM (PA6):} Se conecta al canal 1 del \texttt{Timer 3}. El microcontrolador generará la señal de control de potencia (\textit{Duty Cycle}) en este pin basándose en el valor que calculemos en nuestro bucle de control y escribamos en su registro de comparación (\texttt{CCR1}).
+	\item \textbf{Generación de PWM (PB4):} Se conecta al canal 1 del \texttt{Timer 3}. El microcontrolador generará la señal de control de potencia (\textit{Duty Cycle}) en este pin basándose en el valor que calculemos en nuestro bucle de control y escribamos en su registro de comparación (\texttt{CCR1}).
+Para configuralo,
+\begin{enumerate}
+\item En la vista del microcontrolador (el dibujo del chip), buscamos el pin \texttt{PB4}, hacemos clic sobre él y seleccionamos \texttt{TIM3\_CH1}. El pin se pondrá amarillo.
+	\item En la lista de la izquierda, seleccionamos  \texttt{Timers -> TIM3}.
+	\item En \texttt{Clock Source}, seleccionamos \texttt{Internal Clock}.
+	\item En \texttt{Channel 1}, seleccionamos \texttt{PWM Generation CH1}.
+	\item  Abajo, en Parameter Settings, ponemos
+
+    \texttt{Prescaler: 0}
+
+    \texttt{Counter Period (ARR): 1000 - 1} 
+\end{enumerate}
+
+
+
+
+
+
+ 
+	\item \textbf{Señal de Dirección (PB3):} Se configura como una salida digital estándar (\texttt{GPIO Output}). Escribir un nivel lógico alto (1) hará girar el motor en un sentido, y un nivel bajo (0) en el sentido opuesto, invirtiendo la polaridad en el puente en H.
+	Para configurarlo, es suficiente con hacer click sobre el pin y seleccionar \texttt{GPIO\_output}.
 	
-	\item \textbf{Señal de Dirección (PB3):} A diferencia del PWM, el sentido de giro no requiere una señal de alta frecuencia. Se configura como una salida digital estándar (\texttt{GPIO Output}). Escribir un nivel lógico alto (1) hará girar el motor en un sentido, y un nivel bajo (0) en el sentido opuesto, invirtiendo la polaridad en el puente en H.
-	
-	\item \textbf{Habilitar ambos puentes en H (PA10, PA7)} Habilitamos los dos puentes en H para alimentar el motor a través de ambos puentes a la vez. 
+	\item \textbf{Habilitar ambos puentes en H (PA10, PA7)} Habilitamos los dos puentes en H para alimentar el motor a través de ambos puentes a la vez. Estos pines deben estar siempre a nivel lógico alto (1). Los configuramos de modo análogo al anterior: hacemos click sobre ellos y seleccionamos \texttt{GPIO\_output}.
+	\item \textbf{Emplear el botón azul de usuario para invertir manualmente el sentido de giro.}
+Realmente, esto no es necesario salvo para controlar el manual el sentido de giro. El botón azul de la placa está conectado al pin \texttt{C13}. Lo que vamos a hacer es asociarlo a una interrupción para que cada vez que se pulse, la placa cambie el valor del pin inmediatamente. Para ello, Hacemos click en el pin \texttt{C13} y seleccionamos \texttt{GPIO\_EXTI13}. Para activar la interrupción,
+\begin{enumerate}
+	\item En la lista de la izquierda, vamos a \texttt{System Core -> NVIC.}
+	\item Buscamos la línea que dice \texttt{EXTI line[15:10] interrupts} y marcamos la casilla \texttt{Enabled}.
+\end{enumerate}
+
 \end{itemize}
+
+
 
 \chapter{Programación del Microcontrolador en C}
 
