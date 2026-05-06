@@ -1,0 +1,29 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cmake",
+			"label": "CMake: build actual",
+			"command": "build",
+			"targets": [
+				"all"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"detail": "Compila la variante seleccionada en la barra inferior"
+		},
+		{
+			"label": "Flashear STM32",
+			"type": "shell",
+			"command": "${env:HOME}/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin/STM32_Programmer_CLI",
+			"args": [
+                "-c", "port=SWD",
+                "-w", "${command:cmake.launchTargetPath}", 
+                "-v",
+                "-rst"
+            ],
+			"dependsOn": "CMake: build actual",
+			"problemMatcher": []
+		}
+	]
+}

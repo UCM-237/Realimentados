@@ -1,0 +1,32 @@
+build
+mx.scratch
+!.settings
+# --- Directorios de compilación ---
+build/
+bin/
+obj/
+
+# --- Archivos de configuración local (¡EL CULPABLE!) ---
+CMakeUserPresets.json
+
+# --- Archivos de VS Code locales ---
+.vscode/ipch/
+.vscode/browse.vc.db
+.vscode/launch.json
+.vscode/settings.json
+
+# --- Archivos generados por el compilador ---
+*.elf
+*.bin
+*.hex
+*.map
+*.o
+*.obj
+*.su
+
+# --- Caché de autocompletado ---
+.clangd/
+.clangd
+
+# --- Rutas locales de C/C++ ---
+.vscode/c_cpp_properties.json
