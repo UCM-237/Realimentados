@@ -45,6 +45,7 @@
 \usepackage[hyperindex=true,breaklinks=true,colorlinks=true,linkcolor=blue]{hyperref}
 \usepackage{multimedia}
 \usepackage{subfig}
+\usepackage{dirtree}
 \addto\captionsspanish{
 \renewcommand{\tablename}{Tabla}
 \renewcommand{\listtablename}{\'Indice de Tablas}
@@ -169,7 +170,7 @@ El resto de las herramientas, se pueden instalar directamente a través de Visua
 
 En el caso de Python, es bastante cómodo instalar directamente anaconda.
 
-https://www.anaconda.com/download
+https://www.anaconda.com/downloadP
 
 Varios de los módulos de Python necesarios vienen instalados por defecto con Anaconda y el resto son fácilmente instalables empleando \texttt{conda}.
  
@@ -395,8 +396,8 @@ Para instalar las librerías CMSIS-DSP, seleccionamos en la barra de menú super
     \item En el panel central, aparecerá la opción \texttt{CMSIS DSP}. Activamos su casilla. 
 \end{enumerate}
 
-\section{Definir CMake para la compilación y el enlazadoy obtener el esqueleto del código del proyecto}
-Por último, dado que vamos a utilizar las herramientas de Visualstudio Code para compilar nuestro código, debemos añadir a nuestro proyecto las instrucciones para hacerlo empleando \texttt{CMAKE}, ya que esta en Visualstudio la opción por defecto.
+\section{Definir CMake para la compilación y el enlazado y obtener el esqueleto del código del proyecto}
+Por último, dado que vamos a utilizar las herramientas de Visualstudio Code para compilar nuestro código, debemos añadir a nuestro proyecto las instrucciones para hacerlo empleando \texttt{CMAKE}, ya que esta es en Visualstudio la opción por defecto.
 
 Para ello, seleccionamos la pestaña \texttt{Project Manager}. en la sección \texttt{Project Name} damos un nombre al proyecto, por ejemplo "motor". En la sección \texttt{Toolchain / IDE}, cambiamos la opción a \texttt{CMake}.
 
@@ -409,8 +410,58 @@ A partir de ahora, para simplificar las explicaciones, nos referiremos siempre a
 
 
 \chapter{Programación del Microcontrolador en C}
-Una vez generado el proyecto con \texttt{STM32CubeMX}. Tenemos la estructura básica para controlar nuestro motor, pero ahora es necesario escribir el código. Para hacerlo, abrimos el directorio (open folder) motor en Visual Studio Code
+Una vez generado el proyecto con \texttt{STM32CubeMX}. Tenemos la estructura básica para controlar nuestro motor, pero ahora es necesario escribir el código. Para hacerlo, abrimos el directorio (open folder) motor en Visual Studio Code.
+
+
 \section{Estructura del proyecto}
+La carpeta \text{motor} está configurada siguiendo al estructura que se muestra en el siguiente árbol de directorios:
+\dirtree{%
+  .1 motor/.
+  .2 .settings/.
+  .2 .vscode/.
+  .2 build/.
+  .2 cmake/.
+  .2 Core/.
+  .3 Inc/.
+  .4 main.h.
+  .4 motor.h.
+  .4 stm32f4xx\_hal\_conf.h.
+  .4 stm32f4xx\_it.h.
+  .3 Src/.
+  .4 main.c.
+  .4 motor.c.
+  .4 stm32f4xx\_hal\_msp.c.
+  .4 stm32f4xx\_it.c.
+  .4 syscalls.c.
+  .4 sysmem.c.
+  .4 system\_stm32f4xx.c.
+  .2 Drivers/.
+  .2 .clangd.
+  .2 .gitignore.
+  .2 .mxproject.
+  .2 .project.
+  .2 CMakeLists.txt.
+  .2 CMakePresets.json.
+  .2 motor.ioc.
+  .2 Motor.py.
+  .2 registro\_motor\_20260506\_171311.csv.
+  .2 startup\_stm32f411xe.s.
+  .2 STM32F411XX\_FLASH.ld.
+}
+
+Todos los directorios y ficheros que comienzan por un punto, contienen archivos de configuración del proyecto, creados automáticamente por Visual Studio, o Git. También lo son los que aparecen en el directorio \texttt{/motor} creados por CMake, (\texttt{CMakeLists.txt, CMakePresets.json}) y el propio directorio \texttt{cmake/}. O los relacionados con la descarga de código a la placa, (\texttt{startup\_stm32f411xe.s, STM32F411XX\_FLASH.ld})creados una vez se compila y descarga el código.
+
+El directorio \texttt{build/} se genera al compilar el proyecto. De hecho, no aparece hasta que se compila por primera vez y podría borrarse antes de volver a compilar y CMake lo generaría de nuevo.
+
+El directorio \texttt{Drivers/}, contiene las rutinas de \texttt{CMSIS} que emplearemos para desarrollar el código de control del motor y las rutinas de la \emph{HAL} (Hardware  (Hardware Abstraction Layer o Capa de Abstracción de Hardware) en microcontroladores es un conjunto de funciones de software que actúa como puente entre el código de aplicación y los registros físicos del hardware. Permite programar periféricos (GPIO, I2C, SPI) con comandos genéricos.
+
+Hemos dejado casi para el final, El directorio principal de nuestro proyecto \texttt{Core/}. Este directorio contiene a su vez, otros dos \texttt{Inc/} y \texttt{Src/}. El primero contiene los archivos de cabecera (.h) y el segundo los archivos fuente en c (.c). Todos estos archivos han sido generados automáticamente por STM32CubeMX. Los archivos main y motor, ofrecen simples esqueletos en los deberemos añadir el código necesario para programar nuestra placa. Vamos a verlos en detalle en las proximas secciones.
+
+\section{main.h y main.c}
+Vamos a empezar por los archivos principales. El archivo de cabecera, \textt{main.h}, es un archivo breve. Lo vamos a usar tal cual lo genera STM32CubeMX.
+
+
+
 
 
 \section{Configuración de Periféricos (STM32CubeMX)}
