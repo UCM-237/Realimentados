@@ -7,6 +7,7 @@ import collections
 from datetime import datetime
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtCore, QtWidgets
+import numpy as np
 
 # --- CONFIGURACIÓN ---
 PUERTO = '/dev/ttyACM0'      # ¡Recuerda cambiarlo al tuyo!
@@ -36,7 +37,7 @@ class MotorDashboard(QtWidgets.QMainWindow):
         self.recorded_data = [] #lista para guardar [Tiempo, PWM, Encoder]
         self.record_start_time = 0.0
         self.current_pwm = 0 #guarda el valor actual del PWM para la columna del CSV
-        self.current_dir = 1 #guarda el sentido actual del motor (1 alante o 0 atras))
+        self.current_dir = 1 #guarda el sentido actual del motor (1 palante o 0 patras))
         #___ Configuración de la interfaz gráfica ___
         main_widget = QtWidgets.QWidget()
         self.setCentralWidget(main_widget)
@@ -55,8 +56,15 @@ class MotorDashboard(QtWidgets.QMainWindow):
         self.plot_speed.showGrid(x=True, y=True)
         self.plot_speed.setLabel('left', 'Velocidad', units='grados/s')
         self.plot_speed.setLabel('bottom', 'Tiempo', units='s')
-        self.curve_speed = self.plot_speed.plot(pen=pg.mkPen(color='c', width=2)) # Cyan
-        self.curve_speed_est = self.plot_speed.plot(pen=pg.mkPen(color='m', width=2, style=QtCore.Qt.DashLine)) # Magenta punteada para velocidad estimada
+
+        # Añadimos una leyenda para identificar cada línea
+        self.plot_speed.addLegend()
+
+        self.curve_speed = self.plot_speed.plot(pen=pg.mkPen(color='c', width=2),name="Velocidad Real") # Cyan
+        self.curve_speed_est = self.plot_speed.plot(pen=pg.mkPen(color='m', width=2, style=QtCore.Qt.DashLine), name="Velocidad Estimada") # Magenta punteada para velocidad estimada
+        
+        # === NUEVA CURVA PARA LA MEDIA MÓVIL (Color Verde) ===
+        self.curve_speed_filt = self.plot_speed.plot(pen=pg.mkPen(color='g', width=2.5), name="Media Móvil (Filtrada)")
         layout.addWidget(self.plot_speed) # Añadimos la gráfica de velocidad justo debajo
         #B Controles PWM
         controls = QtWidgets.QHBoxLayout()
@@ -169,6 +177,21 @@ class MotorDashboard(QtWidgets.QMainWindow):
                     self.curve_speed.setData(list(self.time_buffer), list(self.speed_buffer))
                     self.curve_speed_est.setData(list(self.time_buffer), list(self.speed_est_buffer)) # <--- DIBUJAMOS LA CURVA ROJA
                     
+                    # === ¡Cálculo y Renderizado de la Media Móvil! ===
+                    if len(self.speed_buffer) > 0:
+                        speeds = np.array(self.speed_buffer)
+                        ventana = 20  # <--- Modifica esto para suavizar más o menos la línea verde
+                        
+                        ret = np.cumsum(speeds, dtype=float)
+                        ret[ventana:] = ret[ventana:] - ret[:-ventana]
+                        divisor = np.arange(1, len(speeds) + 1)
+                        divisor[ventana:] = ventana
+                        velocidad_filtrada = ret / divisor
+                        
+                        self.curve_speed_filt.setData(list(self.time_buffer), list(velocidad_filtrada))
+                    else:
+                        self.curve_speed_filt.setData([], [])
+
                     if self.is_recording:
                         pwm_con_signo = self.current_pwm if self.current_dir == 1 else -self.current_pwm
                         # Guardamos también la vel. estimada en el CSV
@@ -284,12 +307,18 @@ class MotorDashboard(QtWidgets.QMainWindow):
                 self.serial_port.write(paquete_stop)
                 self.spin_speed.setValue(0) # Actualizamos la cajita de la interfaz
                 
-                # Le damos 100 milisegundos para que el motor frene físicamente
-                time.sleep(0.1) 
+                # Le damos 400 milisegundos para que el motor frene físicamente
+                time.sleep(0.4)
+                 # Vaciamos el búfer de los paquetes antiguos acumulados mientras el motor frenaba
+                self.serial_port.reset_input_buffer()
                 
                 # --- 2. Enviar la orden al STM32 para resetear el encoder
                 paquete = struct.pack('<ii', 5, 0)
                 self.serial_port.write(paquete)
+
+                # Le damos un instante mínimo (20ms) al STM32 para procesar la interrupción
+                time.sleep(0.02)
+
                 print("¡Motor detenido y Posición reseteada a CERO!")
                 
                 # --- 3. SINCRONIZAR LA INTERFAZ DE PYTHON ---
