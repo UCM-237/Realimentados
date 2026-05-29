@@ -8,6 +8,7 @@
 		}
 	],
 	"settings": {
-		"latex-workshop.view.pdf.viewer": "tab"
+		"latex-workshop.view.pdf.viewer": "tab",
+		"C_Cpp.intelliSenseEngine": "Default"
 	}
 }
