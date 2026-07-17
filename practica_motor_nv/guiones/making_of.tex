@@ -350,7 +350,7 @@ A diferencia de sistemas más simples donde se programan interrupciones por soft
 Para configurarlo adecuadamente, en el panel lateral izquierdo \texttt{Categories} de la pestaña \texttt{pinout \& configuration}, Seleccionamos la entrada \texttt{timers}. Elegimos el timer \texttt{TIM2}. Se abrirá un nuevo panel para configurarlo. En dicho panel buscamos la opción \texttt{Conbined Channels}, despleagamos el menú y seleccionamos \texttt{Encoder Mode} Automáticamente nos pondrá loas pines \texttt{PA0} y \texttt{PA1} en color verde y les asignará, respectivamente los canales \texttt{CH1} y \texttt{CH2} del timer 2.
 
 	
-	\item \textbf{Generación de PWM (PB4):} Se conecta al canal 1 del \texttt{Timer 3}. El microcontrolador generará la señal de control de potencia (\textit{Duty Cycle}) en este pinPackage pgfkeys Error: I do not know the key '/tikz/fit', to which you passed '(tim4) (update) (cnt) (txdma)', and I am going to ignore it. Perhaps you misspelled it. basándose en el valor que calculemos en nuestro bucle de control y escribamos en su registro de comparación (\texttt{CCR1}).
+	\item \textbf{Generación de PWM (PB4):} Se conecta al canal 1 del \texttt{Timer 3}. El microcontrolador generará la señal de control de potencia (\textit{Duty Cycle}) en este pin. basándose en el valor que calculemos en nuestro bucle de control y escribamos en su registro de comparación (\texttt{CCR1}).
 Para configuralo,
 \begin{enumerate}
 \item En la vista del microcontrolador (el dibujo del chip), buscamos el pin \texttt{PB4}, hacemos clic sobre él y seleccionamos \texttt{TIM3\_CH1}. El pin se pondrá amarillo.
@@ -387,7 +387,7 @@ La lectura de encoders se lleva a cabo a muy alta velocidad. Esto dará robustez
 	\begin{equation*}
 		F_{\text{interrupción}} = \frac{F_{\text{reloj}}}{(\text{PSC}+1) \times (\text{ARR}+1)}.
 	\end{equation*}
-Hemos ajustado el reloj de nuestro microcontrolador a $100MHz$. Así que si ajustamos el PSC (Preescaler) a $100 -1 $, estaremos dividiendo la frecuencia del reloj entre 100. Si además ajustamos el ARR (Counter period) a $1000 - 1$, volvemos a dividir la frecuencia del reloj entre mil, de modo que la frecuencia de la interrupción quedará $1e^8/1e^2/1e^3 = 1000 Hz$. 
+Hemos ajustado el reloj de nuestro microcontrolador a $100MHz$. Así que si ajustamos el PSC (Preescaler) a $100 -1 $, estaremos dividiendo la frecuencia del reloj entre 100. Si además ajustamos el ARR (Counter period) a $1000 - 1$, volvemos a dividir la frecuencia del reloj entre mil, de modo que la frecuencia de la interrupción quedará $1e8/1e2/1e3 = 1000 Hz$. 
 
 Bajamos \texttt{configuration} y en la pestaña \texttt{Parameter Settings}. Buscamos la sección \texttt{Counter settings}. En \texttt{Preescaler} escribimos $100-1$ y en \texttt{Counter Period} $1000 -1$.
 
@@ -480,7 +480,8 @@ El directorio \texttt{Drivers/}, contiene las rutinas de \texttt{CMSIS} que empl
 Hemos dejado casi para el final, El directorio principal de nuestro proyecto \texttt{Core/}. Este directorio contiene a su vez, otros dos \texttt{Inc/} y \texttt{Src/}. El primero contiene los archivos de cabecera (.h) y el segundo los archivos fuente en c (.c). Todos estos archivos han sido generados automáticamente por STM32CubeMX. Los archivos main y motor, ofrecen simples esqueletos en los deberemos añadir el código necesario para programar nuestra placa. Vamos a verlos en detalle en las proximas secciones.
 
 \section{main.h y main.c}
-\paragraph{main.h} Vamos a empezar por los archivos principales. El archivo de cabecera, \texttt{main.h}, es un archivo breve. Lo vamos a usar tal cual lo genera STM32CubeMX.
+\subsection{main.h} 
+Vamos a empezar por los archivos principales (main). El archivo de cabecera, \texttt{main.h}, es un archivo breve. Lo vamos a usar tal cual lo genera STM32CubeMX.
 
 \begin{lstlisting}[language=C, caption={Archivo de cabecera del programa principal, para incluir en main.c. Ambos se encargan de configurar los pines de la placa, timers, etc. (\texttt{main.h})}]
 /* USER CODE BEGIN Header */
@@ -581,7 +582,8 @@ El archivo además incluye unos \texttt{define} que asignan nombres específicos
 
 Aparte de configurar los pines del puerto, también se configura el pin \texttt{5A} como el pin asociado al led 2 (\texttt{}{L2}, led verde) de la placa núcleo. Este pin no es parte del sistema de control de motor, pero lo encenderemos, cuando arranquemos la placa, como testigo de que el código se está ejecutando.
 
-\paragraph{main.c} Este archivo contiene el bucle principal del programa que ejecutará el microprocesador así como las definiciones de todas las funciones, relacionadas con el Hardware: Lectura de encoders, generación de señales de PWM, comunicaciones con el pc, etc. Vamos a ver en detalle como está implementado. No vamos a reproducir aquí todo su código. Para entender esta descripción es conveniente tener delante el archivo del código.
+\subsection{main.c} 
+Este archivo contiene el bucle principal del programa que ejecutará el microprocesador así como las definiciones de todas las funciones, relacionadas con el Hardware: Lectura de encoders, generación de señales de PWM, comunicaciones con el pc, etc. Vamos a ver en detalle como está implementado. No vamos a reproducir aquí todo su código. Para entender esta descripción es conveniente tener delante el archivo del código.
 
 El código incluye tres archivos de cabecera: \texttt{main.h}, del que ya hemos hablado, \texttt{math.h} que es un archivo de cabecera que da acceso a funciones matemáticas estándar y \texttt{motor.h}. Este último contiene las definiciones de las funciones que vamos a emplear para controlar el motor. Lo veremos detenidamente en más adelante.
 
@@ -602,7 +604,7 @@ typedef struct{
 } ComandoPck;	
 \end{lstlisting}
 
-La primera estructura \texttt{DatosPck}, Contiene información del estado del motor que la placa ha recopilado, medido o calculado. La primera variable es un identificador, que permite definir la naturaleza del mensaje que va a enviar la placa al pc. Solo son necesarios, en la configuración actual, dos tipos de mensajes. Si hacemos \texttt{id = 1} nuestro mensaje indica que ha habido un cambio en la dirección de movimiento del motor. Este cambio se ha activado directamente por hardware: pulsando el botón azul de la placa. Se informa al pc de la nueva dirección. En otro caso, \texttt{id = 2} se está transmitiendo información de la posición (encoder) y la velocidad del motor, en el momento del envío. El nombre de las variables es autoexplicativo (ver listado \ref{ls42}). La última variable, \texttt{velocidad estimada} corresponde a la velocidad calculada por el estimador de Luenberger cuando se está empleando control por realimentación de estados estimados.
+La primera estructura \texttt{DatosPck}, Contiene información del estado del motor que la placa ha recopilado, medido o calculado. La primera variable es un identificador, que permite definir la naturaleza del mensaje que va a enviar la placa al pc. Solo son necesarios, en la configuración actual, dos tipos de mensajes. Si hacemos \texttt{id = 1} nuestro mensaje indica que ha habido un cambio en la dirección de movimiento del motor. Este cambio se ha activado directamente por hardware: pulsando el botón azul de la placa. Se informa al pc de la nueva dirección. En otro caso, \texttt{id = 2}, se está transmitiendo información de la posición (encoder) y la velocidad del motor, en el momento del envío. El nombre de las variables es autoexplicativo (ver listado \ref{ls42}). La última variable, \texttt{velocidad\_est} corresponde a la velocidad calculada por el estimador de Luenberger cuando se está empleando control por realimentación de estados estimados.
 
 La segunda estructura \texttt{ComandoPck}, permite recibir órdenes desde el pc a través del puerto serie. La primera variable \texttt{id} permite identificar el comando, y la segunda nos da su valor. Los posibles comandos se detallarán más adelante.
 
@@ -610,7 +612,7 @@ A continuación stm32cubemx, dentro del grupo de variables privadas, ha definido
 
 \begin{itemize}
 	\item \texttt{htim2}. \textbf{Lectura del Encoder (TIM2):} Se configura un temporizador en modo \textit{Encoder Mode}. El hardware del STM32 se encargará automáticamente de decodificar las señales en cuadratura (Canal A y Canal B) y actualizar un registro contador (\texttt{CNT}), liberando a la CPU de esta tarea.
-	\item \texttt{htim3} \textbf{Generación de PWM (TIM3):} Se configura un temporizador para generar una señal PWM (Modulación por Ancho de Pulso) a una frecuencia superior a 10 kHz para evitar ruido audible y asegurar una dinámica fluida en el puente en H.
+	\item \texttt{htim3} \textbf{Generación de PWM (TIM3):} Se configura un temporizador para generar una señal PWM (Modulación por Ancho de Pulso).
 	\item \texttt{htim4}. \textbf{Bucle de Control (TIM4):} Un temporizador configurado para generar una interrupción periódica exacta cada 1.0ms ($T_s = 0.001\,$s). Esta interrupción garantiza que nuestro bucle de control se ejecute de forma determinista.
 \end{itemize}
 También, define un segundo grupo de variables, que contiene las propiedades del puerto serie (USART2) y los dos canales de DMA, para envío y recepción de datos 
@@ -627,9 +629,9 @@ Además, se han definido otras dos variables privadas. Se les ha añadido el atr
 	\item flag\_boton\_pulsado. Se activa por una interrupción asociada a que se haya pulsado el botón azul de la placa
 \end{itemize}
 
-Por último antes de entrar a la función principal, aparecen las declaracines de las funciones de inicio de los pines, los timers, DMA y puerto serie. Son generadas automáticamente por STM32CubeMx y su definición se puede encotrar al final de este mismo archivo main.
+Por último antes de entrar a la función principal, aparecen las declaraciones de las funciones de inicio de los pines, los timers, DMA y puerto serie. Son generadas automáticamente por STM32CubeMx y su definición se puede encontrar al final de este mismo archivo main.
 
-\begin{figure}[ht]
+\begin{figure}
     \centering
 % Desactivamos los atajos de Babel antes de que \resizebox lea el bloque
 \shorthandoff{<}
@@ -716,9 +718,75 @@ Por último antes de entrar a la función principal, aparecen las declaracines d
     \label{fig:arquitectura_motor_perfecta}
 \end{figure}
 
+\paragraph{main.c: Función \texttt{main}} Entramos ahora a la descripción de la función main. En primer lugar se hacen llamadas a funciones que preparan la placa y la configuran de acuerdo con las características que se definieron empleando \texttt{STM32CubeMx}. Así se empieza reseteando los valores de configuración de todos los periféricos de la planca con al función \texttt{HAL\_Ini()}. Se configura el reloj del sistema con la función \texttt{SystemClock\_Config()}. Se inicializan los pines, cada uno con la función asignada usando \texttt{MX\_GPIO\_Init()}, Los canales de DMA: \texttt{MX\_DMA\_Init()}, Los timers: \texttt{MX\_TIMnº\_Init()} y el puerto serie: \texttt{MX\_USART2\_UART\_Init()}.
+
+A continuación se llama a la función \texttt{MotorControl\_ini()}. Esta función inicializa los parámetros del sistema de control del motor se describirá con detalle ne la sección \ref{motor}.
+
+A continuación se configurar los timers de acuerdo a la función asignada, empleando para en cada caso la funcíon específica para ello:
+\begin{enumerate}
+    \item \texttt{HAL\_TIM\_Encoder\_Start} se aplica al timer dos que es el que se encargará de contar los pasos de encoder
+    \item \texttt{HAL\_TIM\_PWM\_Start} Se aplica al timer tres que controlará la señal de PWM empleada para ajustar la tensión que se suministra al motor a traves de la placa de expansión.
+    \item \texttt{HAL\_TIM\_Base\_Start\_IT} Se aplica al timer cuatro para que nos lleve el tiempo transcurrido 
+\end{enumerate}
+
+A continuación encedemos el led de la placa para que nos sirva de testigo de que el sistema está funcionando \texttt{HAL\_GPIO\_WritePin(GPIOA, GPIO\_PIN\_5, GPIO\_PIN\_SET)}.
+
+Activamos la recepción de datos por el puerto serie en modo DMA. (revisar esto). \texttt{HAL\_UART\_Receive\_DMA(\&huart2, (uint8\_t*)\&rx\_data, sizeof(rx\_data))}.
+
+Por último damos valores a los pines de configuración de la placa de expansión. Ponemosa cero el pin tres, para asegurar una tensión en el motor que lo haga girar en sendido 'positivo' y ponemos a uno los pines 7 y 10 para activar el puente en H.
+
+Con esto acabaría la parte de configuración del código. Antes de entrar en el buche principal del programa, definimos e inicializamos a cero dos variables que vamos a emplear para fijar los tiempos en que enviaremos datos por el puerto serie al ordenador: \texttt{contador\_telemetría} y para guardar los valores de la posición enviada por última vez: \texttt{posicion\_anterior\_telemetria}. 
+
+Entramos ahora en el bucle principal. Se trata de un bucle que repetirá su ejecución de modo indefinido desde que se suministra tensión a la placa y se ejecutan los pasos anteriores de inicialización hasta que se corte la tensión suministrada. 
+
+En este bloque podemos distinguir dos partes principales cada una asociada a una condición. 
+
+
+\paragraph{Botón pulsado}
+La primera es una parte asíncrona que solo se ejecuta si se pulsa el botón azul de la placa. Cuando se pulsa el botón este genera una interrupción y ejecuta la función \texttt{HAL\_GPIO\_EXTI\_Callback(uint16\_t GPIO\_Pin)}. Esta función gestiona las interruciones lanzadas por hardware desde cualquier pin. Para explicar mejor lo que hace, incluimos a continuación su código,
+
+\begin{lstlisting}[language=C, caption={función HAL\_GPIO\_EXTI\_Callback(uint16\_t GPIO\_Pin)}, label ={pinazul}]
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+     static uint32_t ultimo_tiempo_pulsacion = 0;
+     uint32_t tiempo_actual = HAL_GetTick(); 
+
+     if(GPIO_Pin == GPIO_PIN_13) 
+     {
+         if (tiempo_actual - ultimo_tiempo_pulsacion > 200) 
+         {
+             motor.pwm_output = -motor.pwm_output;
+             flag_boton_pulsado = 1; //Activar el flag para indicar que el boton ha sido pulsado
+             ultimo_tiempo_pulsacion = tiempo_actual;
+         }
+     }
+ }
+\end{lstlisting}
+
+La función lo primero que hace es crear la variable ultimo tiempo de pulsación y ponerla a cero. inmediatametne despues toma el tiempo actual del reloj del sistema con la función \texttt{HAL\_GetTick}. COmprueba que efectivamente el pin que ha provocado a interrupción es el pin 13 y a continuación comprueba el tiempo transcurrido desde la última pulsación. El objetivo de esta comporbación es evitar el efecto 'rebote'; a veces, al pulsar y soltar el botón, este puede hacer contacto muchas veces. Si esto pasa, la función se llama de nuevo pero ahora el intervalo de tiempo transcurrido será menor de 1000 milisegundos. 
+
+Al definir la varible \texttt{ultimo\_tiempo\_pulsacion} com \texttt{static} sabemos que solo puede alterar su valor la asignación del valor de \texttt{tiempo\_actual}, realizada dentro de la condición. Por tanto, aunque se llame a la función muchas veces por efecto del rebote esta no hará nada a menos que entre dos pulsaciones consecutivas hayan transcurrido 200 ms. Si se cumple la condición se cambia de signo a la variable \texttt{motor.pwm\_output}, que, como se verá al describir el controlador del motor, es equivalente a cambiar de signo la tensión que le llega al motor y, por tanto cambiar de signo su sentido de giro. Además se activa un flag. Es decir, se pone a uno la variable \texttt{flag\_boton\_pulsado}.
+
+Volvamos al bucle principal, solo si se ha pulsado el botón azul, la variable \texttt{flag\_boton\_pulsado} toma valor 1 y se ejecuta el código incluido dentro de la primera condición del bucle. Lo primero que se hace es volver a poner a cero el flag. A continuación se lee el valor de pin PB3, para determinar el sentido de giro actual del motor, y se crea un paquete de datos con esta información para enviarlo al ordenador a traves del puerto serie. El paquete de datos es una estructura tipo DatosPck, el nombre de la estructura es \texttt{pktdir} y solo son relevantes sus dos primeros campos \texttt{pktdir.id =1}, que indica que el mensage que se va a enviar contiene la direcciónn de giro del motor y \texttt{pktdir.tiempo\_ms = estado\_dir}, que en este caso, no contiene un tiempo sino el estado de giro del motor que acabamos de cambiar al pulsar el motor.
+
+Por último, se envía el mensaje empleando la función \texttt{HAL\_UART\_Transmit}. Esta función es capaza de enviar un mensaje byte a byte. Las variables que emplea son \texttt{\&huar2}: dirección (software) del puerto serie 2. A continuación hace un casting de modo que crea puntero a bytes \texttt(uint8\_t*) a la dirección donde se guarda nuestra estructura \texttt{pktdir}. El efecto es leer dicha estructura como si fuera un array de bytes. La siguiente variable \texttt{sizeof(pktdir)}, le dice a la función donde termina la estructura y, por tanto hasta donde debe leer para trnasmitir. La variable final es peligrosa: \texttt{HAL\_MAX\_DELAY} le esta diciendo a la CPU que no haga nada hasta que termine la trasmisión del mensaje. Así que, en caso de fallo podría bloquear el microcontrolador. Lo correcto sería emplear también un canal de acceso directo a memoria (DMA), como se hace con los mensajes de telemetría. Sin embargo, el uso del botón de la placa para cambiar la dirección de giro es algo poco frecuente y podemos correr el riesgo.
+
+\paragraph{Temporizador}
+Este temporizador es el que lleva el ritmo al que se controla el motor. Para ello, emplea el timer \texttt{TIM4} que genera una interrupcion cada 1ms, llama a su función de callback (ver listado \ref{TM4}). El callback se limita a asignar un valor uno a la variable \texttt{flag\_timer} 
+
+\begin{lstlisting}[language=C, caption={función callback empleada por el timer TM4} \label{TM4} ] 
+// 1. Callback del timer para actualizar el flag cada 1ms
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+  if(htim->Instance == TIM4){
+    flag_timer = 1;
+  }
+}
+
+\end{lstlisting}
 
 
 
+\section{motor.h y motor.c}\label{motor}
 
 
 
