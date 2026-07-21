@@ -1,13 +1,13 @@
 # Fdb version 4
-["makeindex pdf/making_of.idx"] 1784299373.38303 "pdf/making_of.idx" "pdf/making_of.ind" "pdf/making_of" 1784299554.10841 0
-  "pdf/making_of.idx" 1784299551.51516 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+["makeindex pdf/making_of.idx"] 1784645238.85856 "pdf/making_of.idx" "pdf/making_of.ind" "pdf/making_of" 1784645243.46497 0
+  "pdf/making_of.idx" 1784645240.965 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
   (generated)
   "pdf/making_of.ilg"
   "pdf/making_of.ind"
   (rewritten before read)
-["pdflatex"] 1784299549.71038 "/home/juan/Realimentados/practica_motor_nv/guiones/making_of.tex" "pdf/making_of.pdf" "making_of" 1784299554.10867 0
+["pdflatex"] 1784645239.16084 "/home/juan/Realimentados/practica_motor_nv/guiones/making_of.tex" "pdf/making_of.pdf" "making_of" 1784645243.46529 0
   "/etc/texmf/web2c/texmf.cnf" 1733232211.05178 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/juan/Realimentados/practica_motor_nv/guiones/making_of.tex" 1784299548.83013 59312 73ef813b3d265c1613ebe1dfe53e5b5e ""
+  "/home/juan/Realimentados/practica_motor_nv/guiones/making_of.tex" 1784645238.01797 72443 ffad3ef23570aac4b5d1f8bec0ddf67b ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1136768653 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/tctt1000.tfm" 1136768653 1536 c5729d01ab121276cf99b309129349a0 ""
@@ -270,13 +270,13 @@
   "FIGURAS/pb3.png" 1775813161.57262 170081 c67da785f7abcefd40d4cf080d362409 ""
   "FIGURAS/ucm2.eps" 1774435683.89412 3730077 89f01522bde270197f9f9ba6485c8734 ""
   "FIGURAS/vsscreen.png" 1775741807.80556 830092 4dc8a684f8273a0b85e64ad2c4f6fdbf ""
-  "making_of.tex" 1784299548.83013 59312 73ef813b3d265c1613ebe1dfe53e5b5e ""
-  "pdf/making_of.aux" 1784299553.80819 7904 f5f2fa8fa656582aba286675f266ce24 "pdflatex"
-  "pdf/making_of.ind" 1784299373.65029 0 d41d8cd98f00b204e9800998ecf8427e "makeindex pdf/making_of.idx"
-  "pdf/making_of.lof" 1784299553.81219 1125 02916cab6304a4f021cf77f993aad696 "pdflatex"
-  "pdf/making_of.lot" 1784299553.81219 273 32919283f18a03931c0e00d789c9378f "pdflatex"
-  "pdf/making_of.out" 1784299553.81119 5035 6a73502fcc701db6090d23db01ae8077 "pdflatex"
-  "pdf/making_of.toc" 1784299553.81219 2218 d35c262e73be634ab078a38fd4265f2a "pdflatex"
+  "making_of.tex" 1784645238.01797 72443 ffad3ef23570aac4b5d1f8bec0ddf67b ""
+  "pdf/making_of.aux" 1784645243.20703 8968 f91c2555feed27ca8c2ff4997f5405d8 "pdflatex"
+  "pdf/making_of.ind" 1784645239.12298 0 d41d8cd98f00b204e9800998ecf8427e "makeindex pdf/making_of.idx"
+  "pdf/making_of.lof" 1784645243.21103 1125 02916cab6304a4f021cf77f993aad696 "pdflatex"
+  "pdf/making_of.lot" 1784645243.21103 273 32919283f18a03931c0e00d789c9378f "pdflatex"
+  "pdf/making_of.out" 1784645243.21103 5229 f5f07801eeaadb93d287c7109904831a "pdflatex"
+  "pdf/making_of.toc" 1784645243.21103 2374 0427f38a525f4fc95a33b82b0f9e3965 "pdflatex"
   (generated)
   "pdf/making_of.aux"
   "pdf/making_of.idx"
