@@ -917,4 +917,21 @@ float32_t temp1_f32[2], temp2_f32[2], temp3_f32[2];
 A continuación se define la ganacia de la realimentación de estado $K$, de la que se definen dos versiones. La primera, \texttt{Kx\_pos}, para controlar el motor en posicion  y la segunda, \texttt{Kx\_vel} para controlar el motor en velocidad.  Se define tambien la ganancia correspondiente al estimador $L$. Además se definen dos ganacias \texttt{Ki\_pos} y \texttt{Ki\_vel} para añadir control integral al control en posición y al control en velocidad.
 
 Para conpletar las variables necesarias, se define tambien una variable de salidad para el estimador \texttt{y\_hat}, que se inicializa a cero y tres variables auxiliares \texttt{temp1\_f32, temp2\_f32, temp3\_f32}. Además, se definen 'objetos' matrices empleando los tipos propios de la librería CMSIS-DSP, de modo que hay una matriz CMSIS-DSP por cada una de las matrices definidas como arrays normales. Los nombres coinciden salvo por la terminación que ha pasado de ser f32 (float32) a mat.
+
+Nota importante: Todos los elementos de las matrices asi como las ganancias de los controles integrales tienen asignado valor cero. Es preciso darles valores adecuados para que los controladores funciones, compilar el proyecto y descargar el resultado en la placa.
+
+\paragraph{MotorControl\_ini()}
+A continuación, empieza la definición de las funciones de control del motor. La primera es una función de de inicialización que se llama al principio de la función \texttt{main()} del archivo \texttt{main.c}. Inicializa los dos modos posibles de control, dejandolos listos para su uso.
+Las opciones de control disponible son:
+\begin{enumerate}
+    \item Control de posición mediante un PID. Permite llevar el eje del motor a una posición angular deseada empleando para ello contros Proporcional/Integral/DErivativo (PID). Para ello, se ajustan los valores de las ganacias proporcional \texttt{motor.pid\_position.Kp}, integral \texttt{motor.pid\_position.Ki} y derivativa \texttt{motor.pid\_position.Kd}. Por defecto estos valores tienen valor cero, es decir NO estan ajustados y el control no funciona. Es preciso darles valores adecuados, compilar el proyecto y descargar el software en la placa, para que el controlador funcione.
+    UNa vez definidas las contantes, se llama a la función \texttt{arm\_pid\_ini\_f32}, de la librería CMSIS pasando como variables de entrada la dirección de \texttt{motor.pid\_position} y un uno. Esto implementa un controlador PID y además resetea su estado.
+    \item Control de velocidad mediante un PID. análogo al anterior. El objetivo es ahora estabilizar la velocidad a la que gira el motor a un valor deseado. Se definen ahora los campos correspodientes, proporcional \texttt{motor.pid\_speed.Kp}, integral \texttt{motor.pid\_speed.Ki} y derivativa \texttt{motor.pid\_speed.Kd}, para las ganacias del controlador para la velocidad. Al igual que en el caso de controlador en posición, los valores por defecto están ajustados a ceroy es preciso introducir los valores que se quieran usar para controlar el motor.
+    De nuevo, llamamos a \texttt{arm\_pid\_ini\_f32} pasándole ahora la dirección de \texttt{motor.pid\_speed}, para crear un controlador PID para la velocidad.
+
+\item Control de posición usando variables de estado y un estimador. Las matrices necesarias ya se definieron como variables globales antes
+\item Control de velocidad usando variables de estado y un estimador. Igual que el ne caso anterior las matrices ya están definidas
+\end{enumerate}
+
+
 \end{document}
