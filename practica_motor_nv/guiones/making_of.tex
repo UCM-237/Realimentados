@@ -735,7 +735,10 @@ A continuación se configurar los timers de acuerdo a la función asignada, empl
 
 A continuación encedemos el led de la placa para que nos sirva de testigo de que el sistema está funcionando \texttt{HAL\_GPIO\_WritePin(GPIOA, GPIO\_PIN\_5, GPIO\_PIN\_SET)}.
 
-Activamos la recepción de datos por el puerto serie en modo DMA. (revisar esto). \texttt{HAL\_UART\_Receive\_DMA(\&huart2, (uint8\_t*)\&rx\_data, sizeof(rx\_data))}.
+Activamos la recepción de datos por el puerto serie en modo DMA. \texttt{HAL\_UART\_Receive\_DMA(\&huart2, (uint8\_t*)\&rx\_data, sizeof(rx\_data))}.
+Esta función queda a la escucha de los paquetes de datos que lleguen desde el ordenador a través del puerto serie. Implementa un sistema de Acceso Directo a Memoria (DMA). Es decir, la recepción se realiza almacenando directamente en memoria los datos en la estructura que creamos \texttt{rx\_data}, sin interferir con la CPU que sigue ejecutando su código sin atender a esta recepción.
+
+Cuando la recepción termina, se dispara una interrepción que llama automáticamente a la función \texttt{HAL\_UART\_RxCpltCallback(UART\_HandleTypeDef *huart)}, definida más abajo, en la sección de código \texttt{USER CODE 4} que contiene los callbacks del usuario y descrita en la sección \ref{clbk}.
 
 Por último damos valores a los pines de configuración de la placa de expansión. Ponemosa cero el pin tres, para asegurar una tensión en el motor que lo haga girar en sendido 'positivo' y ponemos a uno los pines 7 y 10 para activar el puente en H.
 
@@ -812,8 +815,29 @@ por último, comprobamos si el puerto serie está libre y emvíamos la estructur
 
 Es interesante hacer notar que estamos trabajando a dos ritmos: el control se actualiza cada 1ms (1KHz), y la telemetría se envía al ordenador cada 10ms (100Hz).
 
-Aquí termina el contenido del bucle y la función \texttt{main}. El resto del código que contiene el archivo, son funciones de inicialización de periféricos y configuración de la placa y han sido generadas directamente por STM32CubeMX.
+Aquí termina el contenido del bucle y la función \texttt{main}.
 
+\paragraph{USER CODE 4}\label{clbk}
+En la sección de código contenida entre \texttt{ USER CODE BEGIN 4} y \texttt{USER CODE END 4}
+Se contienen las funciones de callback definidas para gestionar las interrupciones definidas en el programa.
+Ya hemos descrito la asociada al periodo de envío de telemetría al ordenador y la generada cuando se pulsa el botón de usuario de la placa.
+
+Nos quedan por definir dos funciones de callback más, asociadas a la recepción de datos a través del puerto serie. 
+
+Como se indicó más arriba, esta recepción se realiza empleando un canal de DMA. Cuando la recepción se ha completado, se genera una interrupción, para gestionar los datos recibidos. Esta gestión la lleva a cabo la función \texttt{HAL\_UART\_RxCpltCallback}
+Es una función genérica común a todos los puerto series, por ello, lo primero que hace es comprobar que la llamada proviene del USAR2, que es el que nosotros estamos empleando para recibir datos desde el ordenador. Una vez comprobado el puerto empieza a  analizar el contenido de la estructura \texttt{rx\_data}. En funcion del valor campo \texttt{rx\_data.id} se implemente un arbol de condiciones que tiene la siguiente estructura:
+\begin{enumerate}
+    \item \texttt{rx\_data.id == 1} Corresponde a un comando enviado desde el ordenador para poner el motor en modo manual y definir/cambiar su dirección de giro. Pr tanto se ajuste el modo del motor \texttt{motor.mode = Control\_pwm\_openloop} y se examina a continuación el campo \texttt{rx\_data.valor} Si toma valor cero, lo que se quiere es que el motor gire en sentido horario con lo que se ajusta el campo \texttt{motor.pwm\_output} al valor absoluto que tuviera la señal de PWM multiplicado por menos uno. Si no toma valor cero (tomaría valor uno) se ajusta el campo directamente al valor de la seña de PWM.
+    \item \texttt{rx\_data.id == 2} Esta opción tambien corresponde a control manual. En esta caso, lo que se cambia es el valor de la señal de PWM pero no el sentido de giro del motor. Se pone el modo del motor en manual igual que en el caso anterior y según el signo que tenga el valor actual de \texttt{motor.pwm\_output} se ajusta su valor a \texttt{motor.pwm\_output = -(float32\_t)rx\_data.valor} o a \texttt{motor.pwm\_output = (float32\_t)rx\_data.valor}
+    \item \texttt{rx\_data.id == 3} La opción tres, corresponde a control de posición mediante el uso de un PID. Se cambia el modo del motor \texttt{motor.mode = Control\_posicion} y se carga el valor de consigna deseado \texttt{motor.setpoint\_position = rx\_data.valor}
+    \item \texttt{rx\_data.id == 4} Esta opción corresponde con el control en velocidad mediante el uso de un PID. El procedimiento es análogo al anterior: \texttt{motor.mode = Control\_speed} y \texttt{motor.setpoint\_speed = (float32\_t)rx\_data.value}
+    \item \texttt{rx\_data.id == 5} Este modo corresponde a hacer un reset al motor. el resultado es que el motir se para y se resetean los valores de posición, velocidad, señal de PWM, consigna de posición, consigna de velocidad y estimadores de estados. también se resetean los valotres de los estados de los controladores PID.
+    \item \texttt{rx\_data.id == 6} Este caso permite el control de posición del motor empleando para ello un observador de estados y control por realimentación de estados. En este caso el modo del motor se actualiza a \texttt{motor.mode = Control\_state\_space} y se fija la consigna de posición del motor \texttt{motor.setpoint\_position = rx\_data.valor}
+    \item \texttt{rx\_data.id == 7} El último de los casos ajusta el modo a control de velocidad empleando realimentación de estados y ajusta la consigna de velocidad al valor indicado \texttt{motor.mode = Control\_Speed\_state\_space} y se fija la consigna de posición del motor \texttt{motor.setpoint\_speed = (float32\_t)rx\_data.valor}
+\end{enumerate}
+Una vez seleccionada la opción y realizados los ajustes se vuelve a llamar a la función \texttt{HAL\_UART\_Recive\_DMA} para que vuelva a armar la recepción a través de DMA.
+
+El resto del código que contiene el archivo, son funciones de inicialización de periféricos y configuración de la placa y han sido generadas directamente por STM32CubeMX.
 
 \section{motor.h y motor.c}\label{motorc}
 Los ficheros \texttt{motor.h} y \texttt{motor.c} Contienen las funciones necesarias para controlar el motor. Vamos a empezar por describir el archivo de cabecera.
@@ -876,7 +900,7 @@ Además, declaramos una variable global \texttt{motor} del tipo que acabamos de 
 Este es el archivo que contiene todo el sistema de control de nuestro motor.
 El fichero empieza con la inclusión de los ficheros de cabecera \texttt{motor.h} y \texttt{math.h} Este último, en realidad no sería necesario ya que podrían emplearse las funcinones de \texttt{arm\_math.h} incluidas en \texttt{motor.h}. Pero lo dejaremos de momento para una futura revisión del código.
 
-A continuación definimos la estructura \texttt{motor} que declaramos en \texttt{motor.h}, y declaramos conmo \texttt{extern} las dos estructuras \texttt{htim2} y \texttt{htim3} que definimos en \texttt{main.c}, para manejar los timers que controlan la lectura de encoders y la generación por hardware de las señales de PWM necesarias para dar tensión al motor.
+A continuación definimos la estructura \texttt{motor} que declaramos en \texttt{motor.h}, y declaramos como \texttt{extern} las dos estructuras \texttt{htim2} y \texttt{htim3} que definimos en \texttt{main.c}, para manejar los timers que controlan la lectura de encoders y la generación por hardware de las señales de PWM necesarias para dar tensión al motor.
 
 El siguiente paso, es definir \texttt{TS\_DSP  0.001f} y \texttt{VMAX\_DSP 12.0f}, empleamos para ello la directiva \texttt{\#define} ya que tanto la primera (tiempo de muestreo del sistema de control) como la segunda (Voltaje máximo del sistema) son valores fijos que unuca se alteran.
 
@@ -920,8 +944,9 @@ Para conpletar las variables necesarias, se define tambien una variable de salid
 
 Nota importante: Todos los elementos de las matrices asi como las ganancias de los controles integrales tienen asignado valor cero. Es preciso darles valores adecuados para que los controladores funciones, compilar el proyecto y descargar el resultado en la placa.
 
+A continuación, empieza la definición de las funciones de control del motor,
 \paragraph{MotorControl\_ini()}
-A continuación, empieza la definición de las funciones de control del motor. La primera es una función de de inicialización que se llama al principio de la función \texttt{main()} del archivo \texttt{main.c}. Inicializa los dos modos posibles de control, dejandolos listos para su uso.
+Esta primera es una función de de inicialización que se llama al principio de la función \texttt{main()} del archivo \texttt{main.c}. Inicializa los dos modos posibles de control, dejandolos listos para su uso. Para ello emplea la estructura \texttt{motor} declarada al principio de este código.
 Las opciones de control disponible son:
 \begin{enumerate}
     \item Control de posición mediante un PID. Permite llevar el eje del motor a una posición angular deseada empleando para ello contros Proporcional/Integral/DErivativo (PID). Para ello, se ajustan los valores de las ganacias proporcional \texttt{motor.pid\_position.Kp}, integral \texttt{motor.pid\_position.Ki} y derivativa \texttt{motor.pid\_position.Kd}. Por defecto estos valores tienen valor cero, es decir NO estan ajustados y el control no funciona. Es preciso darles valores adecuados, compilar el proyecto y descargar el software en la placa, para que el controlador funcione.
@@ -929,9 +954,40 @@ Las opciones de control disponible son:
     \item Control de velocidad mediante un PID. análogo al anterior. El objetivo es ahora estabilizar la velocidad a la que gira el motor a un valor deseado. Se definen ahora los campos correspodientes, proporcional \texttt{motor.pid\_speed.Kp}, integral \texttt{motor.pid\_speed.Ki} y derivativa \texttt{motor.pid\_speed.Kd}, para las ganacias del controlador para la velocidad. Al igual que en el caso de controlador en posición, los valores por defecto están ajustados a ceroy es preciso introducir los valores que se quieran usar para controlar el motor.
     De nuevo, llamamos a \texttt{arm\_pid\_ini\_f32} pasándole ahora la dirección de \texttt{motor.pid\_speed}, para crear un controlador PID para la velocidad.
 
-\item Control de posición usando variables de estado y un estimador. Las matrices necesarias ya se definieron como variables globales antes
-\item Control de velocidad usando variables de estado y un estimador. Igual que el ne caso anterior las matrices ya están definidas
+\item Control de posición usando variables de estado y un estimador. Las matrices necesarias ya se definieron como variables globales antes. Sin embargo, es preciso llamar a la función \texttt{arm\_mat\_init\_f32}, para vincule las matrices (arrays) con los objetos matrices de la librería CMSIS-DSP, que hemos creado, para  poder realizar cálculos con ellas de una forma eficiente. 
+\item Control de velocidad usando variables de estado y un estimador. Se vinculan las matrices creadas igual que en el caso anterior.
 \end{enumerate}
+Además, se inicializa también el estado del motor, poniendo todas sus variables de estado a cero. De modo análogo se inicializan los estados del estimador y del error integral.
+
+\paragraph{Motor\_update()} Esta segunda función es la que lleva todo el peso del control real del motor. Se llama desde el bucle principal de \texttt{main.c} cada 1ms, usanod el timer \texttt{TIM4}.
+
+Lo primero que hace es leer, empleando el contador del timer \texttt{TIM2} que controla los encoders, cual es la posición actual del motor y la guarda en \texttt{motor.posicion\_actual}. Calcula cual es la diferencia entre éste valor y la posición anterior guardada en \texttt{motor.posicion\_anterior} y, multiplicando esta direrencia por 1000, calcula cual es la velocidad del motor en grados/s.
+A continuación se emplea un filtro de media móvil para suavizar el valor de la velocidad,
+\begin{equation}
+    v_m = 0.8v_m+0.2v_l
+\end{equation}
+Donde $v_m$ representa la velocidad media y $v_l$ la velocidad que se acaba de calcular. Los valores $0.8$ y $0.8$ y $0.2$ son tentativos y pueden ajustarse para obtener un valance adecuado entre ruido y retardo.
+
+El siguiente paso, es crear una variable \texttt{salida} que será la que contendra el valor de la señal de PWM con la que modificaremos/ajustaremos el voltaje suministrado al motor para controlarlo.
+
+La lógica empleada en el control variará dependiendo del modo \texttt{motor.mode} en que se encuentre el motor. Para seleccionarlo se emplea un juego de condicionales de acuerdo con el mode,
+
+\begin{enumerate}
+    \item \texttt{motor.mode == Control\_position}. Este modo corresponde al control de posición del motor empleando control PID. Se define una variable \texttt{error\_pos} Calculando la diferencia entre la posición actual del motor y el valor de consigna (deseado), para la posición. El control, evita la banda muerta del motor, dejando de actuar si el error en posición es menor o igual a un grado. La salida se ajusta directamente, empleando la función \texttt{arm\_pid\_f32} de la libreria CMSIS-DSP que implementa un PID. Esta función admite dos variables, la primera es un puntero a una estructura \texttt{arm\_pid\_instance\_f32}. En nuestro caso, pasamos la dirección de \texttt{motor.pid\_position}, que contiene los parámetros de nuestro controlador PID para posición. Además, le pasamos el como segunda variable el error en posición que acabamos de calcular\footnote{No incluimos aquí como está implementado el controlador PID. Los interesados, puede encontrar toda la información en la documentación de la librería CMSIS-DSP}
 
 
+    Además se ha implementado un saturador por software de modo que si el valor de la salida es superior a 999 o inferior a -999, la salida se ajusta a dichos valores límite. El valor de la salida calculado, se guarda en la variable de estado del PDI \texttt{motor.pid\_position.state[2]}. Por último, para evitar cualquier oscilación debida a ruido si el error de posición leido es estrictamente cero, la salida se pone a cero.
+    \item  \texttt{motor.mode == Control\_speed} El funcionamiento es idéntico al del caso anterior. Las dos diferencias principales son que el error en velocidad se calcula comparando la consigna de velocidad con el valor de la velocidad filtrado mediante el filtro de media móvil y que el primer parámetro que se pasa a la función \texttt{arm\_pid\_f32} es la dirección de \texttt{motor.pid\_speed}, que contiene los parámetros del controlado PID para la velocidad.
+    \item \texttt{motor.mode == Control\_state\_space || motor.mode == Control\_speed\_state\_space}\footnote{El sistema que estamos describiendo, basado en condicionales, para seleccionar el modo de control aplicado al motor es muy pobre. Será mejorado en futuras versiones del código.} Esta opción activa los sistemas de control basados en variable de estado; tanto el de posición como el de velocidad. Lo primero que se hace es obtenre el valor de las salidas estimadas: $\hat{y} = C_d\hat{x}$. Además se compara la posición actual medida que está disponible en \texttt{motor.posicion\_actual} con la posición estimada para obtener el error del observador. Y se crea una variable \texttt{u\_ideal\_volts} para la entrada ideal y un par de matrices \texttt{u\_Kx\_mat, u\_Kx\_f32} para guardar el valor de la entrada que debemos aplicar al motor. Se examina a continuación el modo exacto en que nos encontramos,
+    \begin{enumerate}
+        \item \texttt{motor.mode == Control\_state\_space}. Estamos en un modo de control de posición. 
+        
+Comparamos el valor consigna con la posición estimada para obtener el error en posición. incrementamos el valor del error integral en posicion añadiendo el error de posición actual multiplicado por el tiempo de muestreo (TS\_DSP = 1ms) \texttt{ motor.x\_integral\_pos += error\_seguimiento * TS\_DSP}.
+
+Calculamos cuanto sería la entrada, multiplicado las ganancias de realimentacion por el vector de estados estimados $u = K\hat(x)$. A este resultado cambiado de signo le restamos la contribución debida al error integral y obtenemos el valor de la entrada que guardamos en la variable \texttt{u\_ideal\_volts}.
+
+\item \texttt{else} Si no estamos en el modo de control de posición por realimentación de estados, solo podemos estar en el de velocidad. El cálculo es idéntico con la unica diferencia de que aquí empleamos la velocidad estimada en lugar de emplear la posición. 
+    \end{enumerate}
+
+\end{enumerate}
 \end{document}
