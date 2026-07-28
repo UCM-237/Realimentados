@@ -986,8 +986,55 @@ Comparamos el valor consigna con la posición estimada para obtener el error en 
 
 Calculamos cuanto sería la entrada, multiplicado las ganancias de realimentacion por el vector de estados estimados $u = K\hat(x)$. A este resultado cambiado de signo le restamos la contribución debida al error integral y obtenemos el valor de la entrada que guardamos en la variable \texttt{u\_ideal\_volts}.
 
-\item \texttt{else} Si no estamos en el modo de control de posición por realimentación de estados, solo podemos estar en el de velocidad. El cálculo es idéntico con la unica diferencia de que aquí empleamos la velocidad estimada en lugar de emplear la posición. 
-    \end{enumerate}
+Es interesante señalar, que el estimador que estamos empleado, que se ha obtenido identificando el motor, trabaja en voltios. Es decir las constantes están calculadas de modo que la entrada al sistema calculada \texttt{u\_ideal\_volts} se obtiene en voltios.
 
+\item \texttt{else} Si no estamos en el modo de control de posición por realimentación de estados, solo podemos estar en el de velocidad. El cálculo es idéntico con la unica diferencia de que aquí empleamos la velocidad estimada en lugar de emplear la posición.
 \end{enumerate}
+Una vez calculado el valor del voltaje de entrada al motor, saturamos su valor a los límites físicos del voltaje suministrado por la fuente $[+12V,-12V]$. Para ello,creamos ua nueva variable \texttt{u\_real\_volts} que igualamos a \texttt{u\_ideal\_volts} si esta entre dichos límites o a la que asignamos valor 12 ó -12 si está fuera de ellos.
+
+Por último aplicamos una corrección de antiwindup a la contribución del término integral. Hay muchas formas de implementarlo. Aquí, henos obtado por un método que se conoce como  back calculation. La idea es hacer un corrección en la integral del error, de modo que se ajuste su valor al que habría tenido para dar el valor del voltaje máximo o mínimo posible. 
+
+Si nos fijamos en el cálculo de la entrada al sistema en función del error,
+\begin{equation*}
+    u_i = -K\hat{x} - K_i\int_0^T (\hat{y} -y_r)dt  
+\end{equation*}
+
+donde $\hat{x}$ representa los estados estimados y $\hat{y},\ y_r$ representa la salida (posición o velocidad) estimada y su valor de referencia. Sin embargo, sabemos que el voltaje que nos puede dar la fuente esta límitado, de modo que si el valor obtenid de $u_i$ supera los límites, ajustamos el valor a dichos limites $u_{lim}$. El método back calculation, consiste precisamente en descontar a la contribución del error integral la parte correspondiente a la diferencia entre la salida real aplicada $u_{lim}$ y la salida inicialmente calculada $u_i$ 
+
+\begin{equation*}
+    u_{lim}= -K\hat{x} - K_i\int_0^T (\hat{y} -y_r)dt -u_i +u_{lim} = -K\hat{x} - K_i\left[\int_0^T (\hat{y} -y_r)dt + \frac{u_i - u_{lim}}{K_i}\right]
+\end{equation*}
+
+Para ello, en primer lugar comprobamos si las entradas \texttt{u\_real\_volts} y \texttt{u\_ideal\_volts} no coinciden. Si es así, quiere decir que el valor ideal está fuera del rango de voltaje aplicable al motor. Comprobamos a continuación si estamos controlando posición o velocidad. y modificamos la componente de error integral del controlador correspondiente, tal y como se muestra en el fragmento de código del listado \ref{windup} (líneas 1-8)
+
+A continuación actualizamos la salida del observador, para poder emplearlo en el siguiente ciclo de control: $\hat{x}(n+1) = A_d\hat{x}(n) + B_du(n) +L(y-\hat{y})$.
+
+Esta operación hay que hacerla por partes, tal y como se muestra en el listado de código \ref{windup} (líneas 9-15). En primer lugar calculamos el producto de $A_d$ por $\hat{x}$ y guardamos el resultado en la variable temporal \texttt{temp1\_mat}. Hacemos los mismo con $B_d$ y la entrada real que vamos aplicar al motor y guardamos el resultado en \texttt{temp2\_mat} y con $L$ y el error de estimación y guardamos el resultado en \texttt{temp3_mat}. A continuación sumamos los tres resultados. la suma tambien debemos hacerla en dos pasos, ya que estamos empleando todo el tiempo las funciones de la libreria CMSIS-DSP.
+
+El último paso es generar la variable salida calculando el valor de la señal de PWM correspondiente al valor en voltios de la variable \texttt{u\_real\_volts}. Para el caso en que se esté realizando control el posición calculamos si l a posición del motor está en el límite de un grado respecto a la posición deseada en cuyo caso, paramos directamente el motor.
+
+\item \texttt{else} Si no estamos en ninguno de los modos anteriores, entoces es que estamos en modo manual, en cuyo caso, \texttt{salida = motor.pwm\_output}, damos a la salida el valor de la señal de PWM directamente contenido en el campo pwm\_out de la estructura motor.
+\end{enumerate}
+
+Tan solo nos queda enviar a los pines de la placa el valor de la señal de PWM y el sentido de giro del motor. 
+
+\begin{lstlisting}[language=C, caption={Corrección antiwindup}, label=windup ] 
+// D) Anti-Windup (Back-Calculation Corregido)
+        if (u_real_volts != u_ideal_volts) {
+            if (motor.mode == Control_state_space) {
+                motor.x_integral_pos += (u_ideal_volts - u_real_volts) / Ki_pos_f32; 
+            } else {
+                motor.x_integral_speed += (u_ideal_volts - u_real_volts) / Ki_vel_f32; 
+            }
+        }
+// E) Actualizar Observador: x_hat = Ad*x_hat + Bd*u_real + Lp*error_obs
+arm_mat_mult_f32(&Ad_mat, &x_hat_mat, &temp1_mat);         // temp1 = Ad * x_hat
+arm_mat_scale_f32(&Bd_mat, u_real_volts, &temp2_mat);      // temp2 = Bd * u_real
+arm_mat_scale_f32(&Lp_mat, error_obs, &temp3_mat);         // temp3 = Lp * error_obs
+        
+arm_mat_add_f32(&temp1_mat, &temp2_mat, &x_hat_mat);       // x_hat = temp1 + temp2
+arm_mat_add_f32(&x_hat_mat, &temp3_mat, &x_hat_mat);       // x_hat = x_hat + temp3
+
+\end{lstlisting}
+
 \end{document}
