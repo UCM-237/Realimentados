@@ -1013,7 +1013,7 @@ Esta operación hay que hacerla por partes, tal y como se muestra en el listado 
 
 El último paso es generar la variable salida calculando el valor de la señal de PWM correspondiente al valor en voltios de la variable \texttt{u\_real\_volts}. Para el caso en que se esté realizando control el posición calculamos si l a posición del motor está en el límite de un grado respecto a la posición deseada en cuyo caso, paramos directamente el motor.
 
-\item \texttt{else} Si no estamos en ninguno de los modos anteriores, entoces es que estamos en modo manual, en cuyo caso, \texttt{salida = motor.pwm\_output}, damos a la salida el valor de la señal de PWM directamente contenido en el campo pwm\_out de la estructura motor.
+\item \texttt{else}. Si no estamos en ninguno de los modos anteriores, entonces es que estamos en modo manual, en cuyo caso, \texttt{salida = motor.pwm\_output}, damos a la salida el valor de la señal de PWM directamente contenido en el campo pwm\_out de la estructura motor.
 \end{enumerate}
 
 Tan solo nos queda enviar a los pines de la placa el valor de la señal de PWM y el sentido de giro del motor.
@@ -1050,16 +1050,24 @@ En este caso, tenemos un solo programa Motor.py; un script de Python standard. C
 \end{figure}
 
 La ventana y los \emph{gadgets} se han desarrollado usando Qt, que es un \emph{framework} (conjunto de herramientas y bibliotecas) para desarrollar aplicaciones gráficas (interfaces de usuario, ventanas, botones, etc.) en C++, pero también está disponible para otros lenguajes como Python, Java, JavaScript, etc.
-PyQt es la versión de Qt para Python, es decir, un binding (enlace) que permite usar todas las funcionalidades de Qt directamente desde código Python. Si nos fijamos en la cabecera del módulo \textt{Motor.py}, podemos ver los módulos importados: serial, para manejar el puerto serie, struct para la gestión de los paquetes de datos, csv para general ficheros csv con los datos recibidos desde el microcontrolador, sys para gestionar comoandos del sistema operativo del ordenador, time para medir tiempos, collection para generar estrcturas de datos distintas de las estádar de python, datetime, para marcar fechas, pyqtgraph, QtCore, Qtwidgets para genera objetos gráficos con Qt y numpy para realizar operaciones matemáticas.
+PyQt es la versión de Qt para Python, es decir, un binding (enlace) que permite usar todas las funcionalidades de Qt directamente desde código Python. Si nos fijamos en la cabecera del módulo \texttt{Motor.py}, podemos ver los módulos importados: serial, para manejar el puerto serie, struct para la gestión de los paquetes de datos, csv para general ficheros csv con los datos recibidos desde el microcontrolador, sys para gestionar comoandos del sistema operativo del ordenador, time para medir tiempos, collection para generar estrcturas de datos distintas de las estádar de python, datetime, para marcar fechas, pyqtgraph, QtCore, Qtwidgets para genera objetos gráficos con Qt y numpy para realizar operaciones matemáticas.
 
 Despues de esto se definen dos variables globales, una de ellas es el nombre del puerto serie del ordenador donde se recibirán los datos procedentes del microcontrolador. Hay que recordar que en realidad, estos datos se entán recibiendo a través de un puerto USB que está emulando un puerto serie. El nombre asignado \texttt{PUERTO = '/dev/ttyACM0'} suele ser el típico asignado en Linux por defecto, peeeeero no es mala idea comprobar que efectivamente ese es el nonbre con el que el sistema operativo ha montado el puerto\footnote{para comprobarlo basta ir al directorio /dev y enchufar y desenchufar el cable USB, listando los archivos disponibles con ls deberá aparecer y desaparece ttyACM0 o el nombre del archivo donde el sistema lo ha montado}.
 
 La segunda variable es la velocidad de transmisión del puerto que se fijado 115200 baudios que es la misma velocidad a la que se ha configurado el puerto serie en el microcontrolador.
 
-El siguiente paso, es crear una clase, llamada \textt{MotorDashboard} que contiene dentro todos los elemntos y funciones necesarios para levantar la ventana del panel de control.
+El siguiente paso, es crear una clase, llamada \texttt{MotorDashboard} que contiene dentro todos los elemntos y funciones necesarios para levantar la ventana del panel de control.
 
-Por último, si se ejecuta directamente Motor.py, se genera objeto tipo MotorDashboard, llamando al constructor de la clase, y se abre en el ordenador la ventana del panel de control \texttt{dashboar.show()}, lista para que el usuario la emplee. Cuando el usuario cierra la ventana el ordenador termina la ejecución del código y libera la memora \texttt{sys.exit(app.exec\_())}. 
+Por último, si se ejecuta directamente Motor.py, se genera objeto tipo MotorDashboard, llamando al constructor de la clase, y se abre en el ordenador la ventana del panel de control \texttt{dashboar.show()}, lista para que el usuario la emplee. Cuando el usuario cierra la ventana el ordenador termina la ejecución del código y libera la memoria \texttt{sys.exit(app.exec\_())}.
 
+Veamos ahora despacio la clase MotorDashboard.
+
+\section{MotorDashboard}
+La clase MotorDashboard contiene todas las funciones necesarias para crear el panel de control con el que el usuario puede interactuar con el motor a través de la placa de control, monitorizar las salidas (posición angular del rotor y velocidad) y almacenar datos en archivos tipo csv.
+En la definición se pasa como parámetro la clase Qtwidgets.QMainWindow, de modo que MotorDashboar heredará de ésta todos sus métodos y atributos. Esta clase, esta asociada a Qt y permite crear la ventana principal de la aplicación y emplear todas las funciones y atributos asociados a las ventanas de Qt.
+\paragraph{El constructor.} Lo primero que hace el constructor de la clase, es llamar al constructor de la clase superior QMainWindow, de este modo se crea la ventana principal del panel de control, Además empleando los métodos setWindowTitle y resize, Da título a la ventana creada y le asigna un tamaño por defecto.
+
+El siguiente paso es configurar el puerto serie. Para ello trata de crear un objeto Serial con el nombre del puerto y la velocidad (baudios) definidos previamente. Si no es capaz de establecer la comunicación, se cierra la aplicación y se nos muestra un mensaje de error en el terminal.
 
 
 
