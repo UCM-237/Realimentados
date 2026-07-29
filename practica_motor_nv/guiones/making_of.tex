@@ -1016,7 +1016,9 @@ El último paso es generar la variable salida calculando el valor de la señal d
 \item \texttt{else} Si no estamos en ninguno de los modos anteriores, entoces es que estamos en modo manual, en cuyo caso, \texttt{salida = motor.pwm\_output}, damos a la salida el valor de la señal de PWM directamente contenido en el campo pwm\_out de la estructura motor.
 \end{enumerate}
 
-Tan solo nos queda enviar a los pines de la placa el valor de la señal de PWM y el sentido de giro del motor. 
+Tan solo nos queda enviar a los pines de la placa el valor de la señal de PWM y el sentido de giro del motor.
+
+Si la salida es positiva, ponemos a uno el pin 3: \texttt{ HAL\_GPIO\_WritePin(GPIOB, GPIO\_PIN\_3, GPIO\_PIN\_SET)} y Enviamos el valor de la variable \texttt{salida} al comparador del TIMER 3 que es el que está controlando el tiempo que el pin A6 está en el valor alto. Si la salida es negativa, lo que hacemos es poner a cero el pin 3 y enviar al comparador el valor de salida cambiado de signo.
 
 \begin{lstlisting}[language=C, caption={Corrección antiwindup}, label=windup ] 
 // D) Anti-Windup (Back-Calculation Corregido)
@@ -1036,5 +1038,29 @@ arm_mat_add_f32(&temp1_mat, &temp2_mat, &x_hat_mat);       // x_hat = temp1 + te
 arm_mat_add_f32(&x_hat_mat, &temp3_mat, &x_hat_mat);       // x_hat = x_hat + temp3
 
 \end{lstlisting}
+
+\chapter{Programación en Python de un monitorizador.}
+Una vez terminada la descripción del código empleado por el microcontrolador para controlar el motor, nos queda describir el programa para manejarlo desde el ordenador. 
+
+En este caso, tenemos un solo programa Motor.py; un script de Python standard. Cuando se ejecuta, el script abre una ventana que muestra un panel de control (\emph{Dashboard}), que permite al usuario interactual con el motor y monitorizar la posición y la velocidad del motor. La figura \ref{figdb} muestra una imagen del panel de control. Su uso se detalla en el guión de la práctica y no se repetira aquí.
+\begin{figure}
+    \includegraphics[width=\textwidth]{dashboard.png}
+    \caption{Vista del panel de control desarrollado para interactual con el motor}
+    \label{figdb}
+\end{figure}
+
+La ventana y los \emph{gadgets} se han desarrollado usando Qt, que es un \emph{framework} (conjunto de herramientas y bibliotecas) para desarrollar aplicaciones gráficas (interfaces de usuario, ventanas, botones, etc.) en C++, pero también está disponible para otros lenguajes como Python, Java, JavaScript, etc.
+PyQt es la versión de Qt para Python, es decir, un binding (enlace) que permite usar todas las funcionalidades de Qt directamente desde código Python. Si nos fijamos en la cabecera del módulo \textt{Motor.py}, podemos ver los módulos importados: serial, para manejar el puerto serie, struct para la gestión de los paquetes de datos, csv para general ficheros csv con los datos recibidos desde el microcontrolador, sys para gestionar comoandos del sistema operativo del ordenador, time para medir tiempos, collection para generar estrcturas de datos distintas de las estádar de python, datetime, para marcar fechas, pyqtgraph, QtCore, Qtwidgets para genera objetos gráficos con Qt y numpy para realizar operaciones matemáticas.
+
+Despues de esto se definen dos variables globales, una de ellas es el nombre del puerto serie del ordenador donde se recibirán los datos procedentes del microcontrolador. Hay que recordar que en realidad, estos datos se entán recibiendo a través de un puerto USB que está emulando un puerto serie. El nombre asignado \texttt{PUERTO = '/dev/ttyACM0'} suele ser el típico asignado en Linux por defecto, peeeeero no es mala idea comprobar que efectivamente ese es el nonbre con el que el sistema operativo ha montado el puerto\footnote{para comprobarlo basta ir al directorio /dev y enchufar y desenchufar el cable USB, listando los archivos disponibles con ls deberá aparecer y desaparece ttyACM0 o el nombre del archivo donde el sistema lo ha montado}.
+
+La segunda variable es la velocidad de transmisión del puerto que se fijado 115200 baudios que es la misma velocidad a la que se ha configurado el puerto serie en el microcontrolador.
+
+El siguiente paso, es crear una clase, llamada \textt{MotorDashboard} que contiene dentro todos los elemntos y funciones necesarios para levantar la ventana del panel de control.
+
+Por último, si se ejecuta directamente Motor.py, se genera objeto tipo MotorDashboard, llamando al constructor de la clase, y se abre en el ordenador la ventana del panel de control \texttt{dashboar.show()}, lista para que el usuario la emplee. Cuando el usuario cierra la ventana el ordenador termina la ejecución del código y libera la memora \texttt{sys.exit(app.exec\_())}. 
+
+
+
 
 \end{document}
