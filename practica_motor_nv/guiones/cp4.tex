@@ -1,0 +1,604 @@
+% !TEX root = making_of.tex
+\chapter{Programación del Microcontrolador en C}
+Una vez generado el proyecto con \texttt{STM32CubeMX}. Tenemos la estructura básica para controlar nuestro motor, pero ahora es necesario escribir el código. Para hacerlo, abrimos el directorio (open folder) motor en Visual Studio Code.
+
+
+\section{Estructura del proyecto}
+La carpeta \text{motor} está configurada siguiendo al estructura que se muestra en el siguiente árbol de directorios:
+\dirtree{%
+  .1 motor/.
+  .2 .settings/.
+  .2 .vscode/.
+  .2 build/.
+  .2 cmake/.
+  .2 Core/.
+  .3 Inc/.
+  .4 main.h.
+  .4 motor.h.
+  .4 stm32f4xx\_hal\_conf.h.
+  .4 stm32f4xx\_it.h.
+  .3 Src/.
+  .4 main.c.
+  .4 motor.c.
+  .4 stm32f4xx\_hal\_msp.c.
+  .4 stm32f4xx\_it.c.
+  .4 syscalls.c.
+  .4 sysmem.c.
+  .4 system\_stm32f4xx.c.
+  .2 Drivers/.
+  .2 .clangd.
+  .2 .gitignore.
+  .2 .mxproject.
+  .2 .project.
+  .2 CMakeLists.txt.
+  .2 CMakePresets.json.
+  .2 motor.ioc.
+  .2 Motor.py.
+  .2 registro\_motor\_20260506\_171311.csv.
+  .2 startup\_stm32f411xe.s.
+  .2 STM32F411XX\_FLASH.ld.
+}
+
+Todos los directorios y ficheros que comienzan por un punto, contienen archivos de configuración del proyecto, creados automáticamente por Visual Studio, o Git. También lo son los que aparecen en el directorio \texttt{/motor} creados por CMake, (\texttt{CMakeLists.txt, CMakePresets.json}) y el propio directorio \texttt{cmake/}. O los relacionados con la descarga de código a la placa, (\texttt{startup\_stm32f411xe.s, STM32F411XX\_FLASH.ld})creados una vez se compila y descarga el código.
+
+El directorio \texttt{build/} se genera al compilar el proyecto. De hecho, no aparece hasta que se compila por primera vez y podría borrarse antes de volver a compilar y CMake lo generaría de nuevo.
+
+El directorio \texttt{Drivers/}, contiene las rutinas de \texttt{CMSIS} que emplearemos para desarrollar el código de control del motor y las rutinas de la \emph{HAL} (Hardware  (Hardware Abstraction Layer o Capa de Abstracción de Hardware) en microcontroladores es un conjunto de funciones de software que actúa como puente entre el código de aplicación y los registros físicos del hardware. Permite programar periféricos (GPIO, I2C, SPI) con comandos genéricos.
+
+Hemos dejado casi para el final, El directorio principal de nuestro proyecto \texttt{Core/}. Este directorio contiene a su vez, otros dos \texttt{Inc/} y \texttt{Src/}. El primero contiene los archivos de cabecera (.h) y el segundo los archivos fuente en c (.c). Todos estos archivos han sido generados automáticamente por STM32CubeMX. Los archivos main y motor, ofrecen simples esqueletos en los deberemos añadir el código necesario para programar nuestra placa. Vamos a verlos en detalle en las proximas secciones.
+
+\section{main.h y main.c}
+\subsection{main.h} 
+Vamos a empezar por los archivos principales (main). El archivo de cabecera, \texttt{main.h}, es un archivo breve. Lo vamos a usar tal cual lo genera STM32CubeMX.
+
+\begin{lstlisting}[language=C, caption={Archivo de cabecera del programa principal, para incluir en main.c. Ambos se encargan de configurar los pines de la placa, timers, etc. (\texttt{main.h})}]
+/* USER CODE BEGIN Header */
+/**
+  ******************************************************************************
+  * @file           : main.h
+  * @brief          : Header for main.c file.
+  *                   This file contains the common defines of the application.
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
+/* USER CODE END Header */
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __MAIN_H
+#define __MAIN_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* Includes ------------------------------------------------------------------*/
+#include "stm32f4xx_hal.h"
+
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+
+/* USER CODE END Includes */
+
+/* Exported types ------------------------------------------------------------*/
+/* USER CODE BEGIN ET */
+
+/* USER CODE END ET */
+
+/* Exported constants --------------------------------------------------------*/
+/* USER CODE BEGIN EC */
+
+/* USER CODE END EC */
+
+/* Exported macro ------------------------------------------------------------*/
+/* USER CODE BEGIN EM */
+
+/* USER CODE END EM */
+
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+
+/* Exported functions prototypes ---------------------------------------------*/
+void Error_Handler(void);
+
+/* USER CODE BEGIN EFP */
+
+/* USER CODE END EFP */
+
+/* Private defines -----------------------------------------------------------*/
+#define USART_TX_Pin GPIO_PIN_2
+#define USART_TX_GPIO_Port GPIOA
+#define USART_RX_Pin GPIO_PIN_3
+#define USART_RX_GPIO_Port GPIOA
+#define LD2_Pin GPIO_PIN_5
+#define LD2_GPIO_Port GPIOA
+
+/* USER CODE BEGIN Private defines */
+
+/* USER CODE END Private defines */
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __MAIN_H */
+
+\end{lstlisting}
+
+Reproducimos aquí el código de \texttt{main.h}, porque nos va a permitir explicar algunas características importantes de los archivos fuente generados por STM32CubeMX. si nos fijamos, el archivo está divido en secciones: includes, types, constants, macro, function protipes, etc. Además, en todas estas secciones aparece repetida un área, delimitada por los comentarios,
+\begin{verbatim}
+/* USER CODE BEGIN (abreviatura de la sección) */
+
+/* USER CODE END  (abreviatura de la sección)*/
+\end{verbatim}
+
+Estas secciones están pensadas para que el usuario añada en ellas su propio código. La razón de definirlas así, tiene que ver precisamente con STM32CubeMX. Supongamos que, tras generar los ficheros de código con STM32CubeMX y añadir nuestro código en ellos, nos damos cuenta de que no hemos configurado algo correctamente, o queremos añadir algo más, por ejemplo habilitar es uso de un pin nuevo. Para hacerlo bastaría con abrir de nuevo el archivo .ioc de nuestro proyecto en STM32CubeMX, corregir la configuración, o añadirle la nueva funcionalidad y volver a generar el proyecto. Al hacerlo, STM32CubeMX nos genera de nuevo los archivos del proyecto, conservando sin modificacióntood el código que hayamos escrito en las secciones reservadas para el usuario. Pero si hemos escrito algo de código fuera de dichas secciones, STM32CubeMx lo eliminará de los nuevos archivos generados.
+
+Este archivo de cabecera, incluye a su vez el archivo de cabecera \texttt{\#include "stm32f4xx\_hal.h"}. 
+Es la entrada principal de acceso al hardware. Además define los prototipos de las funciones,
+
+\texttt{HAL\_TIM\_MspPostInit(TIM\_HandleTypeDef *htim)} y \texttt{Error\_Handler(void)}. La primera permite relacionar los timers con los pines que los emplean y la segunda se encarga de gestionar errores.
+
+El archivo además incluye unos \texttt{define} que asignan nombres específicos a los pines reservados para el puerto serie. En realidad nosotros no usaremos estos pines, ya que vamos a emplear el puerto USB de la placa para comunicarnos con el pc, emulando un puerto serie. Sin embargo, los pines asociados al puerto serie correspondientes quedan configurados en cualquier caso. Es interesante fijarse aquí como se definen. Cada pin tiene asociado un \emph{puerto} (A, B, C ó D) y un número. Así por ejemplo, el \texttt{define} de la línea 62 define el pin 2 como pin de envío (\texttt{USART\_TX\_pin}) del puerto serie y el de la línea 23 establece que se trata del puerto A, por tanto, la configuración completa lo define como el pin \texttt{A2}.
+
+Aparte de configurar los pines del puerto, también se configura el pin \texttt{5A} como el pin asociado al led 2 (\texttt{}{L2}, led verde) de la placa núcleo. Este pin no es parte del sistema de control de motor, pero lo encenderemos, cuando arranquemos la placa, como testigo de que el código se está ejecutando.
+
+\subsection{main.c} 
+Este archivo contiene el bucle principal del programa que ejecutará el microprocesador así como las definiciones de todas las funciones, relacionadas con el Hardware: Lectura de encoders, generación de señales de PWM, comunicaciones con el pc, etc. Vamos a ver en detalle como está implementado. No vamos a reproducir aquí todo su código. Para entender esta descripción es conveniente tener delante el archivo del código.
+
+El código incluye tres archivos de cabecera: \texttt{main.h}, del que ya hemos hablado, \texttt{math.h} que es un archivo de cabecera que da acceso a funciones matemáticas estándar y \texttt{motor.h}. Este último contiene las definiciones de las funciones que vamos a emplear para controlar el motor. Lo veremos detenidamente en más adelante.
+
+A continuación definimos dos estructuras de datos. Ambas están pensadas para intercambiar información con el pc a través del puerto serie,
+
+\begin{lstlisting}[language=C, caption={Estructuras de datos para enviar información al pc y recibir comandos desde éste a través del puerto serie}, label ={ls42}]
+typedef struct {
+  uint32_t id; //ID para identificar el tipo de dato 1 para direccion, 2 para tiempo y posicion)
+  uint32_t tiempo_ms; //tiempo o direccion dependiendo del ID
+  int32_t  posicion; //posicion del encoder (solo se utiliza si el ID es 2)
+  float32_t velocidad; //velocidad del motor
+  float32_t velocidad_est; //velocidad estimada por el observador de espacio de estados
+} DatosPck;
+
+typedef struct{
+  uint32_t id; //ID para identificar el tipo de dato 1 para direccion, 2 para PWM)
+  int32_t valor; //valor del comando (puede ser el valor de PWM, la direccion, etc. dependiendo del ID)
+} ComandoPck;	
+\end{lstlisting}
+
+La primera estructura \texttt{DatosPck}, Contiene información del estado del motor que la placa ha recopilado, medido o calculado. La primera variable es un identificador, que permite definir la naturaleza del mensaje que va a enviar la placa al pc. Solo son necesarios, en la configuración actual, dos tipos de mensajes. Si hacemos \texttt{id = 1} nuestro mensaje indica que ha habido un cambio en la dirección de movimiento del motor. Este cambio se ha activado directamente por hardware: pulsando el botón azul de la placa. Se informa al pc de la nueva dirección. En otro caso, \texttt{id = 2}, se está transmitiendo información de la posición (encoder) y la velocidad del motor, en el momento del envío. El nombre de las variables es autoexplicativo (ver listado \ref{ls42}). La última variable, \texttt{velocidad\_est} corresponde a la velocidad calculada por el estimador de Luenberger cuando se está empleando control por realimentación de estados estimados.
+
+La segunda estructura \texttt{ComandoPck}, permite recibir órdenes desde el pc a través del puerto serie. La primera variable \texttt{id} permite identificar el comando, y la segunda nos da su valor. Los posibles comandos se detallarán más adelante.
+
+A continuación stm32cubemx, dentro del grupo de variables privadas, ha definido unas estructuras especiales, tipo \texttt{TIM\_HandleTypeDef}, para guardar parámetros relacionados con los temporizadores (timers). Define tres; 
+
+\begin{itemize}
+	\item \texttt{htim2}. \textbf{Lectura del Encoder (TIM2):} Se configura un temporizador en modo \textit{Encoder Mode}. El hardware del STM32 se encargará automáticamente de decodificar las señales en cuadratura (Canal A y Canal B) y actualizar un registro contador (\texttt{CNT}), liberando a la CPU de esta tarea.
+	\item \texttt{htim3} \textbf{Generación de PWM (TIM3):} Se configura un temporizador para generar una señal PWM (Modulación por Ancho de Pulso).
+	\item \texttt{htim4}. \textbf{Bucle de Control (TIM4):} Un temporizador configurado para generar una interrupción periódica exacta cada 1.0ms ($T_s = 0.001\,$s). Esta interrupción garantiza que nuestro bucle de control se ejecute de forma determinista.
+\end{itemize}
+También, define un segundo grupo de variables, que contiene las propiedades del puerto serie (USART2) y los dos canales de DMA, para envío y recepción de datos 
+\begin{itemize}
+	\item \texttt{huart2} \textbf{Comunicaciones:} Se habilita el puerto serie asíncrono configurado a 115200 baudios 
+    \item \texttt{hdma\_usart2\_tx} \textbf{Canal DMA:} para envío de Datos
+    \item \texttt{hdma\_usart2\_rx} \textbf{Canal DMA:} para recepción de Datos
+\end{itemize}
+Cada una de estas estructuras contiene los datos de las configuraciones que definimos en stm32cubemx.
+
+Además, se han definido otras dos variables privadas. Se les ha añadido el atributo volatile, ya que son variables que pueden ser accedidas y modificadas desde interrupciones. Son dos,
+\begin{itemize}
+	\item flag\_timer. EL timer TIM4 activa esta variable cada 1.0 ms, entrando en la condición de control del motor
+	\item flag\_boton\_pulsado. Se activa por una interrupción asociada a que se haya pulsado el botón azul de la placa
+\end{itemize}
+
+Por último antes de entrar a la función principal, aparecen las declaraciones de las funciones de inicio de los pines, los timers, DMA y puerto serie. Son generadas automáticamente por STM32CubeMx y su definición se puede encontrar al final de este mismo archivo main.
+
+\begin{figure}
+    \centering
+% Desactivamos los atajos de Babel antes de que \resizebox lea el bloque
+\shorthandoff{<}
+\shorthandoff{>}
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[
+    font=\sffamily\small,
+    >=Stealth,
+    node distance=0.8cm and 1.6cm,
+    % Estilos de Cajas
+    hw/.style={rectangle, draw=gray!60!black, fill=gray!15, text width=2.5cm, align=center, minimum height=1.1cm, rounded corners=2pt, font=\sffamily\footnotesize\bfseries},
+    core/.style={rectangle, draw=blue!60!black, fill=blue!5, text width=3.4cm, align=center, minimum height=1.2cm, rounded corners=4pt},
+    fast/.style={rectangle, draw=orange!80!black, fill=orange!10, text width=3.4cm, align=center, minimum height=1.2cm, rounded corners=4pt},
+    slow/.style={rectangle, draw=teal!80!black, fill=teal!10, text width=3.4cm, align=center, minimum height=1.2cm, rounded corners=4pt},
+    async/.style={rectangle, draw=purple!80!black, fill=purple!5, text width=4.0cm, align=center, minimum height=1.1cm, rounded corners=4pt, font=\sffamily\footnotesize},
+    pc/.style={rectangle, draw=red!70!black, fill=red!5, text width=2.8cm, align=center, minimum height=1.5cm, rounded corners=4pt, font=\sffamily\small\bfseries},
+    % Estilos de Líneas
+    line/.style={draw, ->, thick, color=black!80},
+    dashline/.style={draw, ->, thick, dashed, color=purple!80!black},
+    dataline/.style={draw, ->, line width=1.2pt, color=teal!80!black}
+]
+
+    % ==================== COLUMNA 1: HARDWARE (IZQUIERDA) ====================
+    \node[hw] (motor) {MOTOR DC \\ + ENCODER};
+    \node[hw] (boton) [below=1.5cm of motor] {BOTÓN USUARIO \\ (Pin PC13)};
+
+    % ==================== COLUMNA 2: FIRMWARE STM32 (CENTRO) ====================
+    % Bucle de Control (1 kHz)
+    \node[core] (tim4) [right=of motor] {\textbf{TIM4 Interrupt} \\ Cada 1 ms $\rightarrow$ flag=1};
+    \node[fast] (update) [below=of tim4] {\textbf{Motor\_update()} \\ \footnotesize 1. Lee Encoder (TIM2) \\ 2. Filtro paso bajo \\ 3. PID / Espacio Estados \\ 4. Escribe PWM (TIM3)};
+    
+    % Diezmado y Telemetría (100 Hz)
+    \node[slow] (cnt) [below=of update] {\textbf{Contador Telemetría} \\ ¿Llegó a $\ge$ 10? \\ \footnotesize (Cada 10 ms / 100 Hz)};
+    \node[slow] (txdma) [below=of cnt] {\textbf{UART TX DMA} \\ Envía velocidad media, \\ posición y tiempo};
+
+    % Bloques Asíncronos
+    \node[async] (rxcplt) [below=1.2cm of txdma] {\textbf{HAL\_UART\_RxCpltCallback} \\ Recibe comandos vía DMA (Consignas, Modos) y rearma RX};
+    \node[async] (errback) [below=0.6cm of rxcplt] {\textbf{HAL\_UART\_ErrorCallback} \\ Limpia banderas de error (ORE, FE) y desbloquea el DMA};
+
+    % Conexiones del flujo de control interno
+    \path[line] (tim4) -- (update);
+    \path[line] (update) -- (cnt);
+    \path[line] (cnt) -- node[left, font=\scriptsize\bfseries, color=teal] {SÍ} (txdma);
+    \path[line] (cnt.west) -- ++(-0.4,0) |- node[left, pos=0.2, font=\scriptsize] {NO} (update.west);
+
+    % ==================== COLUMNA 3: PC EXTERNO (DERECHA) ====================
+    \node[pc] (python) [right=2.5cm of cnt] {INTERFAZ PYTHON \\ \footnotesize Gráficas en tiempo real \\ y Control de Consignas};
+
+    % ==================== ENLACES HARDWARE <-> FIRMWARE ====================
+    \path[line] (motor.east) -- node[above, font=\scriptsize] {TIM2} (update.160);
+    \path[line] (update.200) -- ++(-0.6,0) |- node[left, pos=0.2, font=\scriptsize] {TIM3 PWM} (motor.east);
+    \path[dashline] (boton) |- (rxcplt.west);
+
+    % ==================== ENLACES FIRMWARE <-> PYTHON ====================
+    % Telemetría: El texto ahora se coloca limpiamente DEBAJO de la línea verde horizontal
+    \path[dataline] (txdma.east) -| node[below, pos=0.3, font=\scriptsize\bfseries] {100 Hz (DMA TX)} (python.south);
+    
+    % Comandos Asíncronos: El texto pasa a la DERECHA de la línea vertical, al espacio libre
+    \path[dashline] (python.west) -- ([xshift=-1.0cm]python.west) 
+        -- node[right, pos=0.75, font=\scriptsize\bfseries, align=left] {Comandos Asíncronos\\(DMA RX)} 
+        ([xshift=-1.0cm]python.west |- rxcplt.east) -- (rxcplt.east);
+
+    % Conexión vertical limpia entre los Callbacks de la UART
+    \path[draw, <->, dashed, color=purple!80!black] (rxcplt) -- (errback);
+
+    % ==================== ENCUADRES / CONTENEDORES (FONDOS) ====================
+    \begin{scope}[on background layer]
+        % Contenedor del ciclo de ejecucion principal de main.c
+        \node[rectangle, draw=black!40, fill=black!2, dashed, inner sep=12pt, rounded corners=6pt,
+              fit=(tim4) (update) (cnt) (txdma), 
+              label={[shift={(0,-0.45)}]above:\textbf{Bucle Principal Multi-Tasa (\texttt{while(1)})}}] (loop_box) {};
+              
+        % Contenedor del sistema completo STM32
+        \node[rectangle, draw=blue!40!black, fill=blue!2, fill opacity=0.03, inner sep=20pt, rounded corners=8pt,
+              fit=(loop_box) (rxcplt) (errback), 
+              label={above:\large\textbf{Arquitectura del Firmware (STM32F4)}}] (mcu_box) {};
+    \end{scope}
+
+\end{tikzpicture}
+}
+\shorthandon{<}
+\shorthandon{>}
+    \caption{Arquitectura modular y síncrona del software de control del motor sobre la placa STM32.}
+    \label{fig:arquitectura_motor_perfecta}
+\end{figure}
+
+\paragraph{main.c: Función \texttt{main}} Entramos ahora a la descripción de la función main. En primer lugar se hacen llamadas a funciones que preparan la placa y la configuran de acuerdo con las características que se definieron empleando \texttt{STM32CubeMx}. Así se empieza reseteando los valores de configuración de todos los periféricos de la planca con al función \texttt{HAL\_Ini()}. Se configura el reloj del sistema con la función \texttt{SystemClock\_Config()}. Se inicializan los pines, cada uno con la función asignada usando \texttt{MX\_GPIO\_Init()}, Los canales de DMA: \texttt{MX\_DMA\_Init()}, Los timers: \texttt{MX\_TIMnº\_Init()} y el puerto serie: \texttt{MX\_USART2\_UART\_Init()}.
+
+A continuación se llama a la función \texttt{MotorControl\_ini()}. Esta función inicializa los parámetros del sistema de control del motor se describirá con detalle en la sección \ref{motorc}.
+
+A continuación se configurar los timers de acuerdo a la función asignada, empleando para en cada caso la funcíon específica para ello:
+\begin{enumerate}
+    \item \texttt{HAL\_TIM\_Encoder\_Start} se aplica al timer dos que es el que se encargará de contar los pasos de encoder
+    \item \texttt{HAL\_TIM\_PWM\_Start} Se aplica al timer tres que controlará la señal de PWM empleada para ajustar la tensión que se suministra al motor a traves de la placa de expansión.
+    \item \texttt{HAL\_TIM\_Base\_Start\_IT} Se aplica al timer cuatro para que nos lleve el tiempo transcurrido 
+\end{enumerate}
+
+A continuación encedemos el led de la placa para que nos sirva de testigo de que el sistema está funcionando \texttt{HAL\_GPIO\_WritePin(GPIOA, GPIO\_PIN\_5, GPIO\_PIN\_SET)}.
+
+Activamos la recepción de datos por el puerto serie en modo DMA. \texttt{HAL\_UART\_Receive\_DMA(\&huart2, (uint8\_t*)\&rx\_data, sizeof(rx\_data))}.
+Esta función queda a la escucha de los paquetes de datos que lleguen desde el ordenador a través del puerto serie. Implementa un sistema de Acceso Directo a Memoria (DMA). Es decir, la recepción se realiza almacenando directamente en memoria los datos en la estructura que creamos \texttt{rx\_data}, sin interferir con la CPU que sigue ejecutando su código sin atender a esta recepción.
+
+Cuando la recepción termina, se dispara una interrepción que llama automáticamente a la función \texttt{HAL\_UART\_RxCpltCallback(UART\_HandleTypeDef *huart)}, definida más abajo, en la sección de código \texttt{USER CODE 4} que contiene los callbacks del usuario y descrita en la sección \ref{clbk}.
+
+Por último damos valores a los pines de configuración de la placa de expansión. Ponemosa cero el pin tres, para asegurar una tensión en el motor que lo haga girar en sendido 'positivo' y ponemos a uno los pines 7 y 10 para activar el puente en H.
+
+Con esto acabaría la parte de configuración del código. Antes de entrar en el buche principal del programa, definimos e inicializamos a cero dos variables que vamos a emplear para fijar los tiempos en que enviaremos datos por el puerto serie al ordenador: \texttt{contador\_telemetría} y para guardar los valores de la posición enviada por última vez: \texttt{posicion\_anterior\_telemetria}. 
+
+Entramos ahora en el bucle principal. Se trata de un bucle que repetirá su ejecución de modo indefinido desde que se suministra tensión a la placa y se ejecutan los pasos anteriores de inicialización hasta que se corte la tensión suministrada. 
+
+En este bloque podemos distinguir dos partes principales cada una asociada a una condición. 
+
+
+\paragraph{Botón pulsado}
+La primera es una parte asíncrona que solo se ejecuta si se pulsa el botón azul de la placa. Cuando se pulsa el botón este genera una interrupción y ejecuta la función \texttt{HAL\_GPIO\_EXTI\_Callback(uint16\_t GPIO\_Pin)}. Esta función gestiona las interruciones lanzadas por hardware desde cualquier pin. Para explicar mejor lo que hace, incluimos a continuación su código,
+
+\begin{lstlisting}[language=C, caption={función HAL\_GPIO\_EXTI\_Callback(uint16\_t GPIO\_Pin)}, label ={pinazul}]
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+     static uint32_t ultimo_tiempo_pulsacion = 0;
+     uint32_t tiempo_actual = HAL_GetTick(); 
+
+     if(GPIO_Pin == GPIO_PIN_13) 
+     {
+         if (tiempo_actual - ultimo_tiempo_pulsacion > 200) 
+         {
+             motor.pwm_output = -motor.pwm_output;
+             flag_boton_pulsado = 1; //Activar el flag para indicar que el boton ha sido pulsado
+             ultimo_tiempo_pulsacion = tiempo_actual;
+         }
+     }
+ }
+\end{lstlisting}
+
+La función lo primero que hace es crear la variable ultimo tiempo de pulsación y ponerla a cero. inmediatametne despues toma el tiempo actual del reloj del sistema con la función \texttt{HAL\_GetTick}. COmprueba que efectivamente el pin que ha provocado a interrupción es el pin 13 y a continuación comprueba el tiempo transcurrido desde la última pulsación. El objetivo de esta comporbación es evitar el efecto 'rebote'; a veces, al pulsar y soltar el botón, este puede hacer contacto muchas veces. Si esto pasa, la función se llama de nuevo pero ahora el intervalo de tiempo transcurrido será menor de 1000 milisegundos. 
+
+Al definir la varible \texttt{ultimo\_tiempo\_pulsacion} com \texttt{static} sabemos que solo puede alterar su valor la asignación del valor de \texttt{tiempo\_actual}, realizada dentro de la condición. Por tanto, aunque se llame a la función muchas veces por efecto del rebote esta no hará nada a menos que entre dos pulsaciones consecutivas hayan transcurrido 200 ms. Si se cumple la condición se cambia de signo a la variable \texttt{motor.pwm\_output}, que, como se verá al describir el controlador del motor, es equivalente a cambiar de signo la tensión que le llega al motor y, por tanto cambiar de signo su sentido de giro. Además se activa un flag. Es decir, se pone a uno la variable \texttt{flag\_boton\_pulsado}.
+
+Volvamos al bucle principal, solo si se ha pulsado el botón azul, la variable \texttt{flag\_boton\_pulsado} toma valor 1 y se ejecuta el código incluido dentro de la primera condición del bucle. Lo primero que se hace es volver a poner a cero el flag. A continuación se lee el valor de pin PB3, para determinar el sentido de giro actual del motor, y se crea un paquete de datos con esta información para enviarlo al ordenador a traves del puerto serie. El paquete de datos es una estructura tipo DatosPck, el nombre de la estructura es \texttt{pktdir} y solo son relevantes sus dos primeros campos \texttt{pktdir.id =1}, que indica que el mensage que se va a enviar contiene la direcciónn de giro del motor y \texttt{pktdir.tiempo\_ms = estado\_dir}, que en este caso, no contiene un tiempo sino el estado de giro del motor que acabamos de cambiar al pulsar el motor.
+
+Por último, se envía el mensaje empleando la función \texttt{HAL\_UART\_Transmit}. Esta función es capaza de enviar un mensaje byte a byte. Las variables que emplea son \texttt{\&huar2}: dirección (software) del puerto serie 2. A continuación hace un casting de modo que crea puntero a bytes \texttt(uint8\_t*) a la dirección donde se guarda nuestra estructura \texttt{pktdir}. El efecto es leer dicha estructura como si fuera un array de bytes. La siguiente variable \texttt{sizeof(pktdir)}, le dice a la función donde termina la estructura y, por tanto hasta donde debe leer para trnasmitir. La variable final es peligrosa: \texttt{HAL\_MAX\_DELAY} le esta diciendo a la CPU que no haga nada hasta que termine la trasmisión del mensaje. Así que, en caso de fallo podría bloquear el microcontrolador. Lo correcto sería emplear también un canal de acceso directo a memoria (DMA), como se hace con los mensajes de telemetría. Sin embargo, el uso del botón de la placa para cambiar la dirección de giro es algo poco frecuente y podemos correr el riesgo.
+
+\paragraph{Temporizador}
+Este temporizador es el que lleva el ritmo al que se controla el motor. Para ello, emplea el timer \texttt{TIM4} que genera una interrupcion cada 1ms, llama a su función de callback (ver listado \ref{TM4}). El callback se limita a asignar un valor uno a la variable \texttt{flag\_timer}. Esto hace que a intervalos regulares de 1ms el valor que tiene la variable \texttt{flag\_timer} sea un uno y, por tanto se cumpla la condición \texttt{if flag\_timer}. El porgrama entra entonces en el código de esta segunda condición. pone a cero de nuevo la varaible \texttt{if flag\_timer} y llama inmediatamente a la función \texttt{Motor\_update}. Esta función se describe en detalle en la sección \ref{motorc} y es la que se encarga de actualizar la señal de pwm que se envía al motor de acuerdo con el las consignas generadas por el sistema de control.
+
+\begin{lstlisting}[language=C, caption={funci\'on callback empleada por el timer TM4}, label=TM4 ] 
+// 1. Callback del timer para actualizar el flag cada 1ms
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+  if(htim->Instance == TIM4){
+    flag_timer = 1;
+  }
+}
+
+\end{lstlisting}
+
+A continuación se incrementa el valor de \texttt{contador\_telemetría} en una unidad. Cuando este contador llega a 10, es decir, cada 100ms, Se entra en un nuevo condicional. Lo primero que se hace es poner de nuevo \texttt{contador\_telemetría} a cero y, a continuación se llevan a cabo las siguientes tareas:
+\begin{enumerate}
+\item Se calculan cuantos pulsos de enconder han transcurrido durante los 10ms últimos, es decir, desde la vez anterior en que se entró en la condición \texttt{contador\_telemetría}. Para ello, se lee el valor de la cuenta actual de encoder, \texttt{motor.posicion\_actual} (ver descripción de \texttt{motor.c} y \texttt{motor.h}) e la sección \ref{motorc}, que ha sido refrescada al llamar a \texttt{Motor\_update()} al entrar en la condición anterior del temporizador. Resta a ésta cantidad, la medida anterior \texttt{posicion\_anterior\_telemetría} y guarda el resultado en la variable \texttt{difpos\_tel}.
+
+\item Se crea una estructura \texttt{pck\_envio} tipo DatosPck, para empaquetar la información de telemetría que se va a enviar por el puerto serie. Se declara como static, porque en C, una condición define un ámbito para las variables. Es decir si no se definiera como static, la estructura se destruiría al terminar al salir de la condición. Sin embargo, necesitamos que persista ya que el puerto serie va a acceder a su contenido en memoria empleando un canal de DMA. Si la variable no se conserva, el puesto serie podría enviar basura al corromperse la estructura.
+
+Los valores asignados a \texttt{pck\_envio} son: \texttt{id=2}, es decir, identificamos el paquete como un paquete de datos de telemétría (posición, velocidad, valores estimados). A continuación se difine el campo \texttt{tiempo\_ms} tomado la medida del reloj del sistema \texttt{HAL\_GetTick()}, el campo \texttt{posicion}, con el valor de la variable \texttt{motor.posicion\_actual}, un valor de la velocidad promedio de los últimos 100ms \texttt{velocidad = dispos\_tel*100}. Dado que el tiempo está medido en ms. mutiplicar la diferencia de posiciones por 100, nos daria el número de pasos (grados) avanzados por segundo.
+
+Si estamos controlando el motor empleando variables de estado estimadas, enviamos también el valor de la velocidad calculada por el estimador, \texttt{velocidad\_est = motor.x\_hat[1]} (ver descripción en la seccion \ref{motorc}). Si no estamos controlando mediante variables de estado estimadas, dejamos este último campo de la estructura \texttt{pck\_envio} a cero. 
+
+por último, comprobamos si el puerto serie está libre y emvíamos la estructura empleando un canal de DMA. Empleamos para ello el mismo método que empleamos para el envío del estado del botón de direccion; hacemos un casting de la estructura \texttt{pck\_envio} a bytes, pero ahora usamos la función específica para emplear UART a través d DMA. El fragmento de código mostrado en el listado \ref{DMA} muestra el uso de ésta función.
+
+\begin{lstlisting}[language=C, caption={Protección de puerto serie libre y función de envío para USAR a través de DMA}, label=DMA ] 
+// Solo disparamos el DMA si no esta ocupada enviando el paquete anterior
+        if (huart2.gState == HAL_UART_STATE_READY) {
+            HAL_UART_Transmit_DMA(&huart2, (uint8_t*)&pck_envio, sizeof(pck_envio));
+        }
+
+\end{lstlisting}
+
+\end{enumerate} 
+
+Es interesante hacer notar que estamos trabajando a dos ritmos: el control se actualiza cada 1ms (1KHz), y la telemetría se envía al ordenador cada 10ms (100Hz).
+
+Aquí termina el contenido del bucle y la función \texttt{main}.
+
+\paragraph{USER CODE 4}\label{clbk}
+En la sección de código contenida entre \texttt{ USER CODE BEGIN 4} y \texttt{USER CODE END 4}
+Se contienen las funciones de callback definidas para gestionar las interrupciones definidas en el programa.
+Ya hemos descrito la asociada al periodo de envío de telemetría al ordenador y la generada cuando se pulsa el botón de usuario de la placa.
+
+Nos quedan por definir dos funciones de callback más, asociadas a la recepción de datos a través del puerto serie. 
+
+Como se indicó más arriba, esta recepción se realiza empleando un canal de DMA. Cuando la recepción se ha completado, se genera una interrupción, para gestionar los datos recibidos. Esta gestión la lleva a cabo la función \texttt{HAL\_UART\_RxCpltCallback}
+Es una función genérica común a todos los puerto series, por ello, lo primero que hace es comprobar que la llamada proviene del USAR2, que es el que nosotros estamos empleando para recibir datos desde el ordenador. Una vez comprobado el puerto empieza a  analizar el contenido de la estructura \texttt{rx\_data}. En funcion del valor campo \texttt{rx\_data.id} se implemente un arbol de condiciones que tiene la siguiente estructura:
+\begin{enumerate}
+    \item \texttt{rx\_data.id == 1} Corresponde a un comando enviado desde el ordenador para poner el motor en modo manual y definir/cambiar su dirección de giro. Pr tanto se ajuste el modo del motor \texttt{motor.mode = Control\_pwm\_openloop} y se examina a continuación el campo \texttt{rx\_data.valor} Si toma valor cero, lo que se quiere es que el motor gire en sentido horario con lo que se ajusta el campo \texttt{motor.pwm\_output} al valor absoluto que tuviera la señal de PWM multiplicado por menos uno. Si no toma valor cero (tomaría valor uno) se ajusta el campo directamente al valor de la seña de PWM.
+    \item \texttt{rx\_data.id == 2} Esta opción tambien corresponde a control manual. En esta caso, lo que se cambia es el valor de la señal de PWM pero no el sentido de giro del motor. Se pone el modo del motor en manual igual que en el caso anterior y según el signo que tenga el valor actual de \texttt{motor.pwm\_output} se ajusta su valor a \texttt{motor.pwm\_output = -(float32\_t)rx\_data.valor} o a \texttt{motor.pwm\_output = (float32\_t)rx\_data.valor}
+    \item \texttt{rx\_data.id == 3} La opción tres, corresponde a control de posición mediante el uso de un PID. Se cambia el modo del motor \texttt{motor.mode = Control\_posicion} y se carga el valor de consigna deseado \texttt{motor.setpoint\_position = rx\_data.valor}
+    \item \texttt{rx\_data.id == 4} Esta opción corresponde con el control en velocidad mediante el uso de un PID. El procedimiento es análogo al anterior: \texttt{motor.mode = Control\_speed} y \texttt{motor.setpoint\_speed = (float32\_t)rx\_data.value}
+    \item \texttt{rx\_data.id == 5} Este modo corresponde a hacer un reset al motor. el resultado es que el motir se para y se resetean los valores de posición, velocidad, señal de PWM, consigna de posición, consigna de velocidad y estimadores de estados. también se resetean los valotres de los estados de los controladores PID.
+    \item \texttt{rx\_data.id == 6} Este caso permite el control de posición del motor empleando para ello un observador de estados y control por realimentación de estados. En este caso el modo del motor se actualiza a \texttt{motor.mode = Control\_state\_space} y se fija la consigna de posición del motor \texttt{motor.setpoint\_position = rx\_data.valor}
+    \item \texttt{rx\_data.id == 7} El último de los casos ajusta el modo a control de velocidad empleando realimentación de estados y ajusta la consigna de velocidad al valor indicado \texttt{motor.mode = Control\_Speed\_state\_space} y se fija la consigna de posición del motor \texttt{motor.setpoint\_speed = (float32\_t)rx\_data.valor}
+\end{enumerate}
+Una vez seleccionada la opción y realizados los ajustes se vuelve a llamar a la función \texttt{HAL\_UART\_Recive\_DMA} para que vuelva a armar la recepción a través de DMA.
+
+El resto del código que contiene el archivo, son funciones de inicialización de periféricos y configuración de la placa y han sido generadas directamente por STM32CubeMX.
+
+\section{motor.h y motor.c}\label{motorc}
+Los ficheros \texttt{motor.h} y \texttt{motor.c} Contienen las funciones necesarias para controlar el motor. Vamos a empezar por describir el archivo de cabecera.
+\subsection{motor.h}
+
+En primer lugar, incluimos el archivo de cabecera \texttt{arm\_math.h} que nos da acceso a funciones matemáticas y algunos tipos de controladores. Al configurar nuestra placa con STM32CubeMX, pedimos que se incluyera  la librería ARM CMSIS-DSP (Cortex Microcontroller Software Interface Standard - Digital Signal Processing). Esta librería contiene un conjunto de funciones optimizadas desarrolladas por ARM para explotar al máximo el hardware de los microcontroladores Cortex-M (como el de la placa STM32F411E). Está diseñada específicamente para aplicaciones de procesamiento digital de señales (DSP) y control en tiempo real.
+
+A continuación se crea una enumeración, una estructura y los prototipos de las funciones de control que se definirán en motor.c. Vamos a describir solo los tipos ya que les funciones las describiremos en detalle al hablar de este último archivo.
+
+El listado \ref{mcab} muestra los tipos definidos. 
+
+\begin{lstlisting}[language=C, caption={Tipos definidos en motor.h}, label=mcab ] 
+typedef enum{
+    Control_pwm_openloop, //manual
+    Control_position, //PID de posicion
+    Control_speed, //PID de velocidad
+    Control_state_space, //Controlador de espacio de estados posicion
+    Control_speed_state_space //Controlador de espacio de estados velocidad
+} MotorControlMode;
+
+typedef struct{
+    //Modo de control actual
+    MotorControlMode mode;
+    //PID
+    arm_pid_instance_f32 pid_position;
+    arm_pid_instance_f32 pid_speed;
+
+    //Controlador de espacio de estados
+    float32_t x_hat[2]; //Estado estimado [posicion; velocidad]
+    float32_t x_integral_pos; //Integral para control de posicion
+    float32_t x_integral_speed; //Integral para control de velocidad
+    //estado del motor
+    int32_t posicion_actual;
+    int32_t posicion_anterior;
+    float32_t velocidad_actual;
+    //setpoints
+    int32_t setpoint_position;
+    float32_t setpoint_speed;
+    //Salida PWM
+    float32_t pwm_output;
+} MotorControl;
+\end{lstlisting}
+
+La enumeración permite definir cinco 'modos distintos de control del motor. el primero de ellos \texttt{Control\_pwm\_openloop} corresponde a control manual. es el usuario quien, a través el puerto serie, fijar el 'Duty Cycle' de la señal de pwm que se envía a la placa de control y, por tanto, el voltaje que se suministra la motor. El segundo modo \texttt{Control\_posicion} Corresponde a un modo de control automático de la posición del motor, mediante el empleo de un control proporcional-derivativo-integral (PID). De modo análogola, el modo \texttt{Control\_speed} permite controlar la velocidad a la que gira el eje cel motor, emplenado de nuevo u PID. LOs dos últimos modos \texttt{Control\_state\_space} y \texttt{Control\_speed\_state\_space} permiten controlar la posición y al velocidad del motor empleando realimentación por variables de estado estimadas. El tipo creado recibe el nombre \texttt{MotorControlMode}
+
+En cuanto a la estructura se emplea para agrupar las variables necesarias así como el estado del controlador. Sus campos son:
+\begin{enumerate}
+\item Un modo de control (\texttt{mode} definido mediante un enumerador del tipo \texttt{MotorcontrolMode} que acabamos de definir.
+\item Dos estructuras tipo \texttt{arm\_pid\_instance\_f32}. Estas estructuras sirve para guardar los valores asignados a las constantes proporcional, derivativa e integral de un PID. La primera la llamamos \texttt{pid\_position} Nos servirá para guardar los valores del PID cuando queremos realizar control en posición. La segunda la llamamos \texttt{pid\_speed} y tendrá identico uso pero ahora cuando queramos controlar la velocidad del motor.
+\item Variables necesarias para definir los estados del estimador \texttt{x\_hat[2]} un array de dos elementos para contener la posición estimada y la velocidad estimada.
+\item Dos variables de estado extra para implementar control integral: \texttt{x\_integral\_pos} para el error en la posición y \texttt{x\_integral\_speed} para el error en la velocidad.
+\item Tres variables más para almacenar el estado del motor: \texttt{posicion\_actual}, \texttt{posicion\_anterior} y \texttt{velocidad\_actual}.
+\item Dos variable más para almacenar los valores de consigna asignados a la posición \texttt{setpoint\_position} y \texttt{setpoint\_speed}
+\item Por último, una variable para guadar la señal de pwm que se enviará a la controladora del motor \texttt{pwm\_output}.
+\end{enumerate}
+Definimos el tipo resultante como \texttt{MotorControl}.
+Además, declaramos una variable global \texttt{motor} del tipo que acabamos de definir. Al definirla como \texttt{extern} la hacemos accesible desde cualquier archivo que incluya a motor.h.
+
+\subsection{motor.c}
+Este es el archivo que contiene todo el sistema de control de nuestro motor.
+El fichero empieza con la inclusión de los ficheros de cabecera \texttt{motor.h} y \texttt{math.h} Este último, en realidad no sería necesario ya que podrían emplearse las funcinones de \texttt{arm\_math.h} incluidas en \texttt{motor.h}. Pero lo dejaremos de momento para una futura revisión del código.
+
+A continuación definimos la estructura \texttt{motor} que declaramos en \texttt{motor.h}, y declaramos como \texttt{extern} las dos estructuras \texttt{htim2} y \texttt{htim3} que definimos en \texttt{main.c}, para manejar los timers que controlan la lectura de encoders y la generación por hardware de las señales de PWM necesarias para dar tensión al motor.
+
+El siguiente paso, es definir \texttt{TS\_DSP  0.001f} y \texttt{VMAX\_DSP 12.0f}, empleamos para ello la directiva \texttt{\#define} ya que tanto la primera (tiempo de muestreo del sistema de control) como la segunda (Voltaje máximo del sistema) son valores fijos que unuca se alteran.
+
+Las siguientes definiciones son fundamentales para el control en variables de estado, ya que definen los valores de las matrices de estado del sistema discretizado. El listado \ref{matrix} las muestra con todos sus valores puestos a cero. Evidentemente, para que el sistema de control funcione estos valores deberán ajustarse de acuerdo con los valores calculados a partir del modelo obtenido para el motor (ver guión de la práctica.).
+
+El sistema que modela el motor sigue una representación estándar en variables de estado,
+\begin{align}
+\dot x &= Ax + Bu\\
+y &= Cx
+\end{align}
+
+Que corresponden con las matrices \texttt{Ad\_f32, Bd\_f32, Cd\_f32} del código.
+
+
+\begin{lstlisting}[language=C, caption={Matrices del sistema discretizado}, label=matrix] 
+// Matrices del modelo discretizado (A, B, C)
+float32_t Ad_f32[4] = {0.0f, 0.0f , 0.0, 0.0f}; // Matriz A (2x2)
+float32_t Bd_f32[2] = {0.0f, 0.0f}; // Matriz B (2x1)
+float32_t Cd_f32[2] = {0.0f, 0.0f}; // Matriz C (1x2)    
+
+// Ganancias del controlador y observador de espacio de estados
+float32_t Lp_f32[2] = {0.0f, 0.0f}; //observador de estado (L)
+float32_t Kx_pos_f32[2] = {0.0f, 0.0f}; // Ganancia para control de posicion
+float32_t Kx_vel_f32[2] = {0.0f, 0.0f}; // Ganancia para control de velocidad
+
+float32_t Ki_pos_f32 = 0.0f; // Ganancia integral para control de posicion
+float32_t Ki_vel_f32 = 0.0f; // Ganancia integral para control de velocidad
+
+// Objetos (instancias) matrices de CMSIS-DSP
+arm_matrix_instance_f32 Ad_mat, Bd_mat, Cd_mat, Lp_mat, Kx_pos_mat, Kx_vel_mat;
+arm_matrix_instance_f32 x_hat_mat, y_hat_mat;
+arm_matrix_instance_f32 temp1_mat, temp2_mat, temp3_mat;
+
+float32_t y_hat_f32[1] = {0.0f}; 
+float32_t temp1_f32[2], temp2_f32[2], temp3_f32[2];
+\end{lstlisting}
+
+A continuación se define la ganacia de la realimentación de estado $K$, de la que se definen dos versiones. La primera, \texttt{Kx\_pos}, para controlar el motor en posicion  y la segunda, \texttt{Kx\_vel} para controlar el motor en velocidad.  Se define tambien la ganancia correspondiente al estimador $L$. Además se definen dos ganacias \texttt{Ki\_pos} y \texttt{Ki\_vel} para añadir control integral al control en posición y al control en velocidad.
+
+Para conpletar las variables necesarias, se define tambien una variable de salidad para el estimador \texttt{y\_hat}, que se inicializa a cero y tres variables auxiliares \texttt{temp1\_f32, temp2\_f32, temp3\_f32}. Además, se definen 'objetos' matrices empleando los tipos propios de la librería CMSIS-DSP, de modo que hay una matriz CMSIS-DSP por cada una de las matrices definidas como arrays normales. Los nombres coinciden salvo por la terminación que ha pasado de ser f32 (float32) a mat.
+
+Nota importante: Todos los elementos de las matrices asi como las ganancias de los controles integrales tienen asignado valor cero. Es preciso darles valores adecuados para que los controladores funciones, compilar el proyecto y descargar el resultado en la placa.
+
+A continuación, empieza la definición de las funciones de control del motor,
+\paragraph{MotorControl\_ini()}
+Esta primera es una función de de inicialización que se llama al principio de la función \texttt{main()} del archivo \texttt{main.c}. Inicializa los dos modos posibles de control, dejandolos listos para su uso. Para ello emplea la estructura \texttt{motor} declarada al principio de este código.
+Las opciones de control disponible son:
+\begin{enumerate}
+    \item Control de posición mediante un PID. Permite llevar el eje del motor a una posición angular deseada empleando para ello contros Proporcional/Integral/DErivativo (PID). Para ello, se ajustan los valores de las ganacias proporcional \texttt{motor.pid\_position.Kp}, integral \texttt{motor.pid\_position.Ki} y derivativa \texttt{motor.pid\_position.Kd}. Por defecto estos valores tienen valor cero, es decir NO estan ajustados y el control no funciona. Es preciso darles valores adecuados, compilar el proyecto y descargar el software en la placa, para que el controlador funcione.
+    UNa vez definidas las contantes, se llama a la función \texttt{arm\_pid\_ini\_f32}, de la librería CMSIS pasando como variables de entrada la dirección de \texttt{motor.pid\_position} y un uno. Esto implementa un controlador PID y además resetea su estado.
+    \item Control de velocidad mediante un PID. análogo al anterior. El objetivo es ahora estabilizar la velocidad a la que gira el motor a un valor deseado. Se definen ahora los campos correspodientes, proporcional \texttt{motor.pid\_speed.Kp}, integral \texttt{motor.pid\_speed.Ki} y derivativa \texttt{motor.pid\_speed.Kd}, para las ganacias del controlador para la velocidad. Al igual que en el caso de controlador en posición, los valores por defecto están ajustados a ceroy es preciso introducir los valores que se quieran usar para controlar el motor.
+    De nuevo, llamamos a \texttt{arm\_pid\_ini\_f32} pasándole ahora la dirección de \texttt{motor.pid\_speed}, para crear un controlador PID para la velocidad.
+
+\item Control de posición usando variables de estado y un estimador. Las matrices necesarias ya se definieron como variables globales antes. Sin embargo, es preciso llamar a la función \texttt{arm\_mat\_init\_f32}, para vincule las matrices (arrays) con los objetos matrices de la librería CMSIS-DSP, que hemos creado, para  poder realizar cálculos con ellas de una forma eficiente. 
+\item Control de velocidad usando variables de estado y un estimador. Se vinculan las matrices creadas igual que en el caso anterior.
+\end{enumerate}
+Además, se inicializa también el estado del motor, poniendo todas sus variables de estado a cero. De modo análogo se inicializan los estados del estimador y del error integral.
+
+\paragraph{Motor\_update()} Esta segunda función es la que lleva todo el peso del control real del motor. Se llama desde el bucle principal de \texttt{main.c} cada 1ms, usanod el timer \texttt{TIM4}.
+
+Lo primero que hace es leer, empleando el contador del timer \texttt{TIM2} que controla los encoders, cual es la posición actual del motor y la guarda en \texttt{motor.posicion\_actual}. Calcula cual es la diferencia entre éste valor y la posición anterior guardada en \texttt{motor.posicion\_anterior} y, multiplicando esta direrencia por 1000, calcula cual es la velocidad del motor en grados/s.
+A continuación se emplea un filtro de media móvil para suavizar el valor de la velocidad,
+\begin{equation}
+    v_m = 0.8v_m+0.2v_l
+\end{equation}
+Donde $v_m$ representa la velocidad media y $v_l$ la velocidad que se acaba de calcular. Los valores $0.8$ y $0.8$ y $0.2$ son tentativos y pueden ajustarse para obtener un valance adecuado entre ruido y retardo.
+
+El siguiente paso, es crear una variable \texttt{salida} que será la que contendra el valor de la señal de PWM con la que modificaremos/ajustaremos el voltaje suministrado al motor para controlarlo.
+
+La lógica empleada en el control variará dependiendo del modo \texttt{motor.mode} en que se encuentre el motor. Para seleccionarlo se emplea un juego de condicionales de acuerdo con el mode,
+
+\begin{enumerate}
+    \item \texttt{motor.mode == Control\_position}. Este modo corresponde al control de posición del motor empleando control PID. Se define una variable \texttt{error\_pos} Calculando la diferencia entre la posición actual del motor y el valor de consigna (deseado), para la posición. El control, evita la banda muerta del motor, dejando de actuar si el error en posición es menor o igual a un grado. La salida se ajusta directamente, empleando la función \texttt{arm\_pid\_f32} de la libreria CMSIS-DSP que implementa un PID. Esta función admite dos variables, la primera es un puntero a una estructura \texttt{arm\_pid\_instance\_f32}. En nuestro caso, pasamos la dirección de \texttt{motor.pid\_position}, que contiene los parámetros de nuestro controlador PID para posición. Además, le pasamos el como segunda variable el error en posición que acabamos de calcular\footnote{No incluimos aquí como está implementado el controlador PID. Los interesados, puede encontrar toda la información en la documentación de la librería CMSIS-DSP}
+
+
+    Además se ha implementado un saturador por software de modo que si el valor de la salida es superior a 999 o inferior a -999, la salida se ajusta a dichos valores límite. El valor de la salida calculado, se guarda en la variable de estado del PDI \texttt{motor.pid\_position.state[2]}. Por último, para evitar cualquier oscilación debida a ruido si el error de posición leido es estrictamente cero, la salida se pone a cero.
+    \item  \texttt{motor.mode == Control\_speed} El funcionamiento es idéntico al del caso anterior. Las dos diferencias principales son que el error en velocidad se calcula comparando la consigna de velocidad con el valor de la velocidad filtrado mediante el filtro de media móvil y que el primer parámetro que se pasa a la función \texttt{arm\_pid\_f32} es la dirección de \texttt{motor.pid\_speed}, que contiene los parámetros del controlado PID para la velocidad.
+    \item \texttt{motor.mode == Control\_state\_space || motor.mode == Control\_speed\_state\_space}\footnote{El sistema que estamos describiendo, basado en condicionales, para seleccionar el modo de control aplicado al motor es muy pobre. Será mejorado en futuras versiones del código.} Esta opción activa los sistemas de control basados en variable de estado; tanto el de posición como el de velocidad. Lo primero que se hace es obtenre el valor de las salidas estimadas: $\hat{y} = C_d\hat{x}$. Además se compara la posición actual medida que está disponible en \texttt{motor.posicion\_actual} con la posición estimada para obtener el error del observador. Y se crea una variable \texttt{u\_ideal\_volts} para la entrada ideal y un par de matrices \texttt{u\_Kx\_mat, u\_Kx\_f32} para guardar el valor de la entrada que debemos aplicar al motor. Se examina a continuación el modo exacto en que nos encontramos,
+    \begin{enumerate}
+        \item \texttt{motor.mode == Control\_state\_space}. Estamos en un modo de control de posición. 
+        
+Comparamos el valor consigna con la posición estimada para obtener el error en posición. incrementamos el valor del error integral en posicion añadiendo el error de posición actual multiplicado por el tiempo de muestreo (TS\_DSP = 1ms) \texttt{ motor.x\_integral\_pos += error\_seguimiento * TS\_DSP}.
+
+Calculamos cuanto sería la entrada, multiplicado las ganancias de realimentacion por el vector de estados estimados $u = K\hat(x)$. A este resultado cambiado de signo le restamos la contribución debida al error integral y obtenemos el valor de la entrada que guardamos en la variable \texttt{u\_ideal\_volts}.
+
+Es interesante señalar, que el estimador que estamos empleado, que se ha obtenido identificando el motor, trabaja en voltios. Es decir las constantes están calculadas de modo que la entrada al sistema calculada \texttt{u\_ideal\_volts} se obtiene en voltios.
+
+\item \texttt{else} Si no estamos en el modo de control de posición por realimentación de estados, solo podemos estar en el de velocidad. El cálculo es idéntico con la unica diferencia de que aquí empleamos la velocidad estimada en lugar de emplear la posición.
+\end{enumerate}
+Una vez calculado el valor del voltaje de entrada al motor, saturamos su valor a los límites físicos del voltaje suministrado por la fuente $[+12V,-12V]$. Para ello,creamos ua nueva variable \texttt{u\_real\_volts} que igualamos a \texttt{u\_ideal\_volts} si esta entre dichos límites o a la que asignamos valor 12 ó -12 si está fuera de ellos.
+
+Por último aplicamos una corrección de antiwindup a la contribución del término integral. Hay muchas formas de implementarlo. Aquí, henos obtado por un método que se conoce como  back calculation. La idea es hacer un corrección en la integral del error, de modo que se ajuste su valor al que habría tenido para dar el valor del voltaje máximo o mínimo posible. 
+
+Si nos fijamos en el cálculo de la entrada al sistema en función del error,
+\begin{equation*}
+    u_i = -K\hat{x} - K_i\int_0^T (\hat{y} -y_r)dt  
+\end{equation*}
+
+donde $\hat{x}$ representa los estados estimados y $\hat{y},\ y_r$ representa la salida (posición o velocidad) estimada y su valor de referencia. Sin embargo, sabemos que el voltaje que nos puede dar la fuente esta límitado, de modo que si el valor obtenid de $u_i$ supera los límites, ajustamos el valor a dichos limites $u_{lim}$. El método back calculation, consiste precisamente en descontar a la contribución del error integral la parte correspondiente a la diferencia entre la salida real aplicada $u_{lim}$ y la salida inicialmente calculada $u_i$ 
+
+\begin{equation*}
+    u_{lim}= -K\hat{x} - K_i\int_0^T (\hat{y} -y_r)dt -u_i +u_{lim} = -K\hat{x} - K_i\left[\int_0^T (\hat{y} -y_r)dt + \frac{u_i - u_{lim}}{K_i}\right]
+\end{equation*}
+
+Para ello, en primer lugar comprobamos si las entradas \texttt{u\_real\_volts} y \texttt{u\_ideal\_volts} no coinciden. Si es así, quiere decir que el valor ideal está fuera del rango de voltaje aplicable al motor. Comprobamos a continuación si estamos controlando posición o velocidad. y modificamos la componente de error integral del controlador correspondiente, tal y como se muestra en el fragmento de código del listado \ref{windup} (líneas 1-8)
+
+A continuación actualizamos la salida del observador, para poder emplearlo en el siguiente ciclo de control: $\hat{x}(n+1) = A_d\hat{x}(n) + B_du(n) +L(y-\hat{y})$.
+
+Esta operación hay que hacerla por partes, tal y como se muestra en el listado de código \ref{windup} (líneas 9-15). En primer lugar calculamos el producto de $A_d$ por $\hat{x}$ y guardamos el resultado en la variable temporal \texttt{temp1\_mat}. Hacemos los mismo con $B_d$ y la entrada real que vamos aplicar al motor y guardamos el resultado en \texttt{temp2\_mat} y con $L$ y el error de estimación y guardamos el resultado en \texttt{temp3\_mat}. A continuación sumamos los tres resultados. la suma tambien debemos hacerla en dos pasos, ya que estamos empleando todo el tiempo las funciones de la libreria CMSIS-DSP.
+
+El último paso es generar la variable salida calculando el valor de la señal de PWM correspondiente al valor en voltios de la variable \texttt{u\_real\_volts}. Para el caso en que se esté realizando control el posición calculamos si l a posición del motor está en el límite de un grado respecto a la posición deseada en cuyo caso, paramos directamente el motor.
+
+\item \texttt{else}. Si no estamos en ninguno de los modos anteriores, entonces es que estamos en modo manual, en cuyo caso, \texttt{salida = motor.pwm\_output}, damos a la salida el valor de la señal de PWM directamente contenido en el campo pwm\_out de la estructura motor.
+\end{enumerate}
+
+Tan solo nos queda enviar a los pines de la placa el valor de la señal de PWM y el sentido de giro del motor.
+
+Si la salida es positiva, ponemos a uno el pin 3: \texttt{ HAL\_GPIO\_WritePin(GPIOB, GPIO\_PIN\_3, GPIO\_PIN\_SET)} y Enviamos el valor de la variable \texttt{salida} al comparador del TIMER 3 que es el que está controlando el tiempo que el pin A6 está en el valor alto. Si la salida es negativa, lo que hacemos es poner a cero el pin 3 y enviar al comparador el valor de salida cambiado de signo.
+
+\begin{lstlisting}[language=C, caption={Corrección antiwindup}, label=windup ] 
+// D) Anti-Windup (Back-Calculation Corregido)
+        if (u_real_volts != u_ideal_volts) {
+            if (motor.mode == Control_state_space) {
+                motor.x_integral_pos += (u_ideal_volts - u_real_volts) / Ki_pos_f32; 
+            } else {
+                motor.x_integral_speed += (u_ideal_volts - u_real_volts) / Ki_vel_f32; 
+            }
+        }
+// E) Actualizar Observador: x_hat = Ad*x_hat + Bd*u_real + Lp*error_obs
+arm_mat_mult_f32(&Ad_mat, &x_hat_mat, &temp1_mat);         // temp1 = Ad * x_hat
+arm_mat_scale_f32(&Bd_mat, u_real_volts, &temp2_mat);      // temp2 = Bd * u_real
+arm_mat_scale_f32(&Lp_mat, error_obs, &temp3_mat);         // temp3 = Lp * error_obs
+        
+arm_mat_add_f32(&temp1_mat, &temp2_mat, &x_hat_mat);       // x_hat = temp1 + temp2
+arm_mat_add_f32(&x_hat_mat, &temp3_mat, &x_hat_mat);       // x_hat = x_hat + temp3
+
+\end{lstlisting}

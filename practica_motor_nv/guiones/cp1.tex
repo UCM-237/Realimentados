@@ -1,0 +1,89 @@
+% !TEX root = making_of.tex
+\chapter{Primeros pasos}
+\section{Sofware necesario}
+En primer lugar, como se ha explicado ya en el guión de la práctica, vamos a emplear la placa STM32F411E, de la compañía ST, para controlar el motor. En la jerga de los programadores de microcontroladores, esta placa es conocida como la \emph{Black Pill}. Una de sus ventajas, es que tiene un excelente soporte de sofware y herramientas de desarrollo.
+
+En esta sección vamos a describir como a asumir que estamos trabajando con un ordenador personal con sistema operativo Linux, en concreto vamos a emplear Ubuntu 24.04.4 LTS.
+	\begin{verbatim}
+	https://ubuntu.com/download/desktop
+	\end{verbatim}
+
+
+Algunas herramientas básicas necesarias son:
+\begin{enumerate}
+	\item Visual studio Code (VSC).	
+Será el entorno de desarrollo que emplearemos para escribir, compilar y descargar el código que utilizará la placa ST. También servirá para desarrollar el código en Python que nos permitirá comunicarnos y controlar la placa desde el ordenador. Para instalarlo en Ubuntu, lo ideal es descargar directamente el paquete .dev, de la página web de VSC,
+\begin{verbatim}
+	https://code.visualstudio.com/thank-you?dv=linux64_deb
+\end{verbatim}
+para instalarlo ir a la línea de comandos:
+\begin{verbatim}
+sudo apt install ./Descargas/code_*.deb	
+\end{verbatim}
+
+Ver descripción detallada en el capítulo \ref{capvs}
+	
+	\item STM32CubeMX: Es la herramienta gráfica oficial de ST. Sirve para 	configurar los pines, el reloj (clock) y generar el código base en C.
+	\begin{verbatim}
+	https://www.st.com/en/development-tools/stm32cubemx.html
+	\end{verbatim}
+
+	\item STM32CubeCLT:
+	Tiene todas las herramientas de ST, necesarias para compilar, enlazar etc.
+	Para instalarlo
+	Descargar de la página web de ST,
+	\begin{verbatim}
+	https://www.st.com/en/development-tools/stm32cubeclt.html
+	\end{verbatim}
+	el que pone Debian Linux installer.
+	Descomprimir,
+	\begin{verbatim}
+		unzip st-stm32cubeclt_1.21.0_27995_20260219_1804_amd64.deb_bundle.sh.zip
+	\end{verbatim}
+	Dar Permisos
+	\begin{verbatim}
+		chmod +x st-stm32cubeclt_1.21.0_27995_20260219_1804_amd64.deb_bundle.sh
+	\end{verbatim}
+Lanzar el instalador
+\begin{verbatim}
+sudo ./st-stm32cubeclt_1.21.0_27995_20260219_1804_amd64.deb_bundle.sh	
+\end{verbatim}
+Presentará en el terminal la licencia de uso, ir hasta el final y aceptarla.
+Debería instalarlo en:
+\begin{verbatim}
+	/opt/st/stm32cubeclt_1.21.0/
+\end{verbatim}
+Es toolset STM32CubeCLT incluye:
+
+\begin{itemize}
+	\item GNU C/C++ for Arm® toolchain tales como arm-none-abi-gcc(compilador), arm-none-abi-nm (symbol viewer) y otros.
+	\item GDB debugger cliente y servidor (Depurador). Depurar el programa ejecutándolo en la propia placa
+	\item STM32CubeProgrammer (STM32CubeProg) utility (Programador) Descargar el ejecutable desde el ordenador a la placa.
+	\item System view descriptor files (.SVD) for the entire STM32 MCU portfolio.
+    \item Map file associating STM32 MCUs and MCU development boards to the appropriate SVD 
+\end{itemize}
+
+	\item Cmake y Ninja: fundamentales para gestionar la construcción del proyecto: Librerías, dependencias, etc.
+	
+	\item ST-Link Drivers: permite la comunicación entre el ordenador y la placa de desarrollo a través de un puertos USB. Estas dos últimas herramientas se instalan directamente desde VSC. (Ver capitulo \ref{capvs})
+	\item Python y los modulos de Python: serial, struct, csv, sys, time, collections, datetime, pyqtgraph.
+	\item (Opcional) Si se va a hacer el análisis de los datos y los modelos del motor en python, entonces es comveniente instalar también los módulos: pandas, numpy, matplotlib.pyplot y control
+	
+Para instalar STM32CubeMx, lo ideal es obtenerlo de la página web de ST,
+
+\noindent https://www.st.com/en/development-tools/stm32cubemx.html
+
+Igualmente, para STM32CubeProgrammer,
+
+\noindent
+https://www.st.com/en/development-tools/stm32cubeprog.html
+
+El resto de las herramientas, se pueden instalar directamente a través de Visualstudio Code, Mediante las extensiones para SMT32.
+
+En el caso de Python, es bastante cómodo instalar directamente anaconda.
+
+https://www.anaconda.com/downloadP
+
+Varios de los módulos de Python necesarios vienen instalados por defecto con Anaconda y el resto son fácilmente instalables empleando \texttt{conda}.
+ 
+\end{enumerate}

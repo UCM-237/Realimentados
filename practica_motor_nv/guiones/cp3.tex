@@ -1,0 +1,211 @@
+% !TEX root = making_of.tex
+\chapter{Configuración de la placa con STM32CubeMX}
+STM32CubeMx, es una herramienta extremadamente útil para configurar el Hardware de nuestra placa. Conocer a fondo todas sus posibilidades está fuera de los objetivos de estas notas. Aquí nos vamos a centrar en configurar la placa para que pueda controlar nuestro motor. Lo vamos ha hacer paso a paso.
+
+Al ejecutara STMCube32MX, se abre una primera ventana e la que se nos permite abrir proyectos ya existentes o crear proyectos nuevos figura (\ref{fig:stmx}). Entre las opciones para crear proyectos nuevos, podemos emplear tanto el botón \texttt{ACCESS TO MCU SELECTOR} como el botón \texttt{ACCESS TO BOARD SELECTOR}. La diferencia es que en el primer caso nos selecciona el microcontrolador, y no nos configura nada por defecto. Si seleccionamos la placa el Package pgfkeys Error: I do not know the key '/tikz/fit', to which you passed '(tim4) (update) (cnt) (txdma)', and I am going to ignore it. Perhaps you misspelled it.programa sabe qué pines están conectados al led y al botón azul de usuario y además configura la emulación del puerto serie, a través del puerto USB de la placa, para comunicar la placa con el ordenador. Si empleamos la primera opción, tendremos que configurar nosotros a mano estas opciones, caso de que queramos usarlas.
+
+Vamos a seleccionar directamente la placa núcleo que la que vamos a trabajar. Para ello pulsamos el botón \texttt{ACCESS TO BOARD SELECTOR}. Se abrirá una nueva ventana, figura (\ref{fig:cdiagram}). Seleccionamos en la entrada \texttt{comercial part number}, arriba a la izquierda, nuestra placa: NUCLEO F411RE. Esperamos a que la seleccione y nos abrirá una pequeña ventana de diálogo en la que nos sugiere inicializar todos los periféricos con las opciones por defecto.Seleccionamos \texttt{no}. Se cierra la ventana de selección y en la ventana principal de STM32CubeMX aparecen varias pestañas y se nos muestra el pinout de la placa con los pines que ya están configurados por defecto, el color y 'fijados' con una chincheta figura (\ref{fig:layoutp}).
+
+\section{Placa en modo debug y reseteo del pin PB3}
+Lo primero que vamos ha hacer, es poner la placa en modo debug. Hacemos esto para que nos deje programar la placa siempre que queramos sin necesidad de emplear el botón de reset. Para ello, desplegamos el menú \texttt{System Core}, seleccionamos la opcion \texttt{SYS} y se nos abrirá un panel de configuración, figura (\ref{fig:PB3}). En la entrada que pode \texttt{Debug}, seleccionamos \texttt{Serial Wire}. A continuación vamos a liberar el pin \texttt{B3}. Por defecto este pin está configurado precisamente para emplear el método de depuración \texttt{Serial Wire} y aparece marcado con las letras \texttt{SWO} (Serial Wire Output). Pero nosotros no necesitamos emplear ese modo de depuración y lo que vamos ha hacer es resetearlo para poder emplearlo como pin de control del movimiento del motor (ver tabla \ref{tab:pines}) más alante. Para resetearlo lo seleccionamos con el ratón el esquema mostrado en el panel \emph{pinout view} y en el menú desplegable que aparece seleccionamos \texttt{Reset\_State} El pin se pondrá de color gris.
+
+\begin{figure}
+
+\centering
+\subfloat[Ventana inicial de STMCube32MX]{\label{fig:stmx}
+\centering
+\includegraphics[width=0.45\linewidth]{MXstartup.png}
+}
+%no space
+\hfill
+\subfloat[Selección de la placa]{\label{fig:cdiagram}
+\centering
+
+\includegraphics[width=0.45\linewidth]{Seleccionplaca.jpg}
+}
+\hfill
+
+\subfloat[Layout de la placa NUCLEO F411RE]{\label{fig:layoutp}
+\centering
+
+\includegraphics[width=0.45\linewidth]{layout_placa.png}
+}
+\subfloat[Debug a Serial wire y Reseteo del pin PB3]{\label{fig:PB3}
+\centering
+
+\includegraphics[width=0.45\linewidth]{pb3.png}
+}
+\hfill
+\caption{Ventanas de inicio y selección de placa}
+\label{fig:csetup}
+\end{figure}
+
+Vamos a establecer nuestras necesidades, de acuerdo con las posibilidades de la placa.
+\section{Configuración del Reloj.}
+Una de las características interesantes de la \emph{Black Pill} es su velocidad. Vamos a configurar el reloj de la placa para que trabaje a 10MHz, que es la máxima velocidad disponible.
+
+Por defecto, la placa activa un reloj interno. Sin embargo, es mejor emplear el oscilador externo para general la señal de reloj, ya que nos da más precisión y nos va a permitir manejar con más velocidad y precisión las comunicaciones a través del puerto serie.
+
+Para ello, volvemos a la categoría \texttt{System Core} y seleccionamos la entrada \texttt{RCC} (Reset and Clock Control). Buscamos la opción High Speed Clock (\texttt{HSE}). Cambiamos  "Disable" por \texttt{BYPASS Clock Source}. 
+Hacemos esta elección porque en la placa, la señal de reloj la toma el microcontrolador directamente del programador (ST-Link). Los pines PH0 y PH1 aparecen ahora de color verde.
+
+\paragraph{Configurar la frecuencia en el \emph{clock Tree}}
+Buscamos ahora, en las pestañas de la parte superior, la que aparece marcada como \emph{Clock Configuration}. Se nos muestra un esquemático del árbol de configuración del reloj del microprocesador.
+\begin{itemize}
+\item  Nos aseguramos de que la casilla \texttt{Input Frequency} aparece el número 8 (8MHz, corresponde a la frecuencia de la señal de reloj envía al microcontrolador desde fuera).
+\item En el multiplexor \texttt{PLL Source Mux}, marcamos la opción \texttt{HSE}.
+\item En la casilla \texttt{HCLK (MHz)}, escribimos 100 (que es la velocidad máxima de la F411).
+\item Pulsamos \texttt{Enter} y dejamos que CubeMX ajuste los divisores M,N,P,Q.
+\end{itemize}
+
+La figura \ref{reloj} muestra una imagen de la pestaña \emph{Clock Configuration}. Con el reloj ajustado a 100mHz.
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{clock.png}
+	\caption{Vista de la pestaña de configuración del reloj, con el reloj configurado a 100MHz.}
+\label{reloj}
+\end{figure}
+\section{Configuración de un puerto serie (UART), a través del puerto USB de la placa.}
+Para poder interactuar con el motor desde un ordenador, la que vamos a hacer es comunicarnos con la placa a través de un puerto serie.
+
+El conector USB de la placa Núcleo F411RE que usaremos para programarla y darle energía ya tiene un conversor de puerto serie integrado (a través del chip ST-LINK que está en la parte superior de la placa). Físicamente, este chip está conectado a los pines PA2 (Transmisor - TX) y PA3 (Receptor - RX) de tu procesador, que corresponden al periférico USART2.
+
+Para configurarlo, en la ventana del STM32CubeMX, volvemos a seleccionar la pestaña de la izquierda \emph{Pinout\&Cofiguration}. En el menú de la izquierda, desplegamos la categoría \emph{Connectivity} y hacemos clic en USART2.
+
+En la ventana central (Mode), cambiamos \emph{Disable} por \emph{Asynchronous}. Los pines PA2 y PA3 cambian ahora a verde
+
+Abajo, en la pestaña \emph{Parameter Settings}, la velocidad (Baud Rate) por defecto es 115200 Bits/s. Lo dejamos así, es la velocidad estándar. Simplemente habrá que tener en cuenta ese dato en la aplicación en Python que emplearemos en el ordenador para comunicarnos con la placa.
+
+Además habilitamos una interrupción que permita a la placa recibir comandos desde el ordenador. Para ello, bajamos al panel \emph{Configuration}, seleccionamos la pestaña \texttt{NVIC Settings} y marcamos la casilla \emph{USART2 global interrupt}.
+
+Por último vamos a habilitar dos canales de DMA (Acceso directo a memoria) tanto para la recepción como para el envío de datos. Esto es necesario ya que, como veremos más alante, vamos a configurar un timer (TIM4), para que fije  el ritmo al que actua el control del motor a 1KHz. Este ritmo es imposible de seguir por el puerto serie, no podemos por tanto emplearlo para enviar datos, o bloquearemos mientras envía el control del motor. De hecho, vamos a enviarlos a un ritmo de 10MHz. Los canales de DMA desacoplan la tarea de envío/recepción de la CPU, esta sencillamente \emph{delega} la tarea de copiar los datos desde/a memoria, al hardware del puerto serie y no se bloquea o interrumpe la recepción de datos.
+
+Para habilitar el uso de DMA por parte del USART lo que hacemos es, en \emph{configuración}, señalar la pestaña \emph{DMA settings}. 
+
+A continuación, pulsamos el botón \emph{add} seleccionamos USART2\_TX. COn esto definimos el canal de DMA que va a usar el puerto YSART2 para sus envíos (TX). Completamos la cofiguración,
+
+\begin{enumerate}
+\item Direction:  Memory To Peripheral(de la RAM a la UART).
+
+\item Priority: low
+\item Mode: Normal. (Existe un modo Circular, pero como tu código procesa "paquete a paquete", el modo Normal encaja perfecto con tu lógica actual).
+
+\item Increment Address: Peripheral desmarcado (es un solo registro fijo), Memory marcado (para que vaya rellenando tu estructura byte a byte).
+
+\item Data Width: Byte / Byte.
+\end{enumerate}
+
+Para habilitar un canal de DMA para la recepción de datos, procedemos igual. Pulsamos el botón add y ahora seleccionamos USART2\_RX. La configuración es exáctamente la misma, salvo para la dirección (Direction) que ahora será: Peripheral To Memory (de la UART a la RAM) y la prioridad que ahora seleccionaremos: high.
+
+
+
+\section{Configuración del resto de pines para el control del motor}
+Reproducimos a continuación la tabla del capítulo 2 del guión de la práctica, en que se describen los pines que se emplearán para suministrar potencia al motor y leer las señales de los encoders.
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|l|l|c|p{7.5cm}|}
+		\hline
+		\textbf{Componente} & \textbf{Señal Motor/Driver} & \textbf{Pin STM32} & \textbf{Función del Periférico (STM32CubeMX)} \\ \hline
+		\multirow{2}{*}{Encoder} 
+		& Canal A (Fase A) & \textbf{PA0} & \texttt{TIM2\_CH1} (Modo Encoder) \\ \cline{2-4} 
+		& Canal B (Fase B) & \textbf{PA1} & \texttt{TIM2\_CH2} (Modo Encoder) \\ \hline
+		\multirow{4}{*}{Driver Potencia} 
+		& PWM (Voltaje) & \textbf{PB4} & \texttt{TIM3\_CH1} (Generación PWM) \\ \cline{2-4} 
+		& DIR (Sentido)   & \textbf{PB3} & \texttt{GPIO\_Output} (Salida Digital) \\ \cline{2-4} 
+		&Habilitar p. H ENA & \textbf{PA10} & \texttt{GPIO\_Output} (Salida Digital) \\ \cline{2-4} 
+		&Habilitar p. H ENB & \textbf{PA7} & \texttt{GPIO\_Output} (Salida Digital) \\
+		\hline
+	\end{tabular}
+	\caption{Mapa de conexiones nativas entre el sistema electromecánico y la placa STM32 Nucleo.}
+	\label{tab:pines}
+\end{table}
+
+Como se deduce de la tabla, la interacción con la planta se delega en gran medida al hardware:
+\begin{itemize}
+	\item \textbf{Lectura del Encoder (PA0 y PA1):}
+A diferencia de sistemas más simples donde se programan interrupciones por software para contar los pulsos, aquí conectamos las señales en cuadratura a los canales 1 y 2 del \texttt{Timer 2}. Al configurarlo en \textit{Encoder Mode}, el hardware del STM32 detecta automáticamente el sentido de giro y actualiza el registro del contador (\texttt{CNT}). Nuestro software simplemente leerá este registro cuando lo necesite.
+
+Para configurarlo adecuadamente, en el panel lateral izquierdo \texttt{Categories} de la pestaña \texttt{pinout \& configuration}, Seleccionamos la entrada \texttt{timers}. Elegimos el timer \texttt{TIM2}. Se abrirá un nuevo panel para configurarlo. En dicho panel buscamos la opción \texttt{Conbined Channels}, despleagamos el menú y seleccionamos \texttt{Encoder Mode} Automáticamente nos pondrá loas pines \texttt{PA0} y \texttt{PA1} en color verde y les asignará, respectivamente los canales \texttt{CH1} y \texttt{CH2} del timer 2.
+
+	
+	\item \textbf{Generación de PWM (PB4):} Se conecta al canal 1 del \texttt{Timer 3}. El microcontrolador generará la señal de control de potencia (\textit{Duty Cycle}) en este pin. basándose en el valor que calculemos en nuestro bucle de control y escribamos en su registro de comparación (\texttt{CCR1}).
+Para configuralo,
+\begin{enumerate}
+\item En la vista del microcontrolador (el dibujo del chip), buscamos el pin \texttt{PB4}, hacemos clic sobre él y seleccionamos \texttt{TIM3\_CH1}. El pin se pondrá amarillo.
+	\item En la lista de la izquierda, seleccionamos  \texttt{Timers -> TIM3}.
+	\item En \texttt{Clock Source}, seleccionamos \texttt{Internal Clock}.
+	\item En \texttt{Channel 1}, seleccionamos \texttt{PWM Generation CH1}.
+	\item  Abajo, en Parameter Settings, ponemos
+
+    \texttt{Prescaler: 0}
+
+    \texttt{Counter Period (ARR): 1000 - 1} 
+\end{enumerate}
+
+	\item \textbf{Señal de Dirección (PB3):} Se configura como una salida digital estándar (\texttt{GPIO Output}). Escribir un nivel lógico alto (1) hará girar el motor en un sentido, y un nivel bajo (0) en el sentido opuesto, invirtiendo la polaridad en el puente en H.
+	Para configurarlo, es suficiente con hacer click sobre el pin y seleccionar \texttt{GPIO\_output}.
+	
+	\item \textbf{Habilitar ambos puentes en H (PA10, PA7)} Habilitamos los dos puentes en H para alimentar el motor a través de ambos puentes a la vez. Estos pines deben estar siempre a nivel lógico alto (1). Los configuramos de modo análogo al anterior: hacemos click sobre ellos y seleccionamos \texttt{GPIO\_output}.
+	\item \textbf{Emplear el botón azul de usuario para invertir manualmente el sentido de giro.}
+Realmente, esto no es necesario salvo para controlar el manual el sentido de giro. El botón azul de la placa está conectado al pin \texttt{C13}. Lo que vamos a hacer es asociarlo a una interrupción para que cada vez que se pulse, la placa cambie el valor del pin inmediatamente. Para ello, Hacemos click en el pin \texttt{C13} y seleccionamos \texttt{GPIO\_EXTI13}. Para Package pgfkeys Error: I do not know the key '/tikz/fit', to which you passed '(tim4) (update) (cnt) (txdma)', and I am going to ignore it. Perhaps you misspelled it.activar la interrupción,
+\begin{enumerate}
+	\item En la lista de la izquierda, vamos a \texttt{System Core -> NVIC.}
+	\item Buscamos la línea que dice \texttt{EXTI line[15:10] interrupts} y marcamos la casilla \texttt{Enabled}.
+\end{enumerate}
+
+\end{itemize}
+
+\section{Habilitar un timer para que lea periódicamente el número de pasos (Encoders) que ha avanzado el motor.} 
+La lectura de encoders se lleva a cabo a muy alta velocidad. Esto dará robustez a los controladores que desarrollaremos en la práctica. Vamos a habilitar un tercer timer (\texttt{TIM4}) para que, genere una interrupción  a tiempo fijo y, de este modo decidir cuando actua la acción de control. 
+
+\begin{enumerate}
+	\item Volvemos de nuevo al panel de la izquierda y en  \texttt{Timers} seleccionamos \texttt{TIM4}. 
+	\item En el panel que se despliega inmediatamente a su derecha marcamos la casilla \texttt{Internal Clock}
+	\item Elegimos el ritmo a que llamamos a nuestra acción de control $0.001s$, es decir vamos a emplear para el control una frecuencia de $1KHz$. Para ajustar la frecuencia, empleamos la expresión,
+	\begin{equation*}
+		F_{\text{interrupción}} = \frac{F_{\text{reloj}}}{(\text{PSC}+1) \times (\text{ARR}+1)}.
+	\end{equation*}
+Hemos ajustado el reloj de nuestro microcontrolador a $100MHz$. Así que si ajustamos el PSC (Preescaler) a $100 -1 $, estaremos dividiendo la frecuencia del reloj entre 100. Si además ajustamos el ARR (Counter period) a $1000 - 1$, volvemos a dividir la frecuencia del reloj entre mil, de modo que la frecuencia de la interrupción quedará $1e8/1e2/1e3 = 1000 Hz$. 
+
+Bajamos \texttt{configuration} y en la pestaña \texttt{Parameter Settings}. Buscamos la sección \texttt{Counter settings}. En \texttt{Preescaler} escribimos $100-1$ y en \texttt{Counter Period} $1000 -1$.
+
+\item Por último, para activar la interrupción, en la pestaña \texttt{NVIC Settings} Marcamos la casilla \texttt{TIM4 Global interrupt}.
+\end{enumerate}
+
+\section{Instalar y activar CMSIS-DSP}
+Por último, antes de generar nuestro proyecto, vamos a configurarlo para que use la librería CMSIS-DSP (Cortex Microcontroller Software Interface Standard - Digital Signal Processing).
+
+Es una suite de librerías desarrollada directamente por ARM (los creadores de la arquitectura de tu STM32) y está diseñada específicamente para exprimir al máximo los procesadores Cortex-M.
+
+ Incluye un amplio número de funciones: Basic math functions, Fast math functions, Complex math functions, Filtering functions, Matrix functions, Transform functions, Motor control functions, Statistical functions, Support functions, Interpolation functions, Support Vector Machine functions (SVM), Bayes classifier functions,Distance functions, Quaternion functions. 
+
+En CMSIS-DSP, las rutinas está escrita usando instrucciones en ensamblador específicas de ARM (como multiplicaciones y acumulaciones en un solo ciclo de reloj - MAC) y usa la FPU (Unidad de Coma Flotante) por hardware.
+
+En nuestro caso, las vamos a emplear para implementar un PID y para realizar operaciones matriciales que nos permitan emplear control por realimentación en variables de estado estimadas.
+
+Para instalar las librerías CMSIS-DSP, seleccionamos en la barra de menú superior de la pestaña \texttt{Pinout \& configuration},la opción que Software Packs y hacemos clic en \texttt{Select Components}. Se abrirá una ventana nueva con una lista de librerías.
+(Nota: Si es la primera vez que se abre, puede que tarde unos segundos en conectarse a los servidores de ST para descargar el catálogo).
+\begin{enumerate}
+	\item Desplegamos la pestaña \texttt{ARM.CMSIS}. Buscamos la fila que dice \texttt{\emph{CMSIS}DSP}.
+
+\	\item En la columna de la derecha (llamada Selection), hacemos clic y cambiamos la opción a \texttt{Source}.
+
+    \item Hacemos clic en OK para cerrar esa ventana. 
+    \item Volvemos a la pantalla principal del CubeMX. En la columna de la izquierda, abajo del todo seleccionamos \texttt{Software Packs}.
+    \item La desplegamos y hacemos clic en ARM.CMSIS.
+    \item En el panel central, aparecerá la opción \texttt{CMSIS DSP}. Activamos su casilla. 
+\end{enumerate}
+
+\section{Definir CMake para la compilación y el enlazado y obtener el esqueleto del código del proyecto}
+Por último, dado que vamos a utilizar las herramientas de Visualstudio Code para compilar nuestro código, debemos añadir a nuestro proyecto las instrucciones para hacerlo empleando \texttt{CMAKE}, ya que esta es en Visualstudio la opción por defecto.
+
+Para ello, seleccionamos la pestaña \texttt{Project Manager}. en la sección \texttt{Project Name} damos un nombre al proyecto, por ejemplo "motor". En la sección \texttt{Toolchain / IDE}, cambiamos la opción a \texttt{CMake}.
+
+Con esto, hemos completado la configuración de nuestro proyecto. Solo queda pulsar el botón \texttt{GENERATE CODE}, situado arriba a la derecha de la ventana principal de CubeMX, para que se generen los archivos del lo que podríamos llamar el esqueleto de nuestro código. Creará una nueva carpeta con el nombre del proyecto (motor) y varias subcarpetas con todo el código generado. En la siguiente sección examinaremos en más detalle este código. 
+
+Toda la información de configuración del proyecto queda guardada en un archivo con el mismo nombre del proyecto y extensión \texttt{.ioc} (\texttt{motor.ioc}). Podemos modificar la configuración de nuestro proyecto, abriendo dicho fichero con el CubeMX. Recuperaremos todas las opciones que hemos ido seleccionando a lo largo de este capítulo y tendremos la opción de cambiarlas o añadir nuevas opciones. Cada vez que completemos una nueva configuración deberemos pulsar la opción \texttt{GENERATE CODE} para generar un nuevo fichero \texttt{.ioc} con los cambios.
+
+A partir de ahora, para simplificar las explicaciones, nos referiremos siempre a nuestro proyecto y al directoria que contiene su código con el nombre de \emph{motor}.  
