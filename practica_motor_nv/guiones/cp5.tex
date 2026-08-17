@@ -32,24 +32,43 @@ El siguiente paso es configurar el puerto serie. Para ello trata de crear un obj
 
 A continuación, se van creando tanto las variables necesarias para manipular los datos recibidos como los \emph{gadgets} necesarios para generar órdenes:
 \begin{enumerate}
-    \item se construyen cuatro buffers circulares, empleando estruturas de datos tipop \texttt{deque} del módulo collections. Estas estructuras son particularmente adecuadas por el m-etedo empleado para actualizar su contenido, Se crean buffers de 1000 datos uno para guardar los tiempos, otro para las posiciones medidas por el encoder, otro para las velocidades calculadas por el microcontrolador y un último buffer para la velocidad estimada por el observador.
+    \item se construyen cuatro buffers circulares, empleando estructuras de datos tipo \texttt{deque} del módulo collections. Estas estructuras son particularmente adecuadas por el método empleado para actualizar su contenido, Se crean buffers de 1000 datos uno para guardar los tiempos, otro para las posiciones medidas por el encoder, otro para las velocidades calculadas por el microcontrolador y un último buffer para la velocidad estimada por el observador.
 
     \item Se añaden variables para guardar los datos registrados en un archivo CSV.
-    \item Se Configura la interfaz gráfica del panel de control. Se crea un panel principal \texttt{main\_widget = QtWidgets()}. Lo centra en la ventana de la aplicación \texttt{self.setCentralWidget(main\_widget)}. Se define una regla de ordenación vertical para los elementos que formen parte del panel central \texttt{layout = QtWidgets.QVBoxLayout(main\_widget)}
+    \item Se Configura la interfaz gráfica del panel de control. Se crea un panel principal \texttt{main\_widget = QtWidgets()}. Lo centra en la ventana de la aplicación \texttt{self.setCentralWidget(main\_widget)}. Se define una regla de ordenación vertical para los elementos que formen parte del panel central, de modo que se van apilando uno debajo del otro según se van creando \texttt{layout = QtWidgets.QVBoxLayout(main\_widget)}
     \item Se añade un gráfico, justo debajo del anterior, para representar la posición angular del motor leída por los encoders.
     \item Se añade debajo un gráfico en el que se van a representar, la velocidad calculada, la velocidad filtrada con el filtro de media móvil y la velocidad estimada 
-    \item Se añade una primera fila de de \emph{gadgets}, relacionados con el control manual del motor. Se decriben a continuación de izquierda a derecha; ver figura \ref{figdb}.
+    \item Se añade una primera fila de \emph{gadgets}, relacionados con el control manual del motor. Se decriben a continuación de izquierda a derecha; ver figura \ref{figdb}.
     \item \begin{enumerate}
         \item \texttt{spin} Es un \emph{spinbox}, es decir una caja en la que se puede escribir directamente un valor, o cambiar el valor mostrado empleando una flecha hacia arriba y una flecha hacia abajo. Permite seleccionar un valor de PWM entre 0 y 999, para definir manualmente el voltaje que se suministrará al motor. = corresponde a 0 voltios y 999 a 12.
         \item \texttt{btn\_send} Es un botón que envía el valor de PWM preseleccionado a la placa de control a través del puerto serie.
-        \item \texttt{btn\_dir} Es un botón que permite alternar el sentido de giro del motor. Por defecto, el sentido de giro que aparece al arrancar el motor es \emph{sentido adelante}. Se corresponde con el giro del motor en sentido antihorario. Al pulsar el esté botón cambia el sentido de giro, y también el texto que aparece escrito sobre él. Indicando el sentido de giro actual del motor.
+        \item \texttt{btn\_dir} Es un botón que permite alternar el sentido de giro del motor. Por defecto, el sentido de giro que aparece al arrancar el motor es \emph{sentido adelante}. Se corresponde con el giro del motor en sentido antihorario. Al pulsar esté botón cambia el sentido de giro, y también el texto que aparece escrito sobre él. Indicando el sentido de giro actual del motor.
         \item \texttt{btn\_record} Este botón activa/desactiva la grabación de datos en un fichero CSV
         \item \texttt{btn\_cero} Es un botón de reset, que para el motor, lo pasa a control manual y pone a cero todas las variables.
     \end{enumerate}
+    \item Se añade una segunda fila de \emph{gadgets} relacionados con el control del motor. Se describen de izquierda a derecha; ver figura \ref{figdb}
+    \begin{enumerate}
+        \item \texttt{spin\_pos} Es un \emph{spinbox} que permite fijar la consigna de posición para el motor. De este modo el motor se moverá  hasta alcanzar dicha posición y pararse. Se ha limitado el rango a $[-3600, 3600]$ grados. Es decir se pueden fijar posiciones de más menos 10 vueltas a partir del punto donde se defina el cero, bien por los grados (pasos de encóder) leídos desde que se puso en marcha, bien por la posición de cero marcada por un reset.
+        \item \texttt{bnt\_pos} Este botón, está etiquetado como \emph{ir a posición PID}. Cuando se pulsa se activa el control de posición mediante el uso de un PID. El eje del motor gira hasta alcanzar la posición de consigna indicada en el \emph{consigna de posición}; Spinbox anterior.
+        \item \texttt{bnt\_pos\_ss} Este botón está etiquetado como \emph{ir a posición espacio de estados}. Cuando se pulsa se activa el control de posición empleando realimentación de estados estimados. El motor se mueve hasta alcanzar el valor de consigna indicado en la \emph{consigna de posición}.
+        \item \texttt{spin\_speed} Análogo al spinbox descrito más arriba, solo que ahora permite ajustar el valor de la velocidad del motor. Se ha fijado un rango de velocidades $[-2000 2000]$ grados/s, que correspodería aproximadamente a cinco vueltas y media por segundo.
+        \item \texttt{btn\_speed} Cuando se pulsa el motor acelera o decelera hasta alcanzar la consigna de velocidad fijada en \emph{consigna de velocidad}, spinbox anterior.
+        \item \texttt{btn\_speed\_ss} Análogo al anterior, solo que ahora el control de velocidad se lleva a cabo empleando realimentación de estados estimados.   
+    \end{enumerate}
+    \item El siguiente paso es definir los eventos de los botones creados, es decir, asociar al pulsado de cada botón la función que ejecuta. Estas funciones son parte del objeto que estamos describiendo, pero no forman parte del constructor. Las describiremos más adelante indicando en la descripción cuál de los \emph{gadgets} que acabamos de describir, la activa.
+    \item El último paso del constructor es definir un temporizador \texttt{timer = QtCore.QTimer()}, que utilizaremos para leer periodicamente los datos que llegan por el puerto serie. Este timer llamará cada 10ms a la función \texttt{read\:serial}, que describimos a continuación.
 \end{enumerate}
 
-
 \subsection{\texttt{read\_serial}}
+Esta función juega un papel central en el funcionamiento del panel de control. Su papel es leer la trama de 20 bytes enviada por el microcontrolador, e interpretar su contenido.
+
+Hay que recordar que esta función es llamada por el timer que hemos creado en el constructor de \texttt{MotorDashBoard} cada 10 ms.
+
+Toda la función está contenida en un bucle while cuya condición de salida es una función del módulo serial que comprueba cuantos bytes quedan todavía en el buffer de entrada del puerto serie sin procesar, \texttt{in\_waiting >=20} Si hay al menos un paquete (20 bytes) entonces el bucle crea una bariable \texttt{paquete} en la que lee de golpe los primeros 20 bytes disponibles y los guarda e una variable llamada \texttt{paquete}
+
+En la siguiente línea se emplea una estructura \texttt{try/except} para examinar el contenido de paquete y procesarlo. El paso siguiente sería emplear el comando \texttt{struct.unpack('<iiiff', paquete)} Para 'desempaquetar paquete en las variables que debe contener: \texttt{id\_paquete, valor1, posicion, velocidad, velocidad\_est}, donde \texttt{'<iiiff'} es un parámetro de formato que especifica que la codificación de los datos es litleedian '<', que los primeros cuatro bytes representan un entero 'i' y lo mismo para los cuatro siguientes y los cuatro siguientes; mientras que el penúltimo y último grupo de cuatro bytes representan dos floats 'f'.
+
+
 \subsection{\texttt{send\_pwm}}
 \subsection{\texttt{send\_position\_setpoint}}
 \subsection{\texttt{send\_speed\_setpoint}}
