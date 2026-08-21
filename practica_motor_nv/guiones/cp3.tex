@@ -42,7 +42,7 @@ Lo primero que vamos ha hacer, es poner la placa en modo debug. Hacemos esto par
 
 Vamos a establecer nuestras necesidades, de acuerdo con las posibilidades de la placa.
 \section{Configuración del Reloj.}
-Una de las características interesantes de la \emph{Black Pill} es su velocidad. Vamos a configurar el reloj de la placa para que trabaje a 10MHz, que es la máxima velocidad disponible.
+Una de las características interesantes de la \emph{Black Pill} es su velocidad. Vamos a configurar el reloj de la placa para que trabaje a 100MHz, que es la máxima velocidad disponible.
 
 Por defecto, la placa activa un reloj interno. Sin embargo, es mejor emplear el oscilador externo para general la señal de reloj, ya que nos da más precisión y nos va a permitir manejar con más velocidad y precisión las comunicaciones a través del puerto serie.
 
@@ -144,6 +144,7 @@ Para configuralo,
 
     \texttt{Counter Period (ARR): 1000 - 1} 
 \end{enumerate}
+Al fijar el valor del prescaler a cero. Estamos empleando directamente los pulsos de reloj para generar la señal de pwm. El oeriod de la señal viene definido directamente por el valor del counter periodo, La frecuencia del reloj de nuestro mucrocontrolador la hemos ajustado a 100MHz, luego el reloj genera un pulso cada 10ns, el counter cuenta 1000 mil pulsos para definir un ciclo entero de la señal de PWM $10ns\times 1000 = 10\mu s$. este es el periodo de nuestra señal. Para definir el duty cicle, es decir, la parte de ese periodo que tendrá un valor alto, tenemos una resolución de 1000, precisamente el valor de nuestro counter periodo es decir puedo incrementarlo en pasos de 10ns.
 
 	\item \textbf{Señal de Dirección (PB3):} Se configura como una salida digital estándar (\texttt{GPIO Output}). Escribir un nivel lógico alto (1) hará girar el motor en un sentido, y un nivel bajo (0) en el sentido opuesto, invirtiendo la polaridad en el puente en H.
 	Para configurarlo, es suficiente con hacer click sobre el pin y seleccionar \texttt{GPIO\_output}.

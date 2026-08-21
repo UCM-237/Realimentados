@@ -91,7 +91,7 @@ El motor empleado  trabaja con un voltaje nominal de 12V. El motor lleva acoplad
 
 La alimentación del motor se regula mediante el uso de transistores de potencia que configuran un puente en H. La tensión suministrada por los transistores se controla mediante una señal de PWM. 
 
-Para controlar el motor se emplea una placa de desarrollo directamente programable desde Simulink\textsuperscript{\copyright}
+Para controlar el motor se emplea una placa de desarrollo programable en C. 
 
 Este guión incluye la información necesaria para montar el sistema completo desde cero y poder llevar a cabo una serie de prácticas relacionadas con la identificación, modelado y control del sistema. Cada una de estas dos partes ocupa una sección diferente y ambas pueden leerse de modo independiente.}
 \chapter{Descripción del \emph{hardware} del sistema}
@@ -231,17 +231,17 @@ Supongamos que hacemos llegar una señal de PWM a las Puertas G1 y G4 del puente
 
 El motor estaría  \emph{viendo} una tensión que equivaldrá al valor de la tensión de la fuente $V+$ multiplicada por la relación entre el \emph{duty cicle} y el periodo de la señal de PWM. Si modificamos el \emph{duty cicle} entre $0$ y $T$, El voltaje variará entre $0$ y $V+$.
 
-\paragraph{El controlador X\_NUCLEO\_IHM15A1} Para controlar el motor emplearemos una placa con un microcontrolador junto con  la placa de expansión X\_NUCLEO\_IHM15A1 fabricada por la compañía ST \cite{IHM15}. Dicha placa emplea el circuito integrado  STSPIN840  \cite{STSPIN840} que contiene dos puentes en H y todos los dispositivos necesarios para la manipulación y protección de los mismos. A su vez, la placa viene preparada para su conexión directa con las Placas STM32 Nucleo que, como se verá más adelante emplearemos tanto para generar las señales de PWM como para registrar las lecturas de los encoders y controlar el comportamiento del motor. La figura \ref{f10}, muestra una imagen de la placa. 
+\paragraph{El controlador X\_NUCLEO\_IHM15A1} Para controlar el motor emplearemos una placa de desarrollo con un microcontrolador junto con  la placa de expansión X\_NUCLEO\_IHM15A1 fabricadas ambas por la compañía ST \cite{IHM15}. ESta última placa emplea el circuito integrado  STSPIN840  \cite{STSPIN840} que contiene dos puentes en H y todos los dispositivos necesarios para la manipulación y protección de los mismos. A su vez, la placa de expansión viene preparada para su conexión directa con las placas de desarrollo STM32 Nucleo que, como se verá más adelante emplearemos tanto para generar las señales de PWM como para registrar las lecturas de los encoders y controlar el comportamiento del motor. La figura \ref{f10}, muestra una imagen de la placa de expansión. 
 
-Entre las característica principales de la placa, resalta que admite voltajes de entrada entre $7V$ y $45V$, para corrientes de hasta $1.5 A$ por fase. Como se ha indicado anteriormente, el circuito contiene dos puentes en H, marcados como puente A y puente B.  En principio en la placa se puede configura  cada puente por separado, o los dos puentes juntos. De este modo, se podría suministra corriente a dos motores, con posibilidad de invertir su sentido de giro, o a un solo motor también con la posibilidad de invertir su sentido de giro. En nuestro caso, emplearemos  una configuración en la que alimentaremos un solo motor empleando los dos puentes a la vez, de este modo podemos suministrar una corriente al motor de hasta $3 A$.  
+Entre las características principales del controlador, resalta que admite voltajes de entrada entre $7V$ y $45V$, para corrientes de hasta $1.5 A$ por fase. Como se ha indicado anteriormente, el circuito contiene dos puentes en H, marcados como puente A y puente B.  En principio en la placa se puede configurar  cada puente por separado, o los dos puentes juntos. De este modo, se podría suministrar corriente a dos motores, con posibilidad de invertir su sentido de giro, o a un solo motor, también con la posibilidad de invertir su sentido de giro. En nuestro caso, emplearemos  una configuración en la que alimentaremos un solo motor empleando los dos puentes a la vez, de este modo podemos suministrar una corriente al motor de hasta $3 A$.  
 
 Pero antes de seguir adelante, examinemos la figura \ref{f10}. En la parte superior de la imagen ---tal como se ha representado-- encontramos una foto de la placa con un conector verde con seis tomas. De abajo arriba, la primera es una entrada, marcada como $GND$ que debe conectarse al terminal negativo de la fuente. Corresponde a la \emph{tierra} o referencia de voltaje $0$. La segunda toma $V_{s}$ es la entrada de voltaje, debe conectarse al terminal positivo de la fuente que se empleará para alimentar el motor. Para el caso de nuestro motor debería conectarse al terminal positivo de una fuente de $12V$ como máximo, puesto que ésta es la tensión nominal del motor (ver sección \ref{s111}). Representaría la entrada correspondiente al voltaje $V+$ del puente en H (fig.\ref{f8}).  Las tomas tercera y cuarta son salidas que suministran voltaje a través de uno de los puentes en H que contiene la placa. En concreto, se trata del puente A. Están marcadas con los símbolos $A1$ y $A2$. Por último las tomas quinta y sexta son las salidas de voltaje correspondiente al segundo puente de la placa --el puente B-- están Marcadas $B2$, $B1$.
 
-Como se ha indicado anteriormente, en nuestro caso, vamos a usar ambos puentes a la vez para alimentar al mismo motor. Para ello,  (figura \ref{f10}) es preciso colocar el \emph{jumper} de modo paralelo \emph{Parallel mode jumper} en la posición PAR .Esto permite controlar a la vez los dos puentes con una sola señal para el sentido de giro y una sola señal de PWM.
+Como se ha indicado anteriormente, en nuestro caso, vamos a usar ambos puentes a la vez para alimentar al mismo motor. Para ello,  (figura \ref{f10}) es preciso colocar el \emph{jumper} de modo paralelo \emph{Parallel mode jumper} en la posición PAR. Esto permite controlar a la vez los dos puentes con una sola señal para el sentido de giro y una sola señal de PWM.
 
-Nuestro motor deberá ir conectado a la placa de modo de la salidas $V1$ tanto del puente A como del B estén conectadas al  cable rojo ($V+$) del motor y las salidas $V2$ estén conectadas al cable negro ($V-$) del motor. 
+Nuestro motor deberá ir conectado a la placa de modo de las salidas $V1$ tanto del puente A como del B estén conectadas al  cable rojo ($V+$) del motor y las salidas $V2$ estén conectadas al cable negro ($V-$) del motor. 
 
-Por último debemos hablar de los pines de la placa desde los que controlaremos la dirección y la velocidad del motor. Se trata de las entradas lógicas de la tarjeta.  En el esquema de la figura \ref{f10}, se han marcado cuatro pines. Los dos en rojo ENA y ENB, Habilitan el puente en H A y el puente en H B, respectivamente. Ambos deberán recibir un $1$ lógico desde las correspondientes salidas de la placa del microcontrolador (ver sección \ref{sec_mic}). El pin marcado en azul PWMA representa la entrada de la señal de PWM necesaria para controlar el puente A. Dado que hemos colocado el \emph{jumper} en la posición paralelo, esta señal activará a la vez tanto al puente A como al puente B. Esta señal será tambien enviada desde la placa del microcontrolador. 
+Por último debemos hablar de los pines de la placa desde los que controlaremos la dirección y la velocidad del motor. Se trata de las entradas lógicas de la tarjeta.  En el esquema de la figura \ref{f10}, se han marcado cuatro pines. Los dos en rojo ENA y ENB, Habilitan el puente en H A y el puente en H B, respectivamente. Ambos deberán recibir un $1$ lógico desde las correspondientes salidas de la placa del microcontrolador (ver sección \ref{sec_mic}). El pin marcado en azul PWMA representa la entrada de la señal de PWM necesaria para controlar el puente A. Dado que hemos colocado el \emph{jumper} en la posición paralelo, esta señal activará a la vez tanto al puente A como al puente B. Esta señal será también enviada desde la placa del microcontrolador. 
 \begin{figure}
 \centering
 \includegraphics[scale=0.65]{IHM15A1.jpg}
@@ -251,7 +251,7 @@ Por último debemos hablar de los pines de la placa desde los que controlaremos 
 \end{figure}
 Por último, la entrada marcada en verde como PHA, permite cambiar el par de puertas G1-G4 ó G2-G3 por las que se introduce la señal de PWM, cambiando de este modo el sentido de giro del motor. Para hacerlo girar en un sentido, debemos enviar desde la salida correspondiente de la placa del microcontrolador un $0$ lógico, para invertir el sentido de giro, deberemos enviar un $1$.
 
-La placa de expansión presenta más opciones de configuración que no emplearemos en estas prácticas. Los interesados en saber más, pueden recurrir a las hojas de características incluidas en la bibliográfia
+La placa de expansión presenta más opciones de configuración que no emplearemos en estas prácticas. Los interesados en saber más, pueden recurrir a las hojas de características incluidas en la bibliografía
 
   
 \subsection{El microprocesador} \label{sec_mic}
@@ -262,16 +262,16 @@ La  figura \ref{f11} muestra una imagen de  la misma. En dicha imagen, se pueden
 \includegraphics[scale=1.5,angle=180]{NUCLEO-F411RE.jpg}
 \caption{Placa de desarrollo NUCLEO-F411RE }\label{f11}
 \end{figure}
-El programador se conecta al ordenador mediante el uso de un cable USB estándar. En el extremo de la placa se emplea un conector miniUSB. Además de permitir descargar código en el microcontrolador, el programador permite emular un puerto serie estándar, de modo que se puede emplear para enviar y recibir datos desde la placa al ordenador en tiempo de ejecución. También permite depurar código, aunque esta opción no la emplearemos en las prácticas. 
+El programador se conecta al ordenador mediante el uso de un cable USB estándar. En el extremo de la placa se emplea un conector miniUSB. Además de permitir descargar código en el microcontrolador, el programador permite emular un puerto serie estándar, de modo que se puede emplear para enviar y recibir datos entre la placa y el ordenador en tiempo de ejecución. También permite depurar código, aunque esta opción no la emplearemos en las prácticas. 
 
 La parte de la izquierda de la placa, contiene el microcontrolador, un par de botones programables, un par de leds y el resto de la circuitería necesaria para hacer funcionar el microcontrolador. Además presenta dos juegos de pines (\emph{pin-outs}) distintos. El primero de ellos emula el \emph{pin-out} de la famosa placa de desarrollo de  Arduino. De este modo, hace posible conectar a la placa del microcontrolador cualquier placa de expansión compatible con la del Arduino. Se trata de los pines hembra que aparecen en la imagen de la figura \ref{f11}. El segundo juego de pines conocido como MORFO ofrece 64 pines macho.
 
 En nuestro caso, emplearemos el \emph{pin-out} compatible con Arduino. Una de las razones para ello es que la placa de expansión que contiene los puentes en H para alimentar el motor, se inserta sobre  la placa de desarrollo, empleando dicho \emph{pin-out}. De este modo, podemos identificar rápidamente los pines empleados por la placa de expansión. Por su parte, la placa de expansión vuelve a replicar el \emph{pin-out} de Arduino, con lo que los pines no empleados por la placa de expansión quedan disponibles para otras aplicaciones.
 
-La figura \ref{f12} muestra el esquema de conexiones del \emph{pin-out} de arduino, así como su nomenclatura.
+La figura \ref{f12} muestra el esquema de conexiones del \emph{pin-out} de arduino, así como su nomenclatura. Aunque la específica de Arduino se corresponde con las etiquetas marcadas en verde, nosotros emplearemos habitualmente la correspondiente a MORFO, que se corresponde con las etiquetas marcadas en azul.
 \begin{figure}
 \includegraphics[scale=0.9,angle=90]{nucleo_f411re_arduino.png}
-\caption{NUCLEO-F411RE. Pin-out compatible con Arduino, la nomenclatura es la de las etiquetas marcadas en verde}.\label{f12}
+\caption{NUCLEO-F411RE. Pin-out compatible con Arduino, la nomenclatura que seguiremos es la de señalada en las etiquetas azules}.\label{f12}
 \end{figure}
 Si nos fijamos, los pines están agrupados por conectores: CN5 con 10 pines, CN9 con 8 pines, CN6 con 8 pines y CN8 con 6 pines.
 La placa de desarrollo empleada es bastante potente y versátil, una descripción completa de la misma excede el propósito de estas páginas. Los interesados en obtener más imformación pueden consultar el manual de usuario de la placa \cite{STNUCLEO}.
@@ -281,7 +281,7 @@ Si comparamos las figuras \ref{f10} y \ref{f12} podemos identificar los conector
 
 En total, la placa de expansión solo emplea 8 de los 64 pines disponibles. Queda por tanto margen para realizar muchas más lecturas y escrituras de datos desde la placa de desarrollo. La Tabla \ref{tab:conexiones_stm32} detalla los pines utilizados en esta práctica.
 
-Como se recordará de la sección \ref{s111}, el motor EMG30 incorpora un encoder en cuadratura. En primer lugar los encoder deben ser alimentados con un valor de tension continua en el rango de $3.5$ a $20$ V. En nuestro caso emplearemos el pin $+5V$, del conector CN6 para alimentar los encoders. También emplearemos el pin GND, de dicho conector para conectar la tierra de los encoders . 
+Como se recordará de la sección \ref{s111}, el motor EMG30 incorpora un encoder en cuadratura. En primer lugar los encoders deben ser alimentados con un valor de tensión continua en el rango de $3.5$ a $20$ V. En nuestro caso emplearemos el pin $+5V$, del conector CN6 para alimentar los encoders. También emplearemos el pin GND, de dicho conector para conectar la tierra de los encoders. 
 
 Podemos emplear cualquiera de los pines de entrada/salida disponibles en la placa para leer el valor de dichos encoders. En las especificaciones del motor \cite{EMG30} se indica que las salidas de los encoders son de \emph{colector abierto} y necesitan para trabajar una resistencia de \emph{pull-up}.  La figura \ref{f13} (izquierda) muestra el esquema de la conexión de una resistencia de \emph{pull-up} para una salida de colector abierto. El transistor en la figura actúa como un simple interruptor pasando de corte a saturación al polarizar la base. Si está en corte, el voltaje observado en la salida O valdrá ($V+$). Si está en saturación se leerá un cero en la salida $0$. Por tanto, es necesario conectar los cables Morado (1) y Azul (2) del motor,  descritos en la tabla \ref{t1}, a una entrada de $+5V$  a través de las correspondientes resistencias de \emph{pull-up}.
 
@@ -310,13 +310,16 @@ La figura \ref{f14} muestra una imagen del montaje completo incluyendo el motor,
 \includegraphics[scale=0.15,angle=90]{montaje2.jpg}
 \caption{vista del montaje completo}\label{f14}
 \end{figure}
-\chapter{Descripción del \emph{software} del sistema \protect \footnote{La descripción de software corresponde a la versión de Matlab R2021b.}}
 
+\chapter{Visual Studio Code: Un IDE para programar la placa}
+Antes de hablar del software empleado en la práctica, vamos a describir el entorno de desarrollo (IDE) que emplearemos. En realidad, el código necesario, tanto el que emplea la placa de desarrollo, escrito en C, como el que usaramos desde el ordenador, escrito en python. Están preparados de antemano y disponibles en los ordenadores del laboratorio. Para desarrollar el sistema de control, solo serán necesario pequeños cambios en el código suministrado que se describirán en las secciones correspondientes.
 
-Al programar directamente el microcontrolador STM32 en C dejaremos de referirnos a los pines por su nomenclatura en Arduino (D0-D15, A0-A5) y utilizaremos sus nombres nativos en la arquitectura del chip (Puertos PA, PB, PC, etc.).
+Para empezar a trabajar, Abrimos en el ordenador la aolicación Visual Studio Code, el icono es una especie de lazo azul, y debería estar visible en el escritorio de los ordenadores.
 
-El STM32 cuenta con periféricos de hardware dedicados (temporizadores o \textit{Timers}) que pueden encargarse de tareas críticas en tiempo real sin consumir recursos del procesador. Para aprovechar esto, debemos conectar las señales del motor a los pines físicos del microcontrolador que soporten la \textit{Función Alternativa} requerida.
+Haciendo doble click se nos abrirá una ventana como la de la figura \ref{fig visual estudio}. La vista no coincidirá exactamente con la que muestra la figura. Para abrir el directorio de trabajo de nuestra práctica, deplegamos el menu \texttt{File} arriba a la izquierda de la ventana y buscamos la opción \texttt{Open Folder}, buscamos la carpeta \texttt{practica\_motor\_nv} y la abrimos.  
+\chapter{Descripción del \emph{software} del sistema \protect \footnote{Tan solo se describe aquí lo mínimo imprescimdible para realizar la práctica. Para una dsecripción completa consultar el documento making\_of.pdf}}
 
+El STM32 cuenta con periféricos de hardware dedicados (temporizadores o \textit{Timers}) que pueden encargarse de tareas críticas en tiempo real sin consumir recursos del procesador. Para aprovechar esto, debemos conectar las señales del motor a los pines físicos del microcontrolador que soporten la \textit{Función} requerida. Por ello, la selección de pines realizada para conectar la placa al motor no es casual. La tabla \ref{tab:conexiones_stm32} resume las conexiones empleadas, y la función espécifica empleada tanto para la lectura de encoders como para la generación de la señal de PWM
 
 \begin{table}[h]
 	\centering
@@ -348,27 +351,19 @@ Como se deduce de la tabla, la interacción con la planta se delega en gran medi
 	\item \textbf{Habilitar ambos puentes en H (PA10, PA7)} Habilitamos los dos puentes en H para alimentar el motor a través de ambos puentes a la vez. 
 \end{itemize}
 
-\chapter{Programación del Microcontrolador en C}
+\section{Programación del Microcontrolador en C}
 
 
 
-\section{Configuración de Periféricos (STM32CubeMX)}
+\subsection{Configuración de Periféricos (STM32CubeMX)}
 Para interactuar con la planta (el motor de continua), es necesario configurar los periféricos de hardware del microcontrolador. Esta tarea se realiza mediante la herramienta gráfica \textit{STM32CubeMX}, la cual genera el código de inicialización (\textit{drivers} HAL). Los elementos fundamentales a configurar son:
 
 \begin{itemize}
 	\item \textbf{Lectura del Encoder (TIM2):} Se configura un temporizador en modo \textit{Encoder Mode}. El hardware del STM32 se encargará automáticamente de decodificar las señales en cuadratura (Canal A y Canal B) y actualizar un registro contador (\texttt{CNT}), liberando a la CPU de esta tarea.
 	\item \textbf{Generación de PWM (TIM3):} Se configura un temporizador para generar una señal PWM (Modulación por Ancho de Pulso) a una frecuencia superior a 10 kHz para evitar ruido audible y asegurar una dinámica fluida en el puente en H.
-	\item \textbf{Bucle de Control (TIM4):} Un temporizador configurado para generar una interrupción periódica exacta cada 10\,ms ($T_s = 0.01\,$s). Esta interrupción garantiza que nuestro bucle de control se ejecute de forma determinista.
+	\item \textbf{Bucle de Control (TIM4):} Un temporizador configurado para generar una interrupción periódica exacta cada 1\,ms ($T_s = 0.001\,$s). Esta interrupción garantiza que nuestro bucle de control se ejecute de forma determinista.
 	\item \textbf{Comunicaciones (USART2):} Se habilita el puerto serie asíncrono configurado a 115200 baudios y con interrupciones de recepción (\texttt{RX}) habilitadas, para recibir los comandos desde nuestro \textit{Dashboard} en Python.
 \end{itemize}
-
-% NOTA PARA TI: Aquí puedes insertar una captura de pantalla tuya del CubeMX
-% \begin{figure}[h!]
-	%     \centering
-	%     \includegraphics[width=0.8\textwidth]{cubemx_timers.png}
-	%     \caption{Configuración de los temporizadores en STM32CubeMX.}
-	%     \label{fig:cubemx}
-	% \end{figure}
 
 \section{Estructura del Software y Librería CMSIS-DSP}
 El control moderno, como la realimentación de estados y los observadores de Luenberger, requiere un uso intensivo de álgebra lineal (multiplicación y suma de matrices). Implementar estas operaciones mediante bucles \texttt{for} anidados en C es ineficiente y propenso a errores.
@@ -414,9 +409,9 @@ Para mantener el código organizado, encapsularemos todas las variables del moto
 \end{lstlisting}
 
 \section{Arquitectura del Bucle de Control}
-El corazón de nuestro sistema reside en la función \texttt{Motor\_update(void)}, la cual es invocada estrictamente cada 10 milisegundos por la rutina de atención a la interrupción (ISR) del \texttt{TIM4}. 
+El corazón de nuestro sistema reside en la función \texttt{Motor\_update(void)}, la cual es invocada estrictamente cada 1 milisegundos por la rutina de atención a la interrupción (ISR) del \texttt{TIM4}. 
 
-El flujo de esta función, independientemente del algoritmo de control seleccionado (PID o Estados), sigue siempre tres pasos inquebrantables:
+El flujo de esta función, independientemente del algoritmo de control seleccionado (PID o Estados), sigue siempre tres:
 \begin{enumerate}
 	\item \textbf{Lectura de Sensores:} Se lee el registro del hardware del \textit{encoder} y se estima la velocidad actual mediante diferenciación numérica (para los PIDs).
 	\item \textbf{Lógica de Control:} Un bloque condicional (\texttt{switch} o \texttt{if/else}) deriva la ejecución hacia el algoritmo matemático que esté activo en ese momento, calculando el esfuerzo de control en Voltios.
@@ -538,7 +533,7 @@ La tabla \ref{tab:csv} muestra un ejemplo de la estructura del archivo generado.
     \label{tab:csv}
 \end{table}
 
-Es archivo puede manejarse desde cualquier hola de cálculo o importarlo en python para operar con los datos obtenidos.
+Es archivo puede manejarse desde cualquier hoja de cálculo o importarlo en python para operar con los datos obtenidos.
 
 \paragraph{Practica 1}
 \begin{enumerate}
@@ -571,7 +566,7 @@ Es archivo puede manejarse desde cualquier hola de cálculo o importarlo en pyth
 \paragraph{Modelo del motor} El circuito de la figura \ref{f21} representa un motor de corriente continua y su sistema de alimentación. Podemos considerar el sistema compuesto de dos partes:
 
 \begin{itemize}
-	\item Una parte eléctrica formada por un variador (Puente en H más señal de PWM)  que recibe un voltaje de entrada $e(t)$ y devuelve un voltaje amplificado $K_Ae(t)$. Además el amplificador tiene una resistencia interna $R_0$.
+	\item Una parte eléctrica formada por un variador (Puente en H más señal de PWM)  que recibe un voltaje de entrada $e(t)$ y devuelve un voltaje amplificado $K_Ae(t)$. Además el amplificador tiene una resistencia i nterna $R_0$.
 
  La parte eléctrica del motor (bobinado) viene representada por una autoinductancia $L$ y una resistencia $R$. Por último, podemos considerar que la caída de tensión (fuerza contra electromotriz) debida al giro del motor es proporcional a la velocidad angular $\dot{\theta}$ con la que gira el rotor.  La constante de proporcionalidad $a$ depende de las características del motor. Si sumamos todas las caídas de tensión en el circuito:
 
@@ -1157,6 +1152,6 @@ Una solución más robusta a los problemas de \emph{Wind-up}, consiste en descon
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibliographystyle{plain}
-\bibliography{./Documentacion/practica}{}
+\bibliography{./Documentacion/practica}
 
 \end{document}
