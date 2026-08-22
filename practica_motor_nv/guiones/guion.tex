@@ -173,11 +173,11 @@ Si nos fijamos en las especificaciones de la tabla \ref{t1}, se indica que el en
 \begin{figure}
 \centering
 \includegraphics[width= 0.5\textwidth]{esqhall.jpg}
-\caption{Esquema de la posición relativa de los sensores de efecto Hall (H1 y H2) y los imanes permanentes para el encoder del motor EMG30. En la posición que se muestra, H2 estaría en un flanco e subida o bajada --según la dirección de giro del motor-- y H1 Estaría en en centro de un pulso}\label{f7}
+\caption{Esquema de la posición relativa de los sensores de efecto Hall (H1 y H2) y los imanes permanentes para el encoder del motor EMG30. En la posición que se muestra, H2 estaría en un flanco de subida o bajada --según la dirección de giro del motor-- y H1 Estaría en el centro de un pulso}\label{f7}
 \end{figure} 
 
 \subsection{La controladora del motor}\label{sh}
-Para un motor de corriente continua, la velocidad de giro del motor está directamente relacionada con la tensión a la que alimentemos sus terminales eléctricos. Además el sentido de giro vendrá determinado por la polaridad de la fuente de alimentación. Si invertimos la polaridad de los terminales, el motor invierte su sentido de giro. Podemos por tanto variar tanto el sentido de giro como la velocidad. Analicemos por separado ambas posibilidades.
+Para un motor de corriente continua, la velocidad de giro del motor está directamente relacionada con la tensión a la que alimentemos sus terminales eléctricos. Además, el sentido de giro vendrá determinado por la polaridad de la fuente de alimentación. Si invertimos la polaridad de los terminales, el motor invierte su sentido de giro. Podemos, por tanto, variar tanto el sentido de giro como la velocidad. Analicemos por separado ambas posibilidades.
 
 \paragraph{Variación del sentido de giro: Puente en H.}
 Para controlar el sentido de giro del motor es habitual emplear un circuito conocido como puente en H. La figura \ref{f8} muestra el esquema de un puente en H, construido a partir de transistores. La configuración del circuito, --con el motor situado en el centro de una H formado por los cuatro transistores-- es la que da origen a su nombre.
@@ -223,7 +223,7 @@ El valor máximo de la señal; en el ejemplo de la figura sería $V_{max}=10V$. 
 \caption{Señal de PWM}\label{f9}
 \end{figure} 
 
-Supongamos que hacemos llegar una señal de PWM a las Puertas G1 y G4 del puente en H de la figura \ref{f6}. Los transistores abrirán el puente durante el \emph{duty cicle} de modo que el motor recibirá corriente solo durante dichos periodos de tiempo. Sin embargo el tiempo de respuesta de un motor es, por lo general superior al periodo $T$ de la señal, por lo que no podrá arrancar y parar al ritmo de ésta. El resultado es que es motor \emph{filtrará la señal} quedándose con su valor medio. Si lo calculamos para un ciclo,
+Supongamos que hacemos llegar una señal de PWM a las Puertas G1 y G4 del puente en H de la figura \ref{f6}. Los transistores abrirán el puente durante el \emph{duty cicle} de modo que el motor recibirá corriente solo durante dichos periodos de tiempo. Sin embargo, el tiempo de respuesta de un motor es, por lo general superior al periodo $T$ de la señal, por lo que no podrá arrancar y parar al ritmo de ésta. El resultado es que es motor \emph{filtrará la señal} quedándose con su valor medio. Si lo calculamos para un ciclo,
 \begin{equation}
 \frac{1}{T}\int^T_0 V_{PWM}dt = \frac{1}{T}\left(\int^{\Delta T}_0 V_{+}dt 
 + \int^{T}_{\Delta T} 0 dt\right)) = \frac{\Delta T}{T}V_{+}
@@ -312,13 +312,49 @@ La figura \ref{f14} muestra una imagen del montaje completo incluyendo el motor,
 \end{figure}
 
 \chapter{Visual Studio Code: Un IDE para programar la placa}
-Antes de hablar del software empleado en la práctica, vamos a describir el entorno de desarrollo (IDE) que emplearemos. En realidad, el código necesario, tanto el que emplea la placa de desarrollo, escrito en C, como el que usaramos desde el ordenador, escrito en python. Están preparados de antemano y disponibles en los ordenadores del laboratorio. Para desarrollar el sistema de control, solo serán necesario pequeños cambios en el código suministrado que se describirán en las secciones correspondientes.
+\section{El entorno de desarrollo}
+Antes de hablar del software empleado en la práctica, vamos a describir el entorno de desarrollo (IDE) que emplearemos. 
 
-Para empezar a trabajar, Abrimos en el ordenador la aolicación Visual Studio Code, el icono es una especie de lazo azul, y debería estar visible en el escritorio de los ordenadores.
+Visual Studio Code es un entorno de desarrollo muy versátil y ampliamente utilizado en programación. Para usarlo es preciso en primer lugar configurarlo adecuadamente de acuerdo a las tareas que se quieran desarrollar. Dar una descripción seria de este entorno está más allá de los objetivos de esta práctica. Diremos simplemente que la versión disponible en los ordenadores del laboratorio ya ha sido configurada adecuadamente para desarrollar y compilar programas en C para la placa de desarrollo, así como para escribir y ejecutar código en Python.
 
-Haciendo doble click se nos abrirá una ventana como la de la figura \ref{fig visual estudio}. La vista no coincidirá exactamente con la que muestra la figura. Para abrir el directorio de trabajo de nuestra práctica, deplegamos el menu \texttt{File} arriba a la izquierda de la ventana y buscamos la opción \texttt{Open Folder}, buscamos la carpeta \texttt{practica\_motor\_nv} y la abrimos.  
-\chapter{Descripción del \emph{software} del sistema \protect \footnote{Tan solo se describe aquí lo mínimo imprescimdible para realizar la práctica. Para una dsecripción completa consultar el documento making\_of.pdf}}
+En realidad, el código necesario, tanto el que emplea la placa de desarrollo, escrito en C, como el que usaremos desde el ordenador, escrito en Python. Están preparados de antemano y disponibles en los ordenadores del laboratorio. Para desarrollar el sistema de control, solo serán necesario pequeños cambios en el código suministrado que se describirán en las secciones correspondientes.
 
+Para empezar a trabajar, Abrimos en el ordenador la aplicación Visual Studio Code, el icono es una especie de lazo azul, y debería estar visible en el escritorio de los ordenadores.  
+Haciendo doble clic se nos abrirá una ventana como la de la figura \ref{fvs}. La vista no coincidirá exactamente con la que muestra la figura. Para abrir el directorio de trabajo de nuestra práctica, desplegamos el menu \texttt{File} arriba a la izquierda de la ventana y buscamos la opción \texttt{Open Folder}, buscamos la carpeta \texttt{practica\_motor\_nv} y la abrimos. 
+\begin{figure}
+	\centering
+		\includegraphics[width=0.75\textwidth]{vscode.png}
+\caption{Ventana principal de Visual Studio Code } \label{fvs}
+\end{figure}
+
+Debería aparecer a la izquierda, el mismo árbol de directorios (\emph{Explorer}) que se muestra en la figura \ref{fvs}.
+
+De los dos directorios que se muestran bajo \texttt{practica\_motor\_nv}, el primero \texttt{guiones} Contiene la documentación de la práctica; como, por ejemplo, este guion. El segundo \texttt{motor} es el que contiene el software que vamos a emplear. Solo vamos a hacer referencia a tres ficheros: Dos de ellos están en el directorio \texttt{motor/Src}  y son los ficheros \texttt{main.c} y \texttt{motor.c}. El tercero cuelga directamente de \texttt{motor} y se llama \texttt{motor.py}.
+
+\section{Compilación del programa y descarga en la placa del ejecutable}
+Para que el software desarrollado en C, funcione es preciso en primer lugar compilarlo. Para ello, abrimos, por ejemplo el programa \texttt{main.c} que es el principal de nuestra aplicación, y buscamos en la barra inferior de la ventana de Visual Studio Code el icono de la rueda dentada y la palabra build (ver figura \ref{compila}) lo pulsamos y nos ofrecera las opciones\footnote{Solo ofrece estas opciones la primera vez que compilamos, luego lo hace directamente} debug y release. Elegimos release. Dejamos que compile el programa y comprobamos que llega al final sin errores (Build finished with exit code 0).
+\begin{figure}
+	\centering	
+	\includegraphics[width=0.75\textwidth]{compilar.png}
+\caption{Terminal mostrando el resultado final de la compilación sin errores y menu desplegable Terminal/Run Task } \label{compila}
+\end{figure}
+
+Una vez completada la compilación, es preciso descargar el programa ejecutable en la placa de desarrollo. para hacerlo, es preciso tener conectada la placa a uno de los puertos USB del ordenador. En la jerga de los programadores, a la operación de descarga de software se le llama a veces \emph{flashear} la placa. El origen de este término tiene que ver con que el código se almacena en la memoria flash del microcontrolador. Se trata de una memoria no volátil que conserva el programa aun cuando se apague el micro. Cada vez que se vuelve a encender, el micro arranca, busca este código y lo ejecuta.
+
+Para flashear la placa, una vez compilado el programa, abrimos el menú desplegable \texttt{Terminal} de la barra superior de la ventana de Visual Studio Code y seleccionamos la opción \texttt{Run Task...} (ver figura \ref{compila}). Hacerlo, se nos abrirá un nuevo menú desplegable en la parte superior de la ventana, con las tareas disponibles. Seleccionamos la opción \texttt{flashear STM32} (ver figura \ref{flasea}). Si todo va bien, el programa se descargará en la placa. Si se produce un error, lo más probable es que no se haya identificado correctamente el puerto USB. En la mayoría de los casos, este problema se resuelve desenchufando el cable USB y volviendo a enchufarlo.
+
+Una vez completada la descarga, el código comienza a funcionar, y estará esperando instrucciones del ordenador. Ésta se enviarán desde una aplicación desarrollada en Python tal y como se describe en la sección \ref{mtpy}.
+
+\begin{figure}
+	\centering	
+	\includegraphics[width=0.75\textwidth]{flasear.png}
+\caption{Terminal mostrando en azul el menu desplegable con la tarea flashear STM32 } \label{flasea}
+\end{figure}
+
+
+\chapter{Descripción del \emph{software} del sistema \protect \footnote{Tan solo se describe aquí lo mínimo imprescindible para realizar la práctica. Para una descripción completa consultar el documento \texttt{making\_of.pdf}}}
+
+\section{Configuración del microcontrolador  (STM32CubeMX)}
 El STM32 cuenta con periféricos de hardware dedicados (temporizadores o \textit{Timers}) que pueden encargarse de tareas críticas en tiempo real sin consumir recursos del procesador. Para aprovechar esto, debemos conectar las señales del motor a los pines físicos del microcontrolador que soporten la \textit{Función} requerida. Por ello, la selección de pines realizada para conectar la placa al motor no es casual. La tabla \ref{tab:conexiones_stm32} resume las conexiones empleadas, y la función espécifica empleada tanto para la lectura de encoders como para la generación de la señal de PWM
 
 \begin{table}[h]
@@ -351,24 +387,38 @@ Como se deduce de la tabla, la interacción con la planta se delega en gran medi
 	\item \textbf{Habilitar ambos puentes en H (PA10, PA7)} Habilitamos los dos puentes en H para alimentar el motor a través de ambos puentes a la vez. 
 \end{itemize}
 
-\section{Programación del Microcontrolador en C}
-
-
-
-\subsection{Configuración de Periféricos (STM32CubeMX)}
-Para interactuar con la planta (el motor de continua), es necesario configurar los periféricos de hardware del microcontrolador. Esta tarea se realiza mediante la herramienta gráfica \textit{STM32CubeMX}, la cual genera el código de inicialización (\textit{drivers} HAL). Los elementos fundamentales a configurar son:
+Para interactuar con la planta (el motor de continua), es necesario configurar los periféricos de hardware del microcontrolador que acabamos de describir. Esta tarea se realiza mediante la herramienta gráfica \textit{STM32CubeMX}, la cual genera el código de inicialización (\textit{drivers} HAL). Los elementos fundamentales a configurar son:
 
 \begin{itemize}
 	\item \textbf{Lectura del Encoder (TIM2):} Se configura un temporizador en modo \textit{Encoder Mode}. El hardware del STM32 se encargará automáticamente de decodificar las señales en cuadratura (Canal A y Canal B) y actualizar un registro contador (\texttt{CNT}), liberando a la CPU de esta tarea.
 	\item \textbf{Generación de PWM (TIM3):} Se configura un temporizador para generar una señal PWM (Modulación por Ancho de Pulso) a una frecuencia superior a 10 kHz para evitar ruido audible y asegurar una dinámica fluida en el puente en H.
 	\item \textbf{Bucle de Control (TIM4):} Un temporizador configurado para generar una interrupción periódica exacta cada 1\,ms ($T_s = 0.001\,$s). Esta interrupción garantiza que nuestro bucle de control se ejecute de forma determinista.
-	\item \textbf{Comunicaciones (USART2):} Se habilita el puerto serie asíncrono configurado a 115200 baudios y con interrupciones de recepción (\texttt{RX}) habilitadas, para recibir los comandos desde nuestro \textit{Dashboard} en Python.
+	\item \textbf{Comunicaciones (USART2):} Se habilita el puerto serie asíncrono configurado a 115200 baudios y con interrupciones de recepción (\texttt{RX}) habilitadas, para recibir los comandos desde nuestro ordenador (\textit{Dashboard}) en Python. 
 \end{itemize}
 
+\section{Programación del Microcontrolador en C}
+No vamos a dar detalles de del manejo de STM32CubeMX. Aquellos que estén iteresados en conocer más del proceso de configuración puede encontrar más información en el documento making\_of.pdf. Simplemente diremos que este programa genera un 'esqueleto del proyecto de software' con el código básico y las librería necesarias. Para nosotros, el archivo fundamental generado es \texttt{main.c}. Este programa contiene la función principal, \texttt{main(void)} que se encarga de llamar a todas las funciones de inicialización de los componentes que hemos descrito hasta ahora y ejecuta un bucle infinito \texttt{while(1)} 
+
+
+En este bucle while, que queda vacío cuando se genera el fichero \texttt{main.c} Se ha escrito el código necesario para realizar periódicamente las siguiente tres tareas:
+\begin{enumerate}
+	\item Chequear si se ha pulsado el botón azul de la placa, para cambiar de sentido el movimiento del motor.
+	\item Comprobar, si ha saltado el timer 4, indicando que ha transcurrido 1ms. En caso afirmativo llama a la función \texttt{motor update}, que es la encargada del control del motor.
+	\item Comprobar si has transcurrido 10ms, en cuyo caso, envía información al ordenador a través del puerto serie.
+\end{enumerate}
+
+
 \section{Estructura del Software y Librería CMSIS-DSP}
+
+Junto al archivo \texttt{main.c} Se ha creado de cero un segundo archivo \texttt{motor.c} y su correspodiente archivo de cabecera \texttt{motor.h}. Este último podemos encontrarlo en el directorio core/Inc.
+
+Estos dos archivos son los que contienen todos los elementos necesarios para controlar el motor.
+
 El control moderno, como la realimentación de estados y los observadores de Luenberger, requiere un uso intensivo de álgebra lineal (multiplicación y suma de matrices). Implementar estas operaciones mediante bucles \texttt{for} anidados en C es ineficiente y propenso a errores.
 
 Para solucionarlo, emplearemos la librería \textbf{CMSIS-DSP} proporcionada por ARM. Esta librería está optimizada en lenguaje ensamblador para aprovechar la Unidad de Coma Flotante (FPU) del procesador Cortex-M4 del STM32, realizando cálculos matriciales en apenas unos pocos ciclos de reloj.
+
+Estas librerías nos van a permitir emplear dos sistemas de control distinto. Uno es un control PID que no emplearemos en estas prácticas el otro es un control por realimentación de estados estimados.
 
 Para mantener el código organizado, encapsularemos todas las variables del motor en una estructura (\texttt{struct}) en nuestro archivo de cabecera \texttt{motor.h}:
 
@@ -408,8 +458,30 @@ Para mantener el código organizado, encapsularemos todas las variables del moto
 	extern MotorControl motor;
 \end{lstlisting}
 
+En realidad, para nuestra práctica el único archivo C que debemos modificar es \texttt{motor.c}. En concreto, debemos modificar las matrices \texttt{A, B, C} que definen el modelo discreto en variables de estado del motor, así como las ganancias del controlador, del observador y del control integral.
+El siguiente listado muestra las líneas de código que contienen estas variables. Por defecto, todos los valores están puestos a cero y deben ser sustituidos por los valores calculados para el controlador.
+
+\begin{lstlisting}[language=C, firstnumber=16  ,caption=Framento de código mostrando la definición de las matrices y ganancias del sistema de control por realimentación de estados estimados (\texttt{motor.c})]
+// Matrices del modelo discretizado (A, B, C)
+float32_t Ad_f32[4] = {0.0000f, 0.0000f , 0.0000f, 0.0000f}; // Matriz A (2x2)
+float32_t Bd_f32[2] = {0.0000f, 0.0000f}; // Matriz B (2x1)
+float32_t Cd_f32[2] = {0.0000f, 0.0000f}; // Matriz C (1x2)    
+
+// Ganancias del controlador y observador de espacio de estados
+float32_t Lp_f32[2] = {0.0000f, 0.0000f}; //observador de estado (L)
+float32_t Kx_pos_f32[2] = {0.0000f, 0.0000f}; // Ganancia para control de posicion
+float32_t Kx_vel_f32[2] = {0.0000f, 0.0000f}; // Ganancia para control de velocidad
+
+float32_t Ki_pos_f32 = 0.0f; // Ganancia integral para control de posicion
+float32_t Ki_vel_f32 = 0.0f; // Ganancia integral para control de velocidad
+
+
+\end{lstlisting}
+
+
 \section{Arquitectura del Bucle de Control}
-El corazón de nuestro sistema reside en la función \texttt{Motor\_update(void)}, la cual es invocada estrictamente cada 1 milisegundos por la rutina de atención a la interrupción (ISR) del \texttt{TIM4}. 
+
+El corazón de nuestro sistema reside en la función \texttt{Motor\_update(void)}, contenida en el fichero \texttt{motor.c} la cual es invocada estrictamente cada 1 milisegundos. 
 
 El flujo de esta función, independientemente del algoritmo de control seleccionado (PID o Estados), sigue siempre tres:
 \begin{enumerate}
@@ -419,26 +491,33 @@ El flujo de esta función, independientemente del algoritmo de control seleccion
 \end{enumerate}
 
 Esta modularidad nos permitirá, en capítulos posteriores, inyectar el código matemático avanzado sin alterar las rutinas de lectura de hardware ni de seguridad.
-\chapter{Motor de continua en lazo abierto. Identificación del motor}
-En esta primera práctica nos vamos a limitar a emplear el el programa de Python \texttt{Motor.py}  Para manejar el motor manualmente suministrandole un valor fijo de voltaje, y leer su posición y velocidad a través de los \emph{encoders}.
-\section{Descripción general de Motor.py}
+
+\section{Descripción general de Motor.py}\label{mtpy}
 Motor.py es un programa que permite realizar varias tareas de monitorización y control del motor, empleando un ordenador personal. Está escrito en Python y define una única clase \texttt{MotorDashboard} en la que está encapsulado todo el código. Podemos ejecutarlo directamente en línea de comandos a través del intérprete de Python:
 \begin{verbatim}
-	$ python Motor.py
+	$ Python Motor.py
 \end{verbatim}
 
-También es posible ejecutarlo empleando Visual Studio Code, o cualquier otro IDE adecuado como Spyder.Es importante antes de ejecutarlo asegurarse de que el ordenador tiene instalado python y los módulos de python que importa, (ver listado \ref{Motor1}).
+También es posible ejecutarlo empleando Visual Studio Code, o cualquier otro IDE adecuado como Spyder.  importante antes de ejecutarlo asegurarse de que el ordenador tiene instalado Python y los módulos de Python que importa, (ver listado \ref{Motor1}).
 
-Al ejecutar el programa, éste crea una instancia (objeto) de la la clase \texttt{MotorDashboard} llamado \texttt{Dashboard}. Este objeto realiza en su inicialización tres tareas principales:
+En nuestro caso, para la práctica lo ejecutaremos desde Visual Studio Code. Si tenemos abierto el directorio \texttt{motor}, es suficiente con que seleccionemos con el ratón el archivo \texttt{motor.py} para que se abra en el editor. UNa vez abierto, basta pulsar el triángulo situado en la parte superior izquierda del editor para que se ejecute. (Ver figura \ref{fmpy})
+
+\begin{figure}
+	\centering	
+	\includegraphics[width=0.75\textwidth]{mpy.png}
+\caption{Ventana de visual Studio Code mostrando el árbol de directorios, el archivo motor.py y el botón de ejecución } \label{fmpy}
+\end{figure}
+
+Al ejecutar el programa, éste crea una instancia (objeto) de la clase \texttt{MotorDashboard} llamado \texttt{Dashboard}. Este objeto realiza en su inicialización tres tareas principales:
 
 \paragraph{Comunicación con la placa st a través de un puerto serie.} 
 En primer lugar, trata de levantar las comunicaciones con la placa a través de un puerto serie. Este puerto está emulado sobre el puerto USB de la placa. Es preciso, por tanto, tener conectada la placa a un puerto USB del ordenador.
 
-\begin{lstlisting}[language=python, caption=Cabecera y primeras líneas de (\texttt{Motor.h})]
+\begin{lstlisting}[language=Python, caption=Cabecera y primeras líneas de (\texttt{Motor.h})]
 import serial
 import struct
 import csv
-import sys
+import sysEs
 import time
 import collections
 from datetime import datetime
@@ -491,6 +570,11 @@ Para la fila inferior, podemos describir los siguientes seis controles,
 	\item botón \emph{Enviar consigna de velocidad}. Al pulsarlo ajusta la velocidad del motor al valor indicado en el \emph{spinbox} anterior empleando control PID. No lo emplearemos en esta Práctica
 	\item botón \emph{velocidad en espacio de estados} Al pulsarlo ajusta la velocidad del motor al valor indicado en el \emph{spinbox} anterior empleando control en variables de estados y un estimador de Luemberger.
 \end{enumerate}
+
+Una nota final:  a veces, al abrir ejecutar \texttt{motor.py}, puede suceder que las gráficas se queden congeladas. Esto se debe en la mayoría de los casos a un error de sincronización del puerto serie. La solución habitual es sencillamente pulsar el botón negro de la placa, esto hace que se resetee y vuelva a funcionar normalmente.
+
+\chapter{Motor de continua en lazo abierto. Identificación del motor}
+En esta primera práctica nos vamos a limitar a emplear el el programa de Python \texttt{Motor.py}  Para manejar el motor manualmente suministrandole un valor fijo de voltaje, y leer su posición y velocidad a través de los \emph{encoders}.
 \section{Adquisición de datos mediante Motor.py }
 
 % \begin{figure}
@@ -499,13 +583,13 @@ Para la fila inferior, podemos describir los siguientes seis controles,
 % \caption{Señales producidas por un encoder en cuadratura al girar el motor }\label{f6bis}
 % \end{figure} 
 
-Vamos a describir en est a sección un procedimiento estándar para adquirir y guardar datos del movimiento del motor. El procedimiento se va a describir empleando valores fijos de PWM, pero es directameten aplicable a cualquier otro uso del motor.
+Vamos a describir en esta sección un procedimiento estándar para adquirir y guardar datos del movimiento del motor. El procedimiento se va a describir empleando valores fijos de PWM, pero es directamente aplicable a cualquier otro uso del motor.
 
-En primer lugar, debemos conectar los cables de alimentación de la placa a la fuente de 12V y la salida USB a un puerto USB del ordenador. 
+En primer lugar, debemos conectar los cables de alimentación de la placa de control a la fuente de 12V y la salida USB a un puerto USB del ordenador. 
 
-Ejecutamos el script de python Motor.py. Si la placa ha sido correctamente programada y el puerto serie está funcionado correctamente, veremos en la gráfica de posición y velocidad unas líneas horizontales en cero y como se desplazan los valores de tiempo en el eje x.
+Ejecutamos el script de Python Motor.py. Si la placa ha sido correctamente programada y el puerto serie está funcionado correctamente, veremos en la gráfica de posición y velocidad unas líneas horizontales en cero y como se desplazan los valores de tiempo en el eje x.
 
-Es aconsejable, en primer lugar comprobar que la comunicación entre la placa y el ordenador funciona correctamente. Para ello introducimos un valor en el \emph{spinbox} PWM, por ejemplo 500, que equivaldría a suministrar 6 voltios al motor. Pulsamos el botón enviar PWM y deberíamos ver que el motor se pone en marcha y que en las gráficas del panel de control se ve una recta creciente para la posición y una señal con una fuerte oscilación pero de media constante para la velocidad.
+Es aconsejable, en primer lugar comprobar que la comunicación entre la placa y el ordenador funciona correctamente. Para ello introducimos un valor en el \emph{spinbox} PWM, por ejemplo 500, que equivaldría a suministrar 6 voltios al motor (Recordad que tenemos 1000 divisiones para el ancho del pulso (duty cycle) de la señal de PWM. Por tanto, podemos seleccionar 1000 valores de voltaje entre 0V y 12V). Pulsamos el botón enviar PWM y deberíamos ver que el motor se pone en marcha y que en las gráficas del panel de control se ve una recta creciente para la posición y una señal con una fuerte oscilación pero de media constante para la velocidad.
 
 Si todo ha salida según lo previsto, pulsamos el botón \emph{reset posición} y el motor se parará con la posición fija en el valor cero\footnote{En algún caso, debido a la inercia del motor, puede ser necesario pulsar el botón un par de veces.}.
 
@@ -533,14 +617,16 @@ La tabla \ref{tab:csv} muestra un ejemplo de la estructura del archivo generado.
     \label{tab:csv}
 \end{table}
 
-Es archivo puede manejarse desde cualquier hoja de cálculo o importarlo en python para operar con los datos obtenidos.
+Es archivo puede manejarse desde cualquier hoja de cálculo o importarlo en Python para operar con los datos obtenidos.
+
+Es interesante hacer notar cómo el tiempo incrementa en valores regulares de 10ms, tal y como se programó en \texttt{main.c}.
 
 \paragraph{Practica 1}
 \begin{enumerate}
 \item Identificar todos los componentes de la planta. Placa de desarrollo, Placa de expansión, Motor, Fuente de alimentación, etc.
 \item Comprobar que todo el \emph{Hardware} está configurado de acuerdo a la descripción de estas notas.
 \item Programar y descargar el software de control de la placa. Comprobar que funciona correctamente y que se comunica con el programa \texttt{Motor.py}.
-\item Probar distintos valores de PWM y comprobar que funciona correctamente. Comprobar que se puede cambiar el sentido de giro sobre la marcha. Determinar la zona muerta del motor (voltaje mínimo por debajo del cual no arranca).
+\item Probar distintos valores de PWM y comprobar que funciona correctamente. Comprobar que se puede cambiar el sentido de giro sobre la marcha. Determinar la zona muerta del motor (voltaje mínimo por debajo del cual no arranca). Si se quiere, se pueden probar los botones de control del motor, aunque no harán nada, ya que todas las ganancias de los controladores están puestas a cero por defecto.
 \item Recoger datos para distintos valore del voltaje de entrada (tomar por ejemplo 10 valores equiespaciados desde el final de la zona muerta hasta los 12V) es suficiente con tomar datos durante 3 ó 4 segundos. Guardad los archivos obtenidos que serán utilizados en prácticas posteriores.   
 \end{enumerate}
 
@@ -997,7 +1083,7 @@ Obtenemos finalmente,
 
 
 
-Para controlar el motor real empleando realimentación de estados estimados, debemos sustituir el estimador continuo por su versión discreta, calculando los valores de las matrices $F$ y $G$ a partir de los valores de las matrices $A$ y $B$ y del periodo de muestreo $T$. Matlab suministra el comando \texttt{c2d} que obtiene directamente la versión muestreada de un sistema continuo definido en variables de estado mediante el comando \texttt{ss}. Así si el sistema continuo es: \texttt{sys = ss(A,B,C,D)} el discreto correspondiente para un periodo de muestreo T se obtiene como : \texttt{sysd = c2d(sys,T)}.
+Para controlar el motor real empleando realimentación de estados estimados, debemos sustituir el estimador continuo por su versión discreta, calculando los valores de las matrices $F$ y $G$ a partir de los valores de las matrices $A$ y $B$ y del periodo de muestreo $T$. Matlab suministra el comando \texttt{c2d} que obtiene directamente la versión muestreada de un sistema continuo definido en variables de estado mediante el comando \texttt{ss}. Así si el sistema continuo es: \texttt{sys = ss(A,B,C,D)} el discreto correspondiente para un periodo de muestreo T se obtiene como: \texttt{sysd = c2d(sys,T)}.
 
  
 
@@ -1043,7 +1129,7 @@ G\\
 
 Podemos directamente emplear el sistema ampliado con la acción integral discreta para recalcular los valores de las ganancias $[K,k_i]$ empleando el mismo método descrito en el párrafo anterior.
 
-\paragraph{Acción Directa} Una última nota para el cálculo de la acción directa para el sistema muestreado. Hemos omitido su cálculo hasta ahora ya que si empleamos acción integral podemos asignarle un valor arbitrario (aunque razonable). Vamos de todos modos a recordar la expresión de la acción directa para un sistema continuo y como adaptarla para una versión discretizada dicho sistema. Si llamamos $f$ a al valor de la ganancia de la acción directa necesaria para que la planta alcance el estado estacionario tendremos que,
+\paragraph{Acción Directa} Una última nota para el cálculo de la acción directa para el sistema muestreado. Hemos omitido su cálculo hasta ahora, ya que, si empleamos acción integral podemos asignarle un valor arbitrario (aunque razonable). Vamos de todos modos a recordar la expresión de la acción directa para un sistema continuo y como adaptarla para una versión discretizada dicho sistema. Si llamamos $f$ a al valor de la ganancia de la acción directa necesaria para que la planta alcance el estado estacionario tendremos que,
 \begin{align}
 &\mathbf{x_{ssD}} = (F -GK)\mathbf{x_{ssD}} + Gfx_r\\
 &\left[I-(F-GK) \right]\mathbf{x_{ssD}} =Gfx_r\\
@@ -1054,14 +1140,14 @@ Podemos directamente emplear el sistema ampliado con la acción integral discret
 &f = \left[C\left[I-(F-GK) \right]^{-1}G\right]^{-1}
 \end{align}
 
-Es interesante observar que el resultado no coincide con el cálculo de la ganancia $F_c$ para el caso continuo. De hecho, ambos sistemas continuo y discretizado, alcanzarán el mismo valor de consigna pero por caminos distintos. 
+Es interesante observar que el resultado no coincide con el cálculo de la ganancia $F_c$ para el caso continuo. De hecho, ambos sistemas, continuo y discretizado, alcanzarán el mismo valor de consigna pero por caminos distintos. 
 
 Si se emplea acción integral, es posible elegir libremente tanto $F_c$ como $f$. Se puede entonces ajustar el valor de $f$ para que las trayectorias de ambos sistemas coincidan. Así para valores dados de $F_c$ y $f$, sabemos que,
 \begin{align}
 y_{ss}  &= -C\left[A-BK\right]^{-1}BF_cx_r\\
 y_{ssD} &= C\left[I-(F-GK) \right]^{-1}Gfx_r
 \end{align}
-Buscamos asegurar que ambos valores (continuo y discretizado) en estacionario sean iguales $Y_{ss} = Y_{ssD}$ Si igualamos la expresiones de los estados estacionarios y despejamos $f$
+Buscamos asegurar que ambos valores (continuo y discretizado) en estacionario sean iguales $Y_{ss} = Y_{ssD}$ Si igualamos las expresiones de los estados estacionarios y despejamos $f$
 \begin{align}
 -C\left[A-BK\right]^{-1}BF_cx_r = C\left[I-(F-GK) \right]^{-1}Gfx_r\\
 f = -\left[C\left[I-(F-GK) \right]^{-1}G\right]^{-1}C\left[A-BK\right]^{-1}BF_c  \\\label{eq429}
