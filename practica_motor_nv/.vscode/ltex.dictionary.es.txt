@@ -1,0 +1,6 @@
+encoder
+Encoder
+encoders
+duty
+jumper
+IDE
