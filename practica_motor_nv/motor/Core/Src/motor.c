@@ -10,11 +10,11 @@ extern TIM_HandleTypeDef htim3; // Timer para PWM
 // Definicion de matrices y ganancias para el controlador de 
 // espacio de estados.
 // ================================================================
-#define TS_DSP 0.01f //Periodo de muestreo del controlador (10ms)
+#define TS_DSP 0.001f //Periodo de muestreo del controlador (1ms)
 #define VMAX_DSP 12.0f  //Voltaje máximo motor
 
 // Matrices del modelo discretizado (A, B, C)
-float32_t Ad_f32[4] = {1.0000f, 0.0000f , 0.0000f, 1.0000f}; // Matriz A (2x2)
+float32_t Ad_f32[4] = {0.0000f, 0.0000f , 0.0000f, 0.0000f}; // Matriz A (2x2)
 float32_t Bd_f32[2] = {0.0000f, 0.0000f}; // Matriz B (2x1)
 float32_t Cd_f32[2] = {0.0000f, 0.0000f}; // Matriz C (1x2)    
 
@@ -23,8 +23,8 @@ float32_t Lp_f32[2] = {0.0000f, 0.0000f}; //observador de estado (L)
 float32_t Kx_pos_f32[2] = {0.0000f, 0.0000f}; // Ganancia para control de posición
 float32_t Kx_vel_f32[2] = {0.0000f, 0.0000f}; // Ganancia para control de velocidad
 
-float32_t Ki_pos_f32 = 0.0000f; // Ganancia integral para control de posición
-float32_t Ki_vel_f32 = 0.0000f; // Ganancia integral para control de velocidad
+float32_t Ki_pos_f32 = 0.0f; // Ganancia integral para control de posición
+float32_t Ki_vel_f32 = 0.0f; // Ganancia integral para control de velocidad
 
 // Objetos (instancias) matrices de CMSIS-DSP
 arm_matrix_instance_f32 Ad_mat, Bd_mat, Cd_mat, Lp_mat, Kx_pos_mat, Kx_vel_mat;
@@ -41,13 +41,13 @@ float32_t temp1_f32[2], temp2_f32[2], temp3_f32[2];
 void MotorControl_Init(void){
     // 1. Controles PID posición
     motor.pid_position.Kp = 0.0f;
-    motor.pid_position.Ki = 0.0f;
+    motor.pid_position.Ki = 0.000f;
     motor.pid_position.Kd = 0.0f;
     arm_pid_init_f32(&motor.pid_position,1); 
     
     // Controles PID velocidad
     motor.pid_speed.Kp = 0.0f;
-    motor.pid_speed.Ki = 0.0f;
+    motor.pid_speed.Ki = 0.000f;
     motor.pid_speed.Kd = 0.0f;
     arm_pid_init_f32(&motor.pid_speed,1); 
     
@@ -89,16 +89,21 @@ void Motor_SetSpeed(float32_t grados_por_segundo){ motor.setpoint_speed = grados
 
 
 // ================================================================
-// BUCLE PRINCIPAL (Llamado desde main.c cada 10ms por el timer)
+// BUCLE PRINCIPAL (Llamado desde main.c cada 1ms por el timer)
 // ================================================================
 void Motor_update(void){
     
     // 1. LEER EL HARDWARE (Encoder)
     motor.posicion_actual = (int32_t) __HAL_TIM_GET_COUNTER(&htim2);
     int32_t difpos = motor.posicion_actual - motor.posicion_anterior;
-    motor.velocidad_actual = difpos * 100.0f; // 10ms = 100Hz
-    motor.posicion_anterior = motor.posicion_actual; 
+    motor.posicion_anterior = motor.posicion_actual;
     
+    // Calculamos la velocidad instantánea real a 1ms (multiplicando por 1000.0f)
+    float32_t vel_instantanea = difpos * 1000.0f; // 1ms = 1MHz
+    
+    // FILTRO PASO BAJO: Suaviza la velocidad interna para que el PID no se vuelva loco
+    // 0.8 y 0.2 es un buen balance entre filtrado y velocidad de respuesta, se puede retocar
+    motor.velocidad_actual = (0.8f * motor.velocidad_actual) + (0.2f * vel_instantanea);
     float32_t salida = 0.0f; // Salida PWM (-999 a 999)
 
     // 2. LÓGICA DE CONTROL SEGÚN EL MODO
@@ -107,7 +112,6 @@ void Motor_update(void){
         if (fabsf(error_pos) <= 1.0f) error_pos = 0.0f; // Banda muerta
         
         salida = arm_pid_f32(&motor.pid_position, error_pos);
-        // Saturación a los límites físicos del PWM
         if (salida > 999.0f) salida = 999.0f; 
         if (salida < -999.0f) salida = -999.0f;
         motor.pid_position.state[2] = salida;
@@ -117,7 +121,6 @@ void Motor_update(void){
     else if(motor.mode == Control_speed){
         float32_t error_speed = motor.setpoint_speed - motor.velocidad_actual;
         salida = arm_pid_f32(&motor.pid_speed, error_speed);
-        // Saturación a los límites físicos del PWM
         if (salida > 999.0f) salida = 999.0f; 
         if (salida < -999.0f) salida = -999.0f;
         motor.pid_speed.state[2] = salida;
@@ -194,7 +197,6 @@ void Motor_update(void){
     }
 
     // 3. ENVIAR AL HARDWARE (Límites Finales y GPIO)
-    
     if (salida > 999.0f) salida = 999.0f;
     if (salida < -999.0f) salida = -999.0f;
     motor.pwm_output = salida;

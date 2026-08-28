@@ -1,0 +1,38 @@
+% !TEX root = making_of.tex
+\chapter{El entorno de desarrollo de Visual Studio Code (VSC)}\label{capvs}
+Entre las diferentes opciones existentes de IDEs (Integrated development Environments), se ha optado por emplear el programa Visual Studio Codepara el desarollo de este proyecto.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{vsscreen.png}
+	\caption{Ventana de Visual Studio Code} \label{fig:vscr}
+\end{figure}
+
+Si abrimos el programa, una vez instalado, accedemos a una ventana como la se muestra en la figura \ref{fig:vscr}. Vamos a describir brevemente los elementos más importantes.
+
+\begin{itemize}
+	\item Barra de actividad: Es la barra vertical localizada a la izquierda del todo de la ventana. Esta barra permite cambiar la vista del panel situado inmediatamente a su derecha. Las distinta opciones hacen referencias a tareas distintas realizables desde VSC. Así el icono superior (Explorer nos permite navegar por los directorios que tenemos abierto, seleccionar archivos para abrirlos en el editor etc. Debajo tenemos una opción de búsqueda (Search). Un control de cambios basado en git (Source control). Un botón para ejecución y depuración de código (RUN and debug), Un botón muy útil que nos permite explorar las extensiones (Extensions) disponibles, es decir configuraciones específicas para manejar distintos tipos de lenguajes de programación, etc.
+	\item Barra Lateral, inmediatamente a la derecha de la anterior, ofrece distintas vistas y paneles, dependiendo de la actividad seleccionada en la barra de actividad. En la figura \ref{fig:vscr}, se ve el panel correspondiente a las extensiones, porque la actividad seleccionada, ha sido precisamente el botón extensions. Se pueden recorrer las extensiones disponibles, comprobar si están o no instaladas, y seleccionarla para su instalación/desinstalación, configuración, etc.
+	\item El editor. Ocupa el area central. Su objetivo es escribir y editar código. Es posible abrir varios editores uno al lado del otro y de este modo trabajar en varios archivos simultáneamente. En la figura \ref{fig:vscr}, se muestra un fichero de texto que contiene la fuente el \LaTeX con la que se han elaborado estas notas. A su derecha, se ve el texto resultante en un archivo pdf.
+	\item Barra de estado (Status Bar) Situada en la parte inferior de la ventana, ofrece información contextual relacionada con el estado actual de VSC y la actividad que se está llevando a cabo.
+	\item Paleta de Comandos (Command Palette) Se accede pulsando los comandos Ctrl + Shift + P, es muy útil porque permite el acceso rápido a muchos comandos y características de VSC, sin tener que navegar por menús de opciones.
+	\item Paneles. Estań localizados debajo del editor. Muestran distintas herramienta muy útiles. Terminales del sistema, Salidas para los distintos compiladores, Consolas de depuración, panel de problemas etc.
+	\item Tabs. Situados en la parte superior del editor, permiten intercambiar la vista entre los archivos abiertos.  
+\end{itemize}
+
+Una vez instalado VSC debemos seleccionar las extensiones adecuadas para poder compilar codigo C, para la placa, descargarlo y, en su caso, poder depurarlo.
+
+Además, podemos también instalar las extensiones para escribir y ejecutar código en python. De esta manera, con un solo IDE, podemos generar todo el código necesario; tanto el código en C para la placa controladora como en código en Python para interactuar con al placa desde el ordenador.
+
+\section{Instalación de las extensiones STM32Cube}
+Tanto para el desarrollo de código C para la placa STM32F411E como para compilar dicho código y descargarlo en la placa, necesitamos instalar las extensiones necesarias de STM32Cube.
+
+Para hacerlo, pulsamos en la barra de actividades, el botón de las extensiones que tiene un icono con cuatro cuadros. Automaticamente aparecerá en la barra lateral las extensiones disponibles. Lo más sencillo es escribir en la barra de búsqueda la extensión que deseamos instalar: \texttt{STM32CubeIDE for Visual Studio Code}. Las extensiones de ST, empelan como símbolo una mariposa sobre un círculo azul, seleccionamos la que hemos buscado, pulsamos en el botón 'install'. Dejamos que complete la instalación. Estamos ya en condiciones de escribir, compilar y descargar código para nuestra placa ST.
+
+\section{Instalación de las extensiones para Python}
+VSC, puede emplear directamente la instalación de Python existente en nuestro ordenador. Sin embargo, como ya hemos indicado, es particularmnente cómodo manejarlo desde la distribución de anaconda.
+
+Para poder manejar python desde VSC podemos emplear la extensión 'Pylance' El procedimiento de instalación es idéntico al que hemos visto para Las extensiones de ST. Buscamos Pylance en el buscador de las extensiónes y pulsamos el botón 'Install'.
+
+Una vez instalado, VSC reconocerá cualquier archivo con extensión .py como propio de Python y nos mostrará a, la altura de los tabs, un triángulo verde. Si lo pulsamos ejecutará, en el terminal, disponible en los paneles, el código de archivo .py abierto en el editor activo.
+
+Es posible que en la primera ejecución nos pregunte que interprete de python queremos emplear, seleccionar el señalado como 'conda', asociado a la distribución de Anaconda.

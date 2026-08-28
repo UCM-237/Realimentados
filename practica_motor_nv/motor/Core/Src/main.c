@@ -21,9 +21,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-//#include <stdlib.h>
-//#include <string.h>
-//#include <stdio.h>
 #include <math.h>
 #include "motor.h"
 /* USER CODE END Includes */
@@ -61,6 +58,8 @@ TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
 
 UART_HandleTypeDef huart2;
+DMA_HandleTypeDef hdma_usart2_tx;
+DMA_HandleTypeDef hdma_usart2_rx;
 
 /* USER CODE BEGIN PV */
 volatile uint8_t flag_timer = 0;//para resetear el timer cada 10ms
@@ -71,6 +70,7 @@ ComandoPck rx_data; //Estructura para almacenar el comando recibido por UART
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_DMA_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_USART2_UART_Init(void);
@@ -113,6 +113,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_TIM3_Init();
   MX_TIM2_Init();
   MX_USART2_UART_Init();
@@ -127,8 +128,8 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim4); 
   //encender el led para indicar que el sistema está funcionando
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
-  //Iniciar la recepción de datos por UART en modo interrupción
-  HAL_UART_Receive_IT(&huart2, (uint8_t*)&rx_data, sizeof(rx_data));
+  //Iniciar la recepción de datos por UART en modo DMA
+  HAL_UART_Receive_DMA(&huart2, (uint8_t*)&rx_data, sizeof(rx_data));
 
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET); //Asegurar que el pin PB3 esté apagado al inicio
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7 | GPIO_PIN_10, GPIO_PIN_SET); //Encender los pines PA7 y PA10 para activar los puentes H del motor
@@ -137,6 +138,7 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   static uint8_t contador_telemetria = 0;
+  static uint32_t posicion_anterior_telemetria = 0; //Variable para almacenar la posición anterior en la telemetría 
   
   while (1)
   {
@@ -147,32 +149,46 @@ int main(void)
       DatosPck pktdir = {1,(uint32_t)estado_dir,0,0.0f}; //Crear un paquete de datos para enviar la dirección del motor
       HAL_UART_Transmit(&huart2, (uint8_t*)&pktdir, sizeof(pktdir), HAL_MAX_DELAY); //Enviar el paquete de datos por UART
     }
+    
     if(flag_timer){
       flag_timer = 0; //dejar el flag en 0 para esperar la próxima interrupción
-      //Crear un paquete de datos con el tiempo transcurrido y la posición del encoder
+      
+      // 1. CONTROL DEL MOTOR (Frecuencia alta: 1 kHz / cada 1 ms)
       Motor_update(); //Actualizar el control del motor y calcular la salida de PWM dependiendo del modo de control actual
       contador_telemetria++;
-      if (contador_telemetria >= 1) {
+      
+      // 2. TELEMETRÍA (Frecuencia baja: 100 Hz / cada 10 ms)
+      if (contador_telemetria >= 10) {
         contador_telemetria = 0; // Reseteamos
-        DatosPck pck_envio;
+        
+        // Calculamos los pulsos acumulados a lo largo de los 10 ms completos
+        int32_t difpos_tel = motor.posicion_actual - posicion_anterior_telemetria;
+        posicion_anterior_telemetria = motor.posicion_actual;
+        
+        static DatosPck pck_envio;
         pck_envio.id = 2; //Asignar un ID específico para el paquete de posición
         pck_envio.tiempo_ms = HAL_GetTick();
         pck_envio.posicion = motor.posicion_actual;
-        pck_envio.velocidad = motor.velocidad_actual;
+        
+        // Enviamos a Python la velocidad media real de este bloque de 10ms (10ms = 100Hz)
+        pck_envio.velocidad = (float32_t)difpos_tel * 100.0f;
+        
         if (motor.mode == Control_state_space || motor.mode == Control_speed_state_space) {
           pck_envio.velocidad_est = motor.x_hat[1]; //Enviar la velocidad estimada por el observador de espacio de estados
         } else {
-          pck_envio.velocidad_est = 0.0f; //Si no estamos en modo espacio de estados, enviar 0 o un valor indicativo
+          pck_envio.velocidad_est = 0.0f; 
         }
-        HAL_UART_Transmit(&huart2, (uint8_t*)&pck_envio, sizeof(pck_envio), 10);
+        
+        // Solo disparamos el DMA si la UART no está ocupada enviando el paquete anterior.
+        if (huart2.gState == HAL_UART_STATE_READY) {
+            HAL_UART_Transmit_DMA(&huart2, (uint8_t*)&pck_envio, sizeof(pck_envio));
+        }
       }
     }
-   // __WFI(); //Enter low power mode until an interrupt occurs
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
   }
-
   /* USER CODE END 3 */
 }
 
@@ -348,7 +364,7 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 1000 -1;
+  htim4.Init.Prescaler = 100-1;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim4.Init.Period = 1000-1;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -408,6 +424,25 @@ static void MX_USART2_UART_Init(void)
 }
 
 /**
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA1_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA1_Stream5_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
+  /* DMA1_Stream6_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream6_IRQn);
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -461,122 +496,115 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-//Callback del timer para actualizar el flag cada 10ms
+
+// 1. Callback del timer para actualizar el flag cada 10ms
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
   if(htim->Instance == TIM4){
     flag_timer = 1;
   }
 }
-//Callback para el botón de usuario (PC13) para togglear el pin PB3
-/*void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
-  if(GPIO_Pin == GPIO_PIN_13){
-    motor.pwm_output = -motor.pwm_output; //Cambiar la dirección del motor 
-    // al pulsar el botón (toggle del pin PB3) 
-    // y actualizar el valor de PWM para reflejar el cambio de dirección
-     //Al cambiar la dirección, también se actualiza el valor de PWM 
-     // para que el motor gire en la dirección opuesta con la misma velocidad
-     //Si el motor estaba detenido (pwm_output = 0), 
-     // al pulsar el botón se activará en una dirección con una 
-     // velocidad predeterminada (por ejemplo, 500)
-     //ver esto más despacio no se que dice aquí
-  }
-}*/
 
-// Esta función es llamada automáticamente por la HAL cuando ocurre una interrupción en un pin
+// 2. Callback para el botón de usuario (PC13) con filtro anti-rebotes
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-    // Usamos 'static' para que la variable no se borre al salir de la función
-    // y recuerde cuándo fue la última vez que pulsamos.
     static uint32_t ultimo_tiempo_pulsacion = 0;
-    
-    // Obtenemos el tiempo actual del sistema en milisegundos
     uint32_t tiempo_actual = HAL_GetTick(); 
 
-    // Verificamos que la interrupción viene efectivamente de nuestro pin 13 (A13)
     if(GPIO_Pin == GPIO_PIN_13) 
     {
-        // ¿Han pasado más de 200 ms desde la última vez?
         if (tiempo_actual - ultimo_tiempo_pulsacion > 200) 
         {
-            // ¡Es una pulsación real! Cambiamos el estado del pin PB3 (Dirección)
             motor.pwm_output = -motor.pwm_output;
-            
-            // Registramos este momento como la última pulsación válida
+            flag_boton_pulsado = 1; //Activar el flag para indicar que el botón ha sido pulsado
             ultimo_tiempo_pulsacion = tiempo_actual;
         }
-        // Si no han pasado 200 ms, es un rebote y simplemente lo ignoramos.
     }
 }
 
-/* USER CODE END 4 */
-//Callback para la recepción de datos por UART en modo interrupción
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
-  if(huart->Instance == USART2){
-    //procesar el comando recibido en rx_data
-    //si el ID es 1, modo manual el valor es la dirección del motor
-    //Si el ID es 2, modo manualel valor es de PWM para controlar la velocidad del motor
-    if(rx_data.id == 1){
-      motor.mode = Control_pwm_openloop; //Cambiar el modo de control del motor a manual
-      //  (open loop) para controlar la dirección y velocidad manualmente desde UART
-      //Procesar la dirección del motor (rx_data.valor)
-      if(rx_data.valor == 0){
-        //Configurar el motor para girar en una dirección
-        motor.pwm_output = -1.0f*fabs(motor.pwm_output); //Establecer un valor de PWM positivo para girar en una dirección
-      } else {
-        //Configurar el motor para girar en la dirección opuesta
-        motor.pwm_output = fabs(motor.pwm_output);
-      }
-    } 
-    else if(rx_data.id == 2){
-      //Procesar el valor de PWM (rx_data.valor)
-     motor.mode = Control_pwm_openloop; //Asegurar que el modo de control del motor esté en manual (open loop) para controlar la velocidad desde UART
-      if (motor.pwm_output <0){
-        motor.pwm_output = -(float32_t)rx_data.valor; //Actualizar el valor de PWM para controlar la velocidad del motor en la dirección actual
-      }else {
-        motor.pwm_output = (float32_t)rx_data.valor; //Actualizar el valor de PWM para controlar la velocidad del motor
-      }
-   } 
-    else if(rx_data.id == 3){
-      //Procesar el modo de control (rx_data.valor)
-      motor.mode = Control_position; //Cambiar el modo de control a control de posición
-      motor.setpoint_position = rx_data.valor; //Actualizar el setpoint de posición del motor
-      //  con el valor recibido por UART (grados)
-    }
-    else if(rx_data.id == 4){
-      //Procesar el modo de control (rx_data.valor)
-      motor.mode = Control_speed; //Cambiar el modo de control a control de velocidad
-      motor.setpoint_speed = (float32_t)rx_data.valor; //Actualizar el setpoint de velocidad del motor
-      //  con el valor recibido por UART (grados por segundo)
-    }
-    else if(rx_data.id == 5){
-     //Poner  el contador del encoder a 0
-      __HAL_TIM_SET_COUNTER(&htim2, 0);
-        motor.posicion_actual = 0; //Actualizar la posición actual del motor en la estructura de control
-        motor.posicion_anterior = 0; //Actualizar la posición anterior para el próximo cálculo de velocidad
-        motor.velocidad_actual = 0.0f; //Reiniciar la velocidad actual del motor a 0
-        motor.pwm_output = 0.0f; //Reiniciar la salida de PWM a 0 para detener el motor
+// 3. TU FUNCIÓN ORIGINAL - Adaptada a modo DMA y libre de caracteres invisibles
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    if(huart->Instance == USART2)
+    {
+        // ID = 1: Modo manual (Open Loop) - Dirección del motor
+        if(rx_data.id == 1){
+            motor.mode = Control_pwm_openloop; 
+            if(rx_data.valor == 0){
+                motor.pwm_output = -1.0f * fabsf(motor.pwm_output); 
+            } else {
+                motor.pwm_output = fabsf(motor.pwm_output);
+            }
+        } 
+        // ID = 2: Modo manual (Open Loop) - Valor de velocidad PWM
+        else if(rx_data.id == 2){
+            motor.mode = Control_pwm_openloop; 
+            if (motor.pwm_output < 0){
+                motor.pwm_output = -(float32_t)rx_data.valor; 
+            } else {
+                motor.pwm_output = (float32_t)rx_data.valor; 
+            }
+        } 
+        // ID = 3: Control clásico de Posición (PID)
+        else if(rx_data.id == 3){
+            motor.mode = Control_position; 
+            motor.setpoint_position = rx_data.valor; 
+        }
+        // ID = 4: Control clásico de Velocidad (PID)
+        else if(rx_data.id == 4){
+            motor.mode = Control_speed; 
+            motor.setpoint_speed = (float32_t)rx_data.valor; 
+        }
+        // ID = 5: Reset completo de sensores, estimadores y PIDs
+        else if(rx_data.id == 5){
+            __HAL_TIM_SET_COUNTER(&htim2, 0);
+            motor.posicion_actual = 0; 
+            motor.posicion_anterior = 0; 
+            motor.velocidad_actual = 0.0f; 
+            motor.pwm_output = 0.0f; 
 
-        motor.setpoint_position = 0; //Reiniciar el setpoint de posición a 0
-        motor.setpoint_speed = 0.0f; //Reiniciar el setpoint
+            motor.setpoint_position = 0; 
+            motor.setpoint_speed = 0.0f; 
 
-        arm_pid_init_f32(&motor.pid_position, 1);
-        arm_pid_init_f32(&motor.pid_speed, 1);//Reiniciar el controlador PID de velocidad para  
+            arm_pid_init_f32(&motor.pid_position, 1);
+            arm_pid_init_f32(&motor.pid_speed, 1); 
 
-        motor.x_hat[0] = 0.0f; // Resetear la posición estimada del observador a 0
-        motor.x_hat[1] = 0.0f; // Resetear la velocidad estimada del observador a 0
-      }
-    else if(rx_data.id == 6){
-      motor.mode = Control_state_space; 
-      motor.setpoint_position = rx_data.valor; 
+            motor.x_hat[0] = 0.0f; 
+            motor.x_hat[1] = 0.0f; 
+        }
+        // ID = 6: Control por Espacio de Estados - Posición
+        else if(rx_data.id == 6){
+            motor.mode = Control_state_space; 
+            motor.setpoint_position = rx_data.valor; 
+        }
+        // ID = 7: Control por Espacio de Estados - Velocidad
+        else if(rx_data.id == 7){
+            motor.mode = Control_speed_state_space; 
+            motor.setpoint_speed = (float32_t)rx_data.valor; 
+        }
+
+        // ¡CLAVE DMA!: Volvemos a armar la recepción usando DMA para el próximo comando
+        HAL_UART_Receive_DMA(&huart2, (uint8_t*)&rx_data, sizeof(rx_data));
     }
-    else if(rx_data.id == 7){
-      motor.mode = Control_speed_state_space; 
-      motor.setpoint_speed = (float32_t)rx_data.valor; 
-    }
-    //Reiniciar la recepción de datos por UART en modo interrupción para recibir el próximo comando
-    HAL_UART_Receive_IT(&huart2, (uint8_t*)&rx_data, sizeof(rx_data));
-  }
 }
+
+// 4. Callback de Error (Seguridad industrial ante ruidos en el cable USB)
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
+{
+    if (huart->Instance == USART2) 
+    {
+        HAL_UART_DMAStop(huart); // Detiene transmisiones colapsadas
+        
+        // Limpieza de banderas físicas de error de la UART
+        __HAL_UART_CLEAR_PEFLAG(huart);
+        __HAL_UART_CLEAR_FEFLAG(huart);
+        __HAL_UART_CLEAR_NEFLAG(huart);
+        __HAL_UART_CLEAR_OREFLAG(huart);
+        
+        // Reconectamos el DMA para que siga escuchando a Python
+        HAL_UART_Receive_DMA(&huart2, (uint8_t*)&rx_data, sizeof(rx_data));
+    }
+}
+
 /* USER CODE END 4 */
 
 /**
