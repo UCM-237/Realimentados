@@ -7,7 +7,7 @@ t = [0 1]
 for i = 1:length(xm)
     for j = 1:length(xm)
         x0 = [xm(i);xm(j)];
-        [t,x] = ode45(@circular,t,x0);
+        [t,x] = ode45(@real_menos,t,x0);
         plot(x0(1),x0(2),'.')
         hold on
         plot(x(:,1),x(:,2))
