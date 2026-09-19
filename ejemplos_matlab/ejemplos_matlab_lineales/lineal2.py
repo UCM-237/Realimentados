@@ -26,11 +26,13 @@ theta = np.pi / 4
 R = np.array([[np.cos(theta), -np.sin(theta)],
               [np.sin(theta), np.cos(theta)]])
 A_ceros = np.array([[0, 0], [1, 0]])
-ceros = R @ A_ceros @ np.linalg.inv(R)
+#roto la matriz A_ceros 45 grados 
+# Para que no quede alineada con los ejes coordenados
+ceros = R @ A_ceros @ np.linalg.inv(R)     
 circular = np.array([[0, -3.316624790355399], [3.316624790355399, 0]])
 
 
-A = repetidosm
+A = imaginario  # Cambiar por la matriz que se quiera analizar    
 
 # eig devuelve (autovalores, autovectores); en MATLAB era [l,v] = eig(A)
 # -> V (autovectores), D (autovalores en diagonal). Aqui numpy ya nos da
