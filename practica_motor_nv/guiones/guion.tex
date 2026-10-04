@@ -320,7 +320,7 @@ Visual Studio Code es un entorno de desarrollo muy versátil y ampliamente utili
 En realidad, el código necesario, tanto el que emplea la placa de desarrollo, escrito en C, como el que usaremos desde el ordenador, escrito en Python. Están preparados de antemano y disponibles en los ordenadores del laboratorio. Para desarrollar el sistema de control, solo serán necesario pequeños cambios en el código suministrado que se describirán en las secciones correspondientes.
 
 Para empezar a trabajar, Abrimos en el ordenador la aplicación Visual Studio Code, el icono es una especie de lazo azul, y debería estar visible en el escritorio de los ordenadores.  
-Haciendo doble clic se nos abrirá una ventana como la de la figura \ref{fvs}. La vista no coincidirá exactamente con la que muestra la figura. Para abrir el directorio de trabajo de nuestra práctica, desplegamos el menu \texttt{File} arriba a la izquierda de la ventana y buscamos la opción \texttt{Open Folder}, buscamos la carpeta \texttt{practica\_motor\_nv} y la abrimos. 
+Haciendo doble clic se nos abrirá una ventana como la de la figura \ref{fvs}. La vista no coincidirá exactamente con la que muestra la figura. Para abrir el directorio de trabajo de nuestra práctica, desplegamos el menu \texttt{File} arriba a la izquierda de la ventana y buscamos la opción \texttt{Open Folder}, buscamos la carpeta \texttt{practica\_motor\_nv}. 
 \begin{figure}
 	\centering
 		\includegraphics[width=0.75\textwidth]{vscode.png}
@@ -329,7 +329,7 @@ Haciendo doble clic se nos abrirá una ventana como la de la figura \ref{fvs}. L
 
 Debería aparecer a la izquierda, el mismo árbol de directorios (\emph{Explorer}) que se muestra en la figura \ref{fvs}.
 
-De los dos directorios que se muestran bajo \texttt{practica\_motor\_nv}, el primero \texttt{guiones} Contiene la documentación de la práctica; como, por ejemplo, este guion. El segundo \texttt{motor} es el que contiene el software que vamos a emplear. Solo vamos a hacer referencia a tres ficheros: Dos de ellos están en el directorio \texttt{motor/Src}  y son los ficheros \texttt{main.c} y \texttt{motor.c}. El tercero cuelga directamente de \texttt{motor} y se llama \texttt{motor.py}.
+De los dos directorios que se muestran bajo \texttt{practica\_motor\_nv}, el primero \texttt{guiones} Contiene la documentación de la práctica; como, por ejemplo, este guion. El segundo \texttt{motor} es el que contiene el software que vamos a emplear. ëste es el directorio que deberemos abrir\footnote{Es importante abrir directamente el directorio motor, para asegurar que vscode encuentra los archivos de configuración que necesitamos}. Solo vamos a hacer referencia a tres ficheros: Dos de ellos están en el directorio \texttt{motor/Src}  y son los ficheros \texttt{main.c} y \texttt{motor.c}. El tercero cuelga directamente de \texttt{motor} y se llama \texttt{motor.py}.
 
 \section{Compilación del programa y descarga en la placa del ejecutable}
 Para que el software desarrollado en C, funcione es preciso en primer lugar compilarlo. Para ello, abrimos, por ejemplo el programa \texttt{main.c} que es el principal de nuestra aplicación, y buscamos en la barra inferior de la ventana de Visual Studio Code el icono de la rueda dentada y la palabra build (ver figura \ref{compila}) lo pulsamos y nos ofrecera las opciones\footnote{Solo ofrece estas opciones la primera vez que compilamos, luego lo hace directamente} debug y release. Elegimos release. Dejamos que compile el programa y comprobamos que llega al final sin errores (Build finished with exit code 0).
@@ -380,7 +380,7 @@ Como se deduce de la tabla, la interacción con la planta se delega en gran medi
 \begin{itemize}
 	\item \textbf{Lectura del Encoder (PA0 y PA1):} A diferencia de sistemas más simples donde se programan interrupciones por software para contar los pulsos, aquí conectamos las señales en cuadratura a los canales 1 y 2 del \texttt{Timer 2}. Al configurarlo en \textit{Encoder Mode}, el hardware del STM32 detecta automáticamente el sentido de giro y actualiza el registro del contador (\texttt{CNT}). Nuestro software simplemente leerá este registro cuando lo necesite.
 	
-	\item \textbf{Generación de PWM (PA6):} Se conecta al canal 1 del \texttt{Timer 3}. El microcontrolador generará la señal de control de potencia (\textit{Duty Cycle}) en este pin basándose en el valor que calculemos en nuestro bucle de control y escribamos en su registro de comparación (\texttt{CCR1}).
+	\item \textbf{Generación de PWM (PA6):} Se conecta al canal 1 del \texttt{Timer 3}. El microcontrolador generará la señal de control de potencia (\textit{Duty Cycle}) en este pin, basándose en el valor que calculemos en nuestro bucle de control y escribamos en su registro de comparación (\texttt{CCR1}).
 	
 	\item \textbf{Señal de Dirección (PB3):} A diferencia del PWM, el sentido de giro no requiere una señal de alta frecuencia. Se configura como una salida digital estándar (\texttt{GPIO Output}). Escribir un nivel lógico alto (1) hará girar el motor en un sentido, y un nivel bajo (0) en el sentido opuesto, invirtiendo la polaridad en el puente en H.
 	
@@ -397,7 +397,7 @@ Para interactuar con la planta (el motor de continua), es necesario configurar l
 \end{itemize}
 
 \section{Programación del Microcontrolador en C}
-No vamos a dar detalles de del manejo de STM32CubeMX. Aquellos que estén iteresados en conocer más del proceso de configuración puede encontrar más información en el documento making\_of.pdf. Simplemente, diremos que este programa genera un 'esqueleto del proyecto de software' con el código básico y las librerías necesarias. Para nosotros, el archivo fundamental generado es \texttt{main.c}. Este programa contiene la función principal, \texttt{main(void)} que se encarga de llamar a todas las funciones de inicialización de los componentes que hemos descrito hasta ahora y ejecuta un bucle infinito \texttt{while(1)} 
+No vamos a dar detalles del manejo de STM32CubeMX. Aquellos que estén interesados en conocer más del proceso de configuración puede encontrar más información en el documento making\_of.pdf. Simplemente, diremos que este programa genera un 'esqueleto del proyecto de software' con el código básico y las librerías necesarias. Para nosotros, el archivo fundamental generado es \texttt{main.c}. Este programa contiene la función principal, \texttt{main(void)} que se encarga de llamar a todas las funciones de inicialización de los componentes que hemos descrito hasta ahora y ejecuta un bucle infinito \texttt{while(1)} 
 
 
 En este bucle while, que queda vacío cuando se genera el fichero \texttt{main.c} Se ha escrito el código necesario para realizar periódicamente las siguientes tres tareas:
@@ -410,11 +410,11 @@ En este bucle while, que queda vacío cuando se genera el fichero \texttt{main.c
 
 \section{Estructura del Software y Librería CMSIS-DSP}\label{matrices}
 
-Junto al archivo \texttt{main.c} Se ha creado de cero un segundo archivo \texttt{motor.c} y su correspodiente archivo de cabecera \texttt{motor.h}. Este último podemos encontrarlo en el directorio core/Inc.
+Junto al archivo \texttt{main.c} Se ha creado de cero un segundo archivo \texttt{motor.c} y su correspondiente archivo de cabecera \texttt{motor.h}. Este último podemos encontrarlo en el directorio core/Inc.
 
 Estos dos archivos son los que contienen todos los elementos necesarios para controlar el motor.
 
-El control moderno, como la realimentación de estados y los observadores de Luenberger, requiere un uso intensivo de álgebra lineal (multiplicación y suma de matrices). Implementar estas operaciones mediante bucles \texttt{for} anidados en C es ineficiente y propenso a errores.
+El control moderno, como la realimentación de estados y los observadores de Luemberger, requiere un uso intensivo de álgebra lineal (multiplicación y suma de matrices). Implementar estas operaciones mediante bucles \texttt{for} anidados en C es ineficiente y propenso a errores.
 
 Para solucionarlo, emplearemos la librería \textbf{CMSIS-DSP} proporcionada por ARM. Esta librería está optimizada en lenguaje ensamblador para aprovechar la Unidad de Coma Flotante (FPU) del procesador Cortex-M4 del STM32, realizando cálculos matriciales en apenas unos pocos ciclos de reloj.
 
@@ -481,7 +481,7 @@ float32_t Ki_vel_f32 = 0.0f; // Ganancia integral para control de velocidad
 
 El corazón de nuestro sistema reside en la función \texttt{Motor\_update(void)}, contenida en el fichero \texttt{motor.c} la cual es invocada estrictamente cada 1 milisegundos. 
 
-El flujo de esta función, independientemente del algoritmo de control seleccionado (PID o Estados), sigue siempre tres:
+El flujo de esta función, independientemente del algoritmo de control seleccionado (PID o Estados), sigue siempre tres pasos:
 \begin{enumerate}
 	\item \textbf{Lectura de Sensores:} Se lee el registro del hardware del \textit{encoder} y se estima la velocidad actual mediante diferenciación numérica (para los PID).
 	\item \textbf{Lógica de Control:} Un bloque condicional (\texttt{switch} o \texttt{if/else}) deriva la ejecución hacia el algoritmo matemático que esté activo en ese momento, calculando el esfuerzo de control en Voltios.
@@ -498,7 +498,7 @@ Motor.py es un programa que permite realizar varias tareas de monitorización y 
 
 También es posible ejecutarlo empleando Visual Studio Code, o cualquier otro IDE adecuado como Spyder.  Importante: antes de ejecutarlo asegurarse de que el ordenador tiene instalado Python y los módulos de Python que importa, (ver listado \ref{Motor1}).
 
-En nuestro caso, para la práctica lo ejecutaremos desde Visual Studio Code. Si tenemos abierto el directorio \texttt{motor}, es suficiente con que seleccionemos con el ratón el archivo \texttt{motor.py} para que se abra en el editor. UNa vez abierto, basta pulsar el triángulo situado en la parte superior izquierda del editor para que se ejecute. (Ver figura \ref{fmpy})
+En nuestro caso, para la práctica lo ejecutaremos desde Visual Studio Code. Si tenemos abierto el directorio \texttt{motor}, es suficiente con que seleccionemos con el ratón el archivo \texttt{motor.py} para que se abra en el editor. Uaa vez abierto, necesitamos asegurar que usamos el intérprete de Python correcto. Para ello pulsamos las a la vez las teclas \texttt{ctrl +shift + p} se deplegarár un menú en la parte superior de la ventana de vscode. Se selecciona la opción \texttt{Python: select interpreter} se nos presentarán varias opciones de intérprete; deberemos elegir:  \texttt{base (3.13.9) ~/anaconda3/bin/python}. Una vez seleccionado el intérprete,  basta pulsar el triángulo situado en la parte superior izquierda del editor para que se ejecute. (Ver figura \ref{fmpy})
 
 \begin{figure}
 	\centering	
@@ -529,7 +529,7 @@ BAUDIOS = 115200
 
 \end{lstlisting}\label{Motor1}
 
-El listado \ref{Motor1}, muestra las primeras líneas de código del programa. En la línea 12, se indica el puerto serie al que se ha conectado la placa. El valor que aparece por defecto \texttt{'/dev/ttyACM0'}, es el estándar para una máquina con sistema operativo linux. De todos modos, es buena prctica tras conectar la placa comprobar que existe el ficherp texttt{ttyACM0} en el directorio texttt{/dev}. Si estamos trabajando bajo Windows, deberemos comprobar a qué puerto \texttt{COM0, COM1, etc.} se ha conectado la placa y cambiarlo en la línea 12 el valor que aparece.
+El listado \ref{Motor1}, muestra las primeras líneas de código del programa. En la línea 12, se indica el puerto serie al que se ha conectado la placa. El valor que aparece por defecto \texttt{'/dev/ttyACM0'}, es el estándar para una máquina con sistema operativo linux. De todos modos, es buena práctica tras conectar la placa comprobar que existe el fichero texttt{ttyACM0} en el directorio texttt{/dev}. Si estamos trabajando bajo Windows, deberemos comprobar a qué puerto \texttt{COM0, COM1, etc.} se ha conectado la placa y cambiar en la línea 12 el valor que aparece.
 
 En la línea 14 aparece la velocidad de comunicación en baudios. El valor que presenta, 115200 se ha ajustado para que coincida con el valor definido por el software de la placa ST. Ambos valores deben ser iguales.
 
@@ -541,7 +541,7 @@ $ Error al abrir el puerto /dev/ttyACM0: [Errno 2] could not open port
 \end{verbatim}
 
 \paragraph{Panel de control}
-Una vez abierto con éxito el puerto serie, El constructor del objeto \texttt{Dashboard} abre en el escritorio una ventana que muestra un panel de control (\emph{dashboard}) en el escritorio del ordenador. La figura \ref{f18} muestra una vista de dicho panel. 
+Una vez abierto con éxito el puerto serie, El constructor del objeto \texttt{Dashboard} abre en el escritorio del ordenador una ventana que muestra un panel de control (\emph{dashboard}). La figura \ref{f18} muestra una vista de dicho panel. 
 \begin{figure}
 \includegraphics[width=\textwidth]{motorpy.png}
 \caption{\emph{Dashboard} Para el manejo del motor } \label{f18}
@@ -552,10 +552,10 @@ En la figura se pueden observar dos gráficas. La superior representa la posici�
 Inmediatamente debajo de las gráficas, aparecen dos filas de controles. La fila superior está compuesta por los siguientes elementos descritos de izquierda a derecha:
 
 \begin{enumerate}
-	\item \emph{spinbox PWM}. Permite introducir o seleccional mediante las flechas arriba/abajo un valor para la señal de PWM que se transferirá a la placa del controlador de los motores. Admite un valor entero comprendido entre 0 y 999, ya que el microcontrolador, admite ese rango para generar señales de PWM. Podemos traducirlo a voltajes, sin más que tener en cuenta que es controlador del motor, trabaja a un voltaje de 12 V. Por tanto, un valor de PWM de 999 corresponde a 12 V, uno de 500 aproximadamente a 6 V, etc.
+	\item \emph{spinbox PWM}. Permite introducir o seleccionar mediante las flechas arriba/abajo un valor para la señal de PWM que se transferirá a la placa del controlador de los motores. Admite un valor entero comprendido entre 0 y 999, ya que el microcontrolador, admite ese rango para generar señales de PWM. Podemos traducirlo a voltajes, sin más que tener en cuenta que es controlador del motor, trabaja a un voltaje de 12 V. Por tanto, un valor de PWM de 999 corresponde a 12 V, uno de 500 aproximadamente a 6 V, etc.
 	\item Botón \emph{Enviar PWM}. Cuando se pulsa, el ordenar envía por el puerto serie a la placa Nucleo el valor de PWM indicado en la ventana del \emph{spinbox PWM}. Ajustando, por tanto, el valor del voltaje suministrado al motor.
-	\item Botón \emph{sentido}. Cuando se pulsa cambia el sentido de giro del motor. En la figura \ref{f18} El texto que aparece en el botón indica \emph{Sentido Adelante}. Corresponde a hacer girar el eje del motor en el sentido de las agujas del reloj. Si pulsaramos el botón, cambiaría el sentido de giro y en el botón aparcería el texto.  \emph{Sentido Atrás}. el botón es un \emph{toggle}, es decir, alterna entre los dos estados cada vez que se pulsa.
-	\item Botón \emph{grabación de datos} Este botón trabaja como un \emph{toggle}. Si se pulsa en el estado que muestra la figura \ref{f18} Comienza a tomar datos del movimiento del motor. Además, el texto del botón cambia a \emph{detener y guardar}. Si se vuelve a pulsar, los datos grabados se guardan en un fichero estándar csv. Que puede abrirse desde cualquier programa de hojas de cálculo. (Ver más adelante la descripción de los dados gravados)
+	\item Botón \emph{sentido}. Cuando se pulsa cambia el sentido de giro del motor. En la figura \ref{f18} El texto que aparece en el botón indica \emph{Sentido Adelante}. Corresponde a hacer girar el eje del motor en el sentido de las agujas del reloj. Si pulsáramos el botón, cambiaría el sentido de giro y en el botón aparcería el texto.  \emph{Sentido Atrás}. el botón es un \emph{toggle}, es decir, alterna entre los dos estados cada vez que se pulsa.
+	\item Botón \emph{grabación de datos} Este botón trabaja como un \emph{toggle}. Si se pulsa en el estado que muestra la figura \ref{f18} Comienza a tomar datos del movimiento del motor. Además, el texto del botón cambia a \emph{detener y guardar}. Si se vuelve a pulsar, los datos grabados se guardan en un fichero estándar csv. Que puede abrirse desde cualquier programa de hojas de cálculo. (Ver más adelante la descripción de los dados grabados)
 	\item Botón \emph{reset position}. Al pulsar el botón, el contador de pasos de encóder de la placa Nucleo se pone a cero, reseteando de este modo la posición del eje del motor.  
 \end{enumerate}
 Para la fila inferior, podemos describir los siguientes seis controles,
@@ -1379,6 +1379,6 @@ De este modo, alteramos el valor de la variable de estado asociada al error inte
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibliographystyle{plain}
-\bibliography{./Documentacion/practica}
+\bibliography{Documentacion/practica}
 
 \end{document}
